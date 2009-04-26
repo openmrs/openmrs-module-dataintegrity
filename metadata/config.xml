@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//OpenMRS//DTD OpenMRS Config 1.0//EN" "http://resources.openmrs.org/doctype/config-1.0.dtd">
+<module configVersion="1.0">
+	
+	<!-- dataintegrity Module Properties -->
+	<id>dataintegrity</id>
+	<name>dataintegrity Module</name>
+	<version>1.0</version>
+	<package>org.openmrs.module.@MODULE_ID@</package>
+	<author>Nimantha</author>
+	<description/>
+	<activator>@MODULE_PACKAGE@.DataintegrityModuleActivator</activator>
+	<!-- /dataintegrity Module Properties -->
+	
+</module>
