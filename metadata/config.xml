@@ -21,8 +21,14 @@
 	</extension>
 	<!-- /Extensions -->
 	
+	<!-- Priviledges -->
+	<privilege>
+        <name>Run Data Integrity Tests</name>
+        <description>Ability to run data integrity tests</description>
+    </privilege>
+	<!-- /Priviledges -->
+	
 	<!-- Internationalization -->
-	<!-- All message codes should start with moduleId.* -->
 	<messages>
 		<lang>en</lang>
 		<file>messages.properties</file>
