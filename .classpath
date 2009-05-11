@@ -6,10 +6,17 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.6.0_06"/>
 	<classpathentry kind="lib" path="lib-common/commons-logging-1.0.4.jar"/>
 	<classpathentry kind="lib" path="lib-common/hibernate3.jar"/>
-	<classpathentry kind="lib" path="lib-common/junit-3.8.1.jar"/>
-	<classpathentry kind="lib" path="lib-common/openmrs-api-1.2.0.3409.jar"/>
 	<classpathentry kind="lib" path="lib-common/servlet-api.jar"/>
-	<classpathentry kind="lib" path="lib-common/spring-2.0.jar"/>
-	<classpathentry kind="lib" path="lib-common/web-openmrs-api-1.2.0.3530.jar"/>
+	<classpathentry kind="lib" path="F:/GSOC2009/workspaces/DataIntegrityModule/lib-common/openmrs-api-1.5.0.7667-dev.jar"/>
+	<classpathentry kind="lib" path="F:/GSOC2009/workspaces/DataIntegrityModule/lib-common/web-openmrs-api-1.5.0.7667-dev.jar"/>
+	<classpathentry kind="lib" path="F:/GSOC2009/workspaces/DataIntegrityModule/lib-common/tests-openmrs-api-1.5.0.7667-dev.jar"/>
+	<classpathentry kind="lib" path="F:/GSOC2009/workspaces/DataIntegrityModule/lib-common/junit-4.4.jar"/>
+	<classpathentry kind="lib" path="F:/GSOC2009/workspaces/DataIntegrityModule/lib-common/spring-webmvc.jar"/>
+	<classpathentry kind="lib" path="F:/GSOC2009/workspaces/DataIntegrityModule/lib-common/spring-2.5.1.jar"/>
+	<classpathentry kind="lib" path="F:/GSOC2009/workspaces/DataIntegrityModule/lib-common/spring-mock.jar"/>
+	<classpathentry kind="lib" path="F:/GSOC2009/workspaces/DataIntegrityModule/lib-common/spring-test.jar"/>
+	<classpathentry kind="lib" path="F:/GSOC2009/workspaces/DataIntegrityModule/lib-common/dbunit-2.2.jar"/>
+	<classpathentry kind="lib" path="F:/GSOC2009/workspaces/DataIntegrityModule/lib-common/simple-xml-1.6.1-mod.jar"/>
+	<classpathentry kind="lib" path="F:/GSOC2009/workspaces/DataIntegrityModule/lib-common/mail.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

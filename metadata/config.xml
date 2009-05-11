@@ -34,4 +34,10 @@
 		<file>messages.properties</file>
 	</messages>
 	<!-- /Internationalization -->
+	
+	<!-- Hibernate Mapping -->
+	<mappingFiles>
+        DataIntegrityTemplate.hbm.xml
+    </mappingFiles>
+    <!-- /Hibernate Mapping -->
 </module>
