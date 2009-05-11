@@ -27,7 +27,15 @@ public interface DataIntegrityService {
 
     public void saveIdcardsTemplate(DataIntegrityTemplate dataIntegrityTemplate) throws APIException;
     
-    
+    /**
+     * 
+     * This method returns a single data record from the database
+     * 
+     * @param templateId
+     * @return the data record
+     * @throws APIException
+     * @should not return a null object
+     */
     public DataIntegrityTemplate getDataIntegrityTemplate(Integer templateId) throws APIException;
 
     public List<DataIntegrityTemplate> getAllDataIntegrityTemplates() throws APIException;
