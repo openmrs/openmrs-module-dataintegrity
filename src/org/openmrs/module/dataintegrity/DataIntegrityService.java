@@ -23,7 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface DataIntegrityService {
 	
-	public void setIdcardsDAO(DataIntegrityDAO dao);
+	public void setDataIntegrityDAO(DataIntegrityDAO dao);
+	
+	public DataIntegrityDAO getDataIntegrityDAO();
 
     public void saveIdcardsTemplate(DataIntegrityTemplate dataIntegrityTemplate) throws APIException;
     

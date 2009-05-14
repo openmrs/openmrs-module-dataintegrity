@@ -7,12 +7,11 @@
 
 	<class name="DataIntegrityTemplate" table="dataintegrity_test">
 
-		<id name="dataIntegrityId" type="int" column="id"
-			unsaved-value="0">
+		<id name="dataIntegrityId" type="int" column="id">
 				<generator class="native" />
 		</id>
 
-		<property name="name" type="java.lang.String" not-null="false" length="255" column="name" />
+		<property name="dataIntegrityName" type="java.lang.String" not-null="false" length="255" column="name" />
 	
 	</class>
 </hibernate-mapping>

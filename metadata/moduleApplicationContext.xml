@@ -4,15 +4,18 @@
 <!-- Beans to add to the current Application context definition -->
   
 <beans>
+	
+    
+	
 	<bean parent="serviceContext">
 		<property name="moduleService">
-			<list> http://pastebin.com/m1a2915e2
+			<list>
 				<value>org.openmrs.module.dataintegrity.DataIntegrityService</value>
 				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
 						<bean class="org.openmrs.module.dataintegrity.impl.DataIntegrityServiceImpl">
-							<property name="dataintegrityDAO">
+							<property name="dataIntegrityDAO">
 								<bean class="org.openmrs.module.dataintegrity.db.hibernate.HibernateDataIntegrityDAO">
 									<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
 								</bean>
@@ -31,4 +34,9 @@
 			</list>
 		</property>
 	</bean>
+	
+	
+	
+	
+	
 </beans>

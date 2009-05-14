@@ -16,7 +16,7 @@ package org.openmrs.module.dataintegrity;
 
 public class DataIntegrityTemplate {
 	private int dataIntegrityId;
-	private int dataIntegrityName;
+	private String dataIntegrityName;
 	
 	public int getDataIntegrityId() {
 		return dataIntegrityId;
@@ -24,10 +24,10 @@ public class DataIntegrityTemplate {
 	public void setDataIntegrityId(int dataIntegrityId) {
 		this.dataIntegrityId = dataIntegrityId;
 	}
-	public int getDataIntegrityName() {
+	public String getDataIntegrityName() {
 		return dataIntegrityName;
 	}
-	public void setDataIntegrityName(int dataIntegrityName) {
+	public void setDataIntegrityName(String dataIntegrityName) {
 		this.dataIntegrityName = dataIntegrityName;
 	}
 

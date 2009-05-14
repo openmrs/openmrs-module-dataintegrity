@@ -40,7 +40,7 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 		this.dao.saveDataIntegrityTemplate(dataIntegrityTemplate);
 	}
 
-	public void setIdcardsDAO(DataIntegrityDAO dao) {
+	public void setDataIntegrityDAO(DataIntegrityDAO dao) {
 		this.dao = dao;
 	}
 	
