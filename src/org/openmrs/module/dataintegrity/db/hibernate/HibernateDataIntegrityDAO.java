@@ -37,11 +37,12 @@ public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
 
 	public DataIntegrityTemplate getDataIntegrityTemplate(Integer templateId)
 			throws DAOException {
-//		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DataIntegrityTemplate.class, "template")
-//         .add(Expression.eq("template.dataIntegrityId", templateId));
-//		List<DataIntegrityTemplate> template = new ArrayList<DataIntegrityTemplate> (criteria.list());
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DataIntegrityTemplate.class, "template");
+        // .add(Expression.eq("template.dataIntegrityId", templateId));
+		System.out.println(criteria.list());
+		List<DataIntegrityTemplate> template = new ArrayList<DataIntegrityTemplate> (criteria.list());
 		
-		List<DataIntegrityTemplate> template = new ArrayList<DataIntegrityTemplate> (sessionFactory.getCurrentSession().createQuery("from DataIntegrityTemplate").list());
+		//List<DataIntegrityTemplate> template = new ArrayList<DataIntegrityTemplate> (sessionFactory.getCurrentSession().createQuery("from DataIntegrityTemplate").list());
 		return template.get(0);
 	}
 

@@ -1,5 +1,6 @@
 package org.openmrs.module.dataintegrity;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -10,6 +11,14 @@ import org.openmrs.module.dataintegrity.DataIntegrityTemplate;
 
 public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest{
 
+    /**
+     * Do not use the in memory database. 
+     * @return
+     */
+    public Boolean useInMemoryDatabase() {
+        return false;
+    }
+    
 	@Test
 	public void shouldGetDataIntegrityModuleWithNullParameter() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
