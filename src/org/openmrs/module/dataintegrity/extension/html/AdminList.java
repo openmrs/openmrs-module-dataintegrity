@@ -41,6 +41,7 @@ public class AdminList extends AdministrationSectionExt {
 		
 		if (Context.hasPrivilege("Run Data Integrity Tests")) {
 			map.put("module/dataintegrity/viewHelloWorld.htm", "dataintegrity.view");
+			map.put("module/dataintegrity/displayTemplate.form", "dataintegrity.displayTemplate");
 		}
 		return map;
 	}

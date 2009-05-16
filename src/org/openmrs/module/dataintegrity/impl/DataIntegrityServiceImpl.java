@@ -35,7 +35,7 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 		return this.dao.getDataIntegrityTemplate(templateId);
 	}
 
-	public void saveIdcardsTemplate(DataIntegrityTemplate dataIntegrityTemplate)
+	public void saveDataIntegrityTemplate(DataIntegrityTemplate dataIntegrityTemplate)
 			throws APIException {
 		this.dao.saveDataIntegrityTemplate(dataIntegrityTemplate);
 	}

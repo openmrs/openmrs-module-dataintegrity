@@ -27,7 +27,7 @@ public interface DataIntegrityService {
 	
 	public DataIntegrityDAO getDataIntegrityDAO();
 
-    public void saveIdcardsTemplate(DataIntegrityTemplate dataIntegrityTemplate) throws APIException;
+    public void saveDataIntegrityTemplate(DataIntegrityTemplate dataIntegrityTemplate) throws APIException;
     
     /**
      * 

@@ -5,7 +5,13 @@
   
 <beans>
 	
-    
+    <bean id="dataIntegrityUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    	<property name="mappings">
+            <props>
+                <prop key="module/dataintegrity/displayTemplate.form">displayTemplateForm</prop>
+            </props>
+		</property>
+	</bean>
 	
 	<bean parent="serviceContext">
 		<property name="moduleService">
@@ -35,6 +41,11 @@
 		</property>
 	</bean>
 	
+	<bean id="displayTemplateForm" class="org.openmrs.module.dataintegrity.web.controller.DisplayTemplateFormController">
+        <property name="commandName"><value>dataintegrity</value></property>
+        <property name="formView"><value>/module/dataintegrity/displayTemplateForm</value></property>
+        <property name="successView"><value>redirect:displayTemplate.form</value></property>
+    </bean>
 	
 	
 	

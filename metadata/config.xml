@@ -40,4 +40,12 @@
         DataIntegrityTemplate.hbm.xml
     </mappingFiles>
     <!-- /Hibernate Mapping -->
+    
+    <!-- Servlets -->
+	<!-- Accessed through the url /pageContext()/moduleServlet/<moduleId>/<servlet-name> -->
+	<servlet>
+		<servlet-name>template</servlet-name>
+		<servlet-class>@MODULE_PACKAGE@.web.servlet.TemplateServlet</servlet-class>
+	</servlet>
+	<!-- Servlets -->
 </module>

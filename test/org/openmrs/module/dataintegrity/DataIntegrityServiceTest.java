@@ -1,5 +1,7 @@
 package org.openmrs.module.dataintegrity;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
@@ -19,10 +21,33 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest{
         return false;
     }
     
-	@Test
-	public void shouldGetDataIntegrityModuleWithNullParameter() throws Exception {
+	//@Test
+	public void shouldGetOneDataIntegrityTemplate() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
 		DataIntegrityTemplate template = service.getDataIntegrityTemplate(1);
+		System.out.println("Template received: Id= " + template.getDataIntegrityId()+ " Name= " + template.getDataIntegrityName());
 		Assert.notNull(template);
+	}
+	
+	//@Test
+	public void shouldGetAllDataIntegrityTemplates() throws Exception {
+		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
+		List<DataIntegrityTemplate> templates = service.getAllDataIntegrityTemplates();
+		System.out.println("Templates received: " + templates);
+		Assert.notNull(templates);
+	}
+	
+	@Test
+	public void shouldSaveNewDataIntegrityTemplate() throws Exception {
+		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
+		List<DataIntegrityTemplate> templates = service.getAllDataIntegrityTemplates();
+		int templateCountBeforeAdding = templates.size();
+		System.out.println(templateCountBeforeAdding);
+		DataIntegrityTemplate temp = new DataIntegrityTemplate();
+		temp.setDataIntegrityName("Mug");
+		service.saveDataIntegrityTemplate(temp);
+		int templateCountAfterAdding = service.getAllDataIntegrityTemplates().size();
+		System.out.println(templateCountAfterAdding);
+		Assert.isTrue(templateCountBeforeAdding == (templateCountAfterAdding - 1));
 	}
 }
