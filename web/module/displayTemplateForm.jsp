@@ -24,8 +24,9 @@
 </tr>
 <c:forEach items="${integrityTemplates}" var="templateObj">
 	<tr>
-		<td>${templateObj.dataIntegrityId}</td>
-		<td>${templateObj.dataIntegrityName}</td>
+		<td>${templateObj.integrityCheckId}</td>
+		<td>${templateObj.integrityCheckName}</td>
+		<td>${templateObj.integrityCheckSql}</td>
 	</tr>
 </c:forEach>
 </table>

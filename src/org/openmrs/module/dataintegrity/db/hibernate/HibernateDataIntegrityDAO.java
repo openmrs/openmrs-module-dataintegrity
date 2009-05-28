@@ -38,14 +38,14 @@ public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
 	public DataIntegrityTemplate getDataIntegrityTemplate(Integer templateId)
 			throws DAOException {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DataIntegrityTemplate.class, "template")
-         .add(Expression.eq("template.dataIntegrityId", templateId));
+         .add(Expression.eq("template.integrityCheckId", templateId));
 		List<DataIntegrityTemplate> template = new ArrayList<DataIntegrityTemplate> (criteria.list());
 		return template.get(0);
 	}
 
-	public void saveDataIntegrityTemplate(DataIntegrityTemplate idcardsTemplate)
+	public void saveDataIntegrityTemplate(DataIntegrityTemplate dataIntegrityTemplate)
 			throws DAOException {
-		sessionFactory.getCurrentSession().saveOrUpdate(idcardsTemplate);
+		sessionFactory.getCurrentSession().saveOrUpdate(dataIntegrityTemplate);
 	}
 
 	public void setSessionFactory(SessionFactory sessionFactory) {

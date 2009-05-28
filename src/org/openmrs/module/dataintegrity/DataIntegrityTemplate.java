@@ -15,20 +15,26 @@
 package org.openmrs.module.dataintegrity;
 
 public class DataIntegrityTemplate {
-	private int dataIntegrityId;
-	private String dataIntegrityName;
+	private int integrityCheckId;
+	private String integrityCheckName;
+	private String integrityCheckSql;
 	
-	public int getDataIntegrityId() {
-		return dataIntegrityId;
+	public int getIntegrityCheckId() {
+		return integrityCheckId;
 	}
-	public void setDataIntegrityId(int dataIntegrityId) {
-		this.dataIntegrityId = dataIntegrityId;
+	public void setIntegrityCheckId(int integrityCheckId) {
+		this.integrityCheckId = integrityCheckId;
 	}
-	public String getDataIntegrityName() {
-		return dataIntegrityName;
+	public String getIntegrityCheckName() {
+		return integrityCheckName;
 	}
-	public void setDataIntegrityName(String dataIntegrityName) {
-		this.dataIntegrityName = dataIntegrityName;
+	public void setIntegrityCheckName(String integrityCheckName) {
+		this.integrityCheckName = integrityCheckName;
 	}
-
+	public String getIntegrityCheckSql() {
+		return integrityCheckSql;
+	}
+	public void setIntegrityCheckSql(String integrityCheckSql) {
+		this.integrityCheckSql = integrityCheckSql;
+	}
 }

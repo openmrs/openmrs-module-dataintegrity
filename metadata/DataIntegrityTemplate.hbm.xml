@@ -5,13 +5,13 @@
 
 <hibernate-mapping package="org.openmrs.module.dataintegrity">
 
-	<class name="DataIntegrityTemplate" table="dataintegrity_test">
+	<class name="DataIntegrityTemplate" table="dataintegrity_integrity_checks">
 
-		<id name="dataIntegrityId" type="int" column="id">
+		<id name="integrityCheckId" type="int" column="dataintegrity_integrity_check_id">
 				<generator class="native" />
 		</id>
 
-		<property name="dataIntegrityName" type="java.lang.String" not-null="false" length="255" column="name" />
-	
+		<property name="integrityCheckName" type="java.lang.String" not-null="false" length="45" column="name" />
+		<property name="integrityCheckSql" type="java.lang.String" not-null="false" length="100" column="sql" />
 	</class>
 </hibernate-mapping>

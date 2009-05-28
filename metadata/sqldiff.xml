@@ -14,18 +14,20 @@
 	</help>
 	
 	<diff>
-		<version>1.0.0</version>
+		<version>1.1.0</version>
 		<author>Nimantha Baranasuriya</author>
 		<date>April 28th 2009</date>
 		<description>
 			Data Integrity Test table added
 		</description>
 		<sql>
-			CREATE TABLE `dataintegrity_test` (
-  				`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+			CREATE TABLE `openmrs`.`dataintegrity_integrity_checks` (
+  				`dataintegrity_integrity_check_id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   				`name` VARCHAR(45) NOT NULL,
-  					PRIMARY KEY (`id`)
-			) ENGINE = InnoDB DEFAULT CHARSET=utf8
+  				`sql` VARCHAR(100) NOT NULL,
+  				PRIMARY KEY (`dataintegrity_integrity_check_id`)
+			)
+			ENGINE = InnoDB;
 		</sql>
 	</diff>
 </sqldiff>

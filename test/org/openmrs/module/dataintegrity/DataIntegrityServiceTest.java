@@ -25,7 +25,7 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest{
 	public void shouldGetOneDataIntegrityTemplate() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
 		DataIntegrityTemplate template = service.getDataIntegrityTemplate(1);
-		System.out.println("Template received: Id= " + template.getDataIntegrityId()+ " Name= " + template.getDataIntegrityName());
+		System.out.println("Template received: Id= " + template.getIntegrityCheckId() + " Name= " + template.getIntegrityCheckName() + " Sql= " + template.getIntegrityCheckSql());
 		Assert.notNull(template);
 	}
 	
@@ -44,7 +44,8 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest{
 		int templateCountBeforeAdding = templates.size();
 		System.out.println(templateCountBeforeAdding);
 		DataIntegrityTemplate temp = new DataIntegrityTemplate();
-		temp.setDataIntegrityName("Mug");
+		temp.setIntegrityCheckName("Sample Test");
+		temp.setIntegrityCheckSql("Sample SQL string");
 		service.saveDataIntegrityTemplate(temp);
 		int templateCountAfterAdding = service.getAllDataIntegrityTemplates().size();
 		System.out.println(templateCountAfterAdding);
