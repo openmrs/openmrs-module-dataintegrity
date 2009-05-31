@@ -11,7 +11,8 @@
 				<generator class="native" />
 		</id>
 
-		<property name="integrityCheckName" type="java.lang.String" not-null="false" length="45" column="name" />
-		<property name="integrityCheckSql" type="java.lang.String" not-null="false" length="100" column="sql" />
+		<property name="integrityCheckName" type="java.lang.String" not-null="false" length="45" column="check_name" />
+		<property name="integrityCheckSql" type="java.lang.String" not-null="false" length="500" column="check_sql" />
+		<property name="integrityCheckScore" type="java.lang.Double" not-null="false" column="check_score" />
 	</class>
 </hibernate-mapping>

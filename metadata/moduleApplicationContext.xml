@@ -9,6 +9,8 @@
     	<property name="mappings">
             <props>
                 <prop key="module/dataintegrity/displayTemplate.form">displayTemplateForm</prop>
+                <prop key="module/dataintegrity/dataIntegrityChecks.list">dataIntegrityChecksList</prop>
+                <prop key="module/dataintegrity/integrityCheck.form">integrityCheckForm</prop>
             </props>
 		</property>
 	</bean>
@@ -42,9 +44,21 @@
 	</bean>
 	
 	<bean id="displayTemplateForm" class="org.openmrs.module.dataintegrity.web.controller.DisplayTemplateFormController">
-        <property name="commandName"><value>dataintegrity</value></property>
+        <property name="commandName"><value>displayTemplateForm</value></property>
         <property name="formView"><value>/module/dataintegrity/displayTemplateForm</value></property>
         <property name="successView"><value>redirect:displayTemplate.form</value></property>
+    </bean>
+    
+    <bean id="dataIntegrityChecksList" class="org.openmrs.module.dataintegrity.web.controller.DataIntegrityChecksListController">
+        <property name="commandName"><value>dataIntegrityChecksList</value></property>
+        <property name="formView"><value>/module/dataintegrity/dataIntegrityChecksList</value></property>
+        <property name="successView"><value>dataIntegrityChecks.list</value></property>
+    </bean>
+    
+    <bean id="integrityCheckForm" class="org.openmrs.module.dataintegrity.web.controller.IntegrityCheckFormController">
+        <property name="commandName"><value>integrityCheckForm</value></property>
+        <property name="formView"><value>/module/dataintegrity/integrityCheckForm</value></property>
+        <property name="successView"><value>integrityCheck.form</value></property>
     </bean>
 	
 	

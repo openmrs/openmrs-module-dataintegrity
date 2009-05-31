@@ -28,7 +28,8 @@ public class TemplateServlet extends HttpServlet {
 			DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
 			DataIntegrityTemplate temp = new DataIntegrityTemplate();
 			temp.setIntegrityCheckName(request.getParameter("tempName"));
-			temp.setIntegrityCheckSql("test 123");
+			temp.setIntegrityCheckSql("select * from PersonName");
+			temp.setIntegrityCheckScore(5.5);
 			service.saveDataIntegrityTemplate(temp);
 			response.sendRedirect("../../module/dataintegrity/displayTemplate.form");
 		}

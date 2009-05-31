@@ -32,16 +32,15 @@ public class AdminList extends AdministrationSectionExt {
 	}
 	
 	public String getRequiredPrivilege() {
-		return "Run Data Integrity Tests";
+		return "Manage Integrity Checks";
 	}
 	
 	public Map<String, String> getLinks() {
 		
 		Map<String, String> map = new HashMap<String, String>();
 		
-		if (Context.hasPrivilege("Run Data Integrity Tests")) {
-			map.put("module/dataintegrity/viewHelloWorld.htm", "dataintegrity.view");
-			map.put("module/dataintegrity/displayTemplate.form", "dataintegrity.displayTemplate");
+		if (Context.hasPrivilege("Manage Integrity Checks")) {
+			map.put("module/dataintegrity/dataIntegrityChecks.list", "dataintegrity.manage.link");
 		}
 		return map;
 	}

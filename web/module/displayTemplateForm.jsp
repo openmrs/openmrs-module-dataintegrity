@@ -20,13 +20,14 @@
 <h2>Existing Templates</h2>
 <table border="1">
 <tr>
-<td>Id</td><td>Name</td>
+<td>Id</td><td>Name</td><td>SQL</td><td>Score</td>
 </tr>
 <c:forEach items="${integrityTemplates}" var="templateObj">
 	<tr>
 		<td>${templateObj.integrityCheckId}</td>
 		<td>${templateObj.integrityCheckName}</td>
 		<td>${templateObj.integrityCheckSql}</td>
+		<td>${templateObj.integrityCheckScore}</td>
 	</tr>
 </c:forEach>
 </table>

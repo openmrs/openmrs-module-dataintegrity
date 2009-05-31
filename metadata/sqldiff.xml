@@ -23,8 +23,9 @@
 		<sql>
 			CREATE TABLE `openmrs`.`dataintegrity_integrity_checks` (
   				`dataintegrity_integrity_check_id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  				`name` VARCHAR(45) NOT NULL,
-  				`sql` VARCHAR(100) NOT NULL,
+  				`check_name` VARCHAR(45) NOT NULL,
+  				`check_sql` VARCHAR(500) NOT NULL,
+  				`check_score` DOUBLE NOT NULL,
   				PRIMARY KEY (`dataintegrity_integrity_check_id`)
 			)
 			ENGINE = InnoDB;

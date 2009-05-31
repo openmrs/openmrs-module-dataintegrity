@@ -23,8 +23,20 @@
 	
 	<!-- Priviledges -->
 	<privilege>
-        <name>Run Data Integrity Tests</name>
-        <description>Ability to run data integrity tests</description>
+        <name>Run Data Integrity Checks</name>
+        <description>Ability to run data integrity checks</description>
+    </privilege>
+    <privilege>
+        <name>Manage Integrity Checks</name>
+        <description>Ability to manage data integrity checks</description>
+    </privilege>
+    <privilege>
+        <name>Add/Edit Integrity Checks</name>
+        <description>Ability to add or edit integrity checks</description>
+    </privilege>
+    <privilege>
+        <name>Delete Integrity Checks</name>
+        <description>Ability to delete data integrity checks</description>
     </privilege>
 	<!-- /Priviledges -->
 	
