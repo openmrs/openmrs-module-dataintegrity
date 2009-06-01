@@ -14,7 +14,7 @@
 
 package org.openmrs.module.dataintegrity;
 
-public class DataIntegrityTemplate {
+public class DataIntegrityCheckTemplate {
 	private int integrityCheckId;
 	private String integrityCheckName;
 	private String integrityCheckSql;

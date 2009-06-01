@@ -18,26 +18,26 @@ import java.util.List;
 
 import org.openmrs.api.APIException;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
-import org.openmrs.module.dataintegrity.DataIntegrityTemplate;
+import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 import org.openmrs.module.dataintegrity.db.DataIntegrityDAO;
 
 public class DataIntegrityServiceImpl implements DataIntegrityService {
 
 	private DataIntegrityDAO dao;
 	
-	public List<DataIntegrityTemplate> getAllDataIntegrityTemplates()
+	public List<DataIntegrityCheckTemplate> getAllDataIntegrityCheckTemplates()
 			throws APIException {
-		return this.dao.getAllDataIntegrityTemplates();
+		return this.dao.getAllDataIntegrityCheckTemplates();
 	}
 
-	public DataIntegrityTemplate getDataIntegrityTemplate(Integer templateId)
+	public DataIntegrityCheckTemplate getDataIntegrityCheckTemplate(Integer templateId)
 			throws APIException {
-		return this.dao.getDataIntegrityTemplate(templateId);
+		return this.dao.getDataIntegrityCheckTemplate(templateId);
 	}
 
-	public void saveDataIntegrityTemplate(DataIntegrityTemplate dataIntegrityTemplate)
+	public void saveDataIntegrityCheckTemplate(DataIntegrityCheckTemplate dataIntegrityTemplate)
 			throws APIException {
-		this.dao.saveDataIntegrityTemplate(dataIntegrityTemplate);
+		this.dao.saveDataIntegrityCheckTemplate(dataIntegrityTemplate);
 	}
 
 	public void setDataIntegrityDAO(DataIntegrityDAO dao) {
@@ -46,5 +46,9 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 	
 	public DataIntegrityDAO getDataIntegrityDAO() {
 		return this.dao;
+	}
+
+	public void deleteDataIntegrityCheckTemplate(Integer templateId) {
+		this.dao.deleteDataIntegrityCheckTemplate(templateId);
 	}
 }

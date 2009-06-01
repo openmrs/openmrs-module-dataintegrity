@@ -17,7 +17,7 @@ public class DataIntegrityChecksListController extends SimpleFormController{
     }
 	
 	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-        return getDataIntegrityService().getAllDataIntegrityTemplates();
+        return getDataIntegrityService().getAllDataIntegrityCheckTemplates();
     }
 	
 	

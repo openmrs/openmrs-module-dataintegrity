@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
-import org.openmrs.module.dataintegrity.DataIntegrityTemplate;
+import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 
 public class TemplateServlet extends HttpServlet {
 	@Override
@@ -26,11 +26,11 @@ public class TemplateServlet extends HttpServlet {
 		PrintWriter writer = response.getWriter();
 		try {
 			DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
-			DataIntegrityTemplate temp = new DataIntegrityTemplate();
+			DataIntegrityCheckTemplate temp = new DataIntegrityCheckTemplate();
 			temp.setIntegrityCheckName(request.getParameter("tempName"));
 			temp.setIntegrityCheckSql("select * from PersonName");
 			temp.setIntegrityCheckScore(5.5);
-			service.saveDataIntegrityTemplate(temp);
+			service.saveDataIntegrityCheckTemplate(temp);
 			response.sendRedirect("../../module/dataintegrity/displayTemplate.form");
 		}
 		catch (APIException apiexception) {

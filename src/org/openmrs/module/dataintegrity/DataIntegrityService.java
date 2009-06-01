@@ -27,7 +27,7 @@ public interface DataIntegrityService {
 	
 	public DataIntegrityDAO getDataIntegrityDAO();
 
-    public void saveDataIntegrityTemplate(DataIntegrityTemplate dataIntegrityTemplate) throws APIException;
+    public void saveDataIntegrityCheckTemplate(DataIntegrityCheckTemplate dataIntegrityTemplate) throws APIException;
     
     /**
      * 
@@ -38,8 +38,10 @@ public interface DataIntegrityService {
      * @throws APIException
      * @should not return a null object
      */
-    public DataIntegrityTemplate getDataIntegrityTemplate(Integer templateId) throws APIException;
+    public DataIntegrityCheckTemplate getDataIntegrityCheckTemplate(Integer templateId) throws APIException;
 
-    public List<DataIntegrityTemplate> getAllDataIntegrityTemplates() throws APIException;
+    public List<DataIntegrityCheckTemplate> getAllDataIntegrityCheckTemplates() throws APIException;
+    
+    public void deleteDataIntegrityCheckTemplate(Integer templateId);
 
 }

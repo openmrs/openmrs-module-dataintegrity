@@ -8,7 +8,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.util.Assert;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
-import org.openmrs.module.dataintegrity.DataIntegrityTemplate;
+import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 
 
 public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest{
@@ -24,7 +24,7 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest{
 	//@Test
 	public void shouldGetOneDataIntegrityTemplate() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
-		DataIntegrityTemplate template = service.getDataIntegrityTemplate(1);
+		DataIntegrityCheckTemplate template = service.getDataIntegrityCheckTemplate(1);
 		System.out.println("Template received: Id= " + template.getIntegrityCheckId() + " Name= " + template.getIntegrityCheckName() + " Sql= " + template.getIntegrityCheckSql());
 		Assert.notNull(template);
 	}
@@ -32,7 +32,7 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest{
 	//@Test
 	public void shouldGetAllDataIntegrityTemplates() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
-		List<DataIntegrityTemplate> templates = service.getAllDataIntegrityTemplates();
+		List<DataIntegrityCheckTemplate> templates = service.getAllDataIntegrityCheckTemplates();
 		System.out.println("Templates received: " + templates);
 		Assert.notNull(templates);
 	}
@@ -40,15 +40,22 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest{
 	@Test
 	public void shouldSaveNewDataIntegrityTemplate() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
-		List<DataIntegrityTemplate> templates = service.getAllDataIntegrityTemplates();
+		List<DataIntegrityCheckTemplate> templates = service.getAllDataIntegrityCheckTemplates();
 		int templateCountBeforeAdding = templates.size();
 		System.out.println(templateCountBeforeAdding);
-		DataIntegrityTemplate temp = new DataIntegrityTemplate();
+		DataIntegrityCheckTemplate temp = new DataIntegrityCheckTemplate();
 		temp.setIntegrityCheckName("Sample Test");
 		temp.setIntegrityCheckSql("Sample SQL string");
-		service.saveDataIntegrityTemplate(temp);
-		int templateCountAfterAdding = service.getAllDataIntegrityTemplates().size();
+		service.saveDataIntegrityCheckTemplate(temp);
+		int templateCountAfterAdding = service.getAllDataIntegrityCheckTemplates().size();
 		System.out.println(templateCountAfterAdding);
 		Assert.isTrue(templateCountBeforeAdding == (templateCountAfterAdding - 1));
+	}
+	
+	//@Test
+	public void shouldDeleteIntegrityTemplates() throws Exception {
+		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
+		service.deleteDataIntegrityCheckTemplate(13);
+		System.out.println("deleted");
 	}
 }

@@ -18,15 +18,17 @@ import java.util.List;
 
 import org.hibernate.SessionFactory;
 import org.openmrs.api.db.DAOException;
-import org.openmrs.module.dataintegrity.DataIntegrityTemplate;
+import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 
 public interface DataIntegrityDAO {
 
 	public void setSessionFactory(SessionFactory sessionFactory);
 
-    public void saveDataIntegrityTemplate(DataIntegrityTemplate dataIntegrityTemplate) throws DAOException;
+    public void saveDataIntegrityCheckTemplate(DataIntegrityCheckTemplate dataIntegrityTemplate) throws DAOException;
 
-    public DataIntegrityTemplate getDataIntegrityTemplate(Integer templateId) throws DAOException;
+    public DataIntegrityCheckTemplate getDataIntegrityCheckTemplate(Integer templateId) throws DAOException;
 
-    public List<DataIntegrityTemplate> getAllDataIntegrityTemplates() throws DAOException;
+    public List<DataIntegrityCheckTemplate> getAllDataIntegrityCheckTemplates() throws DAOException;
+    
+    public void deleteDataIntegrityCheckTemplate(Integer templateId) throws DAOException;
 }

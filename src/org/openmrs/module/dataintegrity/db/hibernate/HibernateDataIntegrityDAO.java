@@ -22,34 +22,40 @@ import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Expression;
 import org.openmrs.api.db.DAOException;
-import org.openmrs.module.dataintegrity.DataIntegrityTemplate;
+import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 import org.openmrs.module.dataintegrity.db.DataIntegrityDAO;
 
 public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
 
 	private SessionFactory sessionFactory;
 	
-	public List<DataIntegrityTemplate> getAllDataIntegrityTemplates()
+	public List<DataIntegrityCheckTemplate> getAllDataIntegrityCheckTemplates()
 			throws DAOException {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DataIntegrityTemplate.class, "template");
-		return (List<DataIntegrityTemplate>)criteria.list();
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DataIntegrityCheckTemplate.class, "template");
+		return (List<DataIntegrityCheckTemplate>)criteria.list();
 	}
 
-	public DataIntegrityTemplate getDataIntegrityTemplate(Integer templateId)
+	public DataIntegrityCheckTemplate getDataIntegrityCheckTemplate(Integer templateId)
 			throws DAOException {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DataIntegrityTemplate.class, "template")
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DataIntegrityCheckTemplate.class, "template")
          .add(Expression.eq("template.integrityCheckId", templateId));
-		List<DataIntegrityTemplate> template = new ArrayList<DataIntegrityTemplate> (criteria.list());
+		List<DataIntegrityCheckTemplate> template = new ArrayList<DataIntegrityCheckTemplate> (criteria.list());
 		return template.get(0);
 	}
 
-	public void saveDataIntegrityTemplate(DataIntegrityTemplate dataIntegrityTemplate)
+	public void saveDataIntegrityCheckTemplate(DataIntegrityCheckTemplate dataIntegrityTemplate)
 			throws DAOException {
 		sessionFactory.getCurrentSession().saveOrUpdate(dataIntegrityTemplate);
 	}
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
+	}
+
+	public void deleteDataIntegrityCheckTemplate(Integer templateId)
+			throws DAOException {
+		sessionFactory.getCurrentSession().delete(templateId);
+		
 	}
 
 }

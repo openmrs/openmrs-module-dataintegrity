@@ -26,7 +26,7 @@
 		<table>
 			<tr>
 				<td><spring:message code="dataintegrity.checksList.columns.name"/></td>
-				<td><input type="text" name="name" value="" size="50" /></td>
+				<td><input type="text" name="name" value="" size="50" maxlength="45"/></td>
 				<td><i><spring:message code="dataintegrity.checksList.columns.name.help"/></i></td>
 			</tr>
 			<tr>
