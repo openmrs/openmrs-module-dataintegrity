@@ -37,7 +37,7 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest{
 		Assert.notNull(templates);
 	}
 	
-	@Test
+	//@Test
 	public void shouldSaveNewDataIntegrityTemplate() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
 		List<DataIntegrityCheckTemplate> templates = service.getAllDataIntegrityCheckTemplates();
@@ -52,10 +52,12 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest{
 		Assert.isTrue(templateCountBeforeAdding == (templateCountAfterAdding - 1));
 	}
 	
-	//@Test
+	@Test
 	public void shouldDeleteIntegrityTemplates() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
-		service.deleteDataIntegrityCheckTemplate(13);
+		DataIntegrityCheckTemplate temp = new DataIntegrityCheckTemplate();
+		temp.setIntegrityCheckId(6);
+		service.deleteDataIntegrityCheckTemplate(temp);
 		System.out.println("deleted");
 	}
 }

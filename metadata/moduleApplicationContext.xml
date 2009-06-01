@@ -67,9 +67,4 @@
         <property name="formView"><value>/module/dataintegrity/deleteIntegrityCheckForm</value></property>
         <property name="successView"><value>deleteIntegrityCheck.form</value></property>
     </bean>
-	
-	deleteIntegrityCheckForm
-	
-	
-	
 </beans>

@@ -5,7 +5,7 @@
 
 <hibernate-mapping package="org.openmrs.module.dataintegrity">
 
-	<class name="DataIntegrityTemplate" table="dataintegrity_integrity_checks">
+	<class name="DataIntegrityCheckTemplate" table="dataintegrity_integrity_checks">
 
 		<id name="integrityCheckId" type="int" column="dataintegrity_integrity_check_id">
 				<generator class="native" />

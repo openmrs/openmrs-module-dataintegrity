@@ -52,9 +52,9 @@ public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
 		this.sessionFactory = sessionFactory;
 	}
 
-	public void deleteDataIntegrityCheckTemplate(Integer templateId)
+	public void deleteDataIntegrityCheckTemplate(DataIntegrityCheckTemplate template)
 			throws DAOException {
-		sessionFactory.getCurrentSession().delete(templateId);
+		sessionFactory.getCurrentSession().delete(template);
 		
 	}
 

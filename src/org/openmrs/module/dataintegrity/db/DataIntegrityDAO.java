@@ -30,5 +30,5 @@ public interface DataIntegrityDAO {
 
     public List<DataIntegrityCheckTemplate> getAllDataIntegrityCheckTemplates() throws DAOException;
     
-    public void deleteDataIntegrityCheckTemplate(Integer templateId) throws DAOException;
+    public void deleteDataIntegrityCheckTemplate(DataIntegrityCheckTemplate template) throws DAOException;
 }

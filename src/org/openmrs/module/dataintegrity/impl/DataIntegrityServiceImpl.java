@@ -48,7 +48,7 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 		return this.dao;
 	}
 
-	public void deleteDataIntegrityCheckTemplate(Integer templateId) {
-		this.dao.deleteDataIntegrityCheckTemplate(templateId);
+	public void deleteDataIntegrityCheckTemplate(DataIntegrityCheckTemplate template) {
+		this.dao.deleteDataIntegrityCheckTemplate(template);
 	}
 }
