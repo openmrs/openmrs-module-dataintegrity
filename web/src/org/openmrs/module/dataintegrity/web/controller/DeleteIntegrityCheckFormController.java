@@ -76,14 +76,17 @@ public class DeleteIntegrityCheckFormController extends SimpleFormController{
 					catch (Exception e) {
 						if (!error.equals(""))
 							error += "<br/>";
-						error += check + " #" + checkId + " " + notDeleted + e.getMessage();
+						error += check + " #" + checkId + " " + notDeleted;
 					}
 				}
+				view = error.equals("") ? getSuccessView() : "deleteIntegrityCheck.form";
+				
 			} else { 
 				error = msa.getMessage("dataintegrity.deleteCheck.error");
+				view = "deleteIntegrityCheck.form";
 			}
 		
-			view = getSuccessView();
+			
 			if (!success.equals(""))
 				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, success);
 			if (!error.equals(""))

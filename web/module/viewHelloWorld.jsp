@@ -5,7 +5,7 @@
 <%@ include file="/WEB-INF/template/header.jsp" %>
 
 <br/>
-<h2><spring:message code="dataintegrity.nimantha"/></h2>
+<h2>Hello, ${authenticatedUser.personName}!</h2>
 <br/>
 
 <%@ include file="/WEB-INF/template/footer.jsp" %>

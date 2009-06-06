@@ -1,12 +1,15 @@
 package org.openmrs.module.dataintegrity.web.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -17,8 +20,10 @@ public class DataIntegrityChecksListController extends SimpleFormController{
     }
 	
 	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-        return getDataIntegrityService().getAllDataIntegrityCheckTemplates();
+        List<DataIntegrityCheckTemplate> checks = new ArrayList<DataIntegrityCheckTemplate>();
+        if (Context.isAuthenticated()) {
+        	checks = getDataIntegrityService().getAllDataIntegrityCheckTemplates(); 
+        }
+        return checks;
     }
-	
-	
 }

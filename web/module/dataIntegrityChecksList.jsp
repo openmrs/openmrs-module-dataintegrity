@@ -7,8 +7,10 @@
 
 <h2><spring:message code="dataintegrity.manage.title"/></h2>
 <a href="integrityCheck.form"><spring:message code="dataintegrity.addCheck"/></a> 
-<a href="deleteIntegrityCheck.form"><spring:message code="dataintegrity.deleteCheck"/></a><br />
-<br />
+<c:if test="${not empty dataIntegrityChecksList}">
+<a href="deleteIntegrityCheck.form"><spring:message code="dataintegrity.deleteCheck"/></a>
+</c:if>
+<br /><br />
 
 <b class="boxHeader"><spring:message code="dataintegrity.checksList.title"/></b>
 <div class="box">

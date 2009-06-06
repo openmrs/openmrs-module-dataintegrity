@@ -59,12 +59,12 @@
     <bean id="integrityCheckForm" class="org.openmrs.module.dataintegrity.web.controller.IntegrityCheckFormController">
         <property name="commandName"><value>integrityCheckForm</value></property>
         <property name="formView"><value>/module/dataintegrity/integrityCheckForm</value></property>
-        <property name="successView"><value>integrityCheck.form</value></property>
+        <property name="successView"><value>dataIntegrityChecks.list</value></property>
     </bean>
     
     <bean id="deleteIntegrityCheckForm" class="org.openmrs.module.dataintegrity.web.controller.DeleteIntegrityCheckFormController">
         <property name="commandName"><value>deleteIntegrityCheckForm</value></property>
         <property name="formView"><value>/module/dataintegrity/deleteIntegrityCheckForm</value></property>
-        <property name="successView"><value>deleteIntegrityCheck.form</value></property>
+        <property name="successView"><value>dataIntegrityChecks.list</value></property>
     </bean>
 </beans>
