@@ -65,6 +65,7 @@ public class IntegrityCheckFormController extends SimpleFormController {
 						DataIntegrityService service = (DataIntegrityService)Context.getService(DataIntegrityService.class);
 						service.saveDataIntegrityCheckTemplate(check);
 						success = checkName + " " + msa.getMessage("dataintegrity.addeditCheck.saved");
+						view = getSuccessView();
 					} else {
 						if (checkName == "" && checkSql == "") {
 							error = msa.getMessage("dataintegrity.checksList.columns.name") + " " + msa.getMessage("dataintegrity.checksList.columns.blank") + "<br \\>";
@@ -74,9 +75,11 @@ public class IntegrityCheckFormController extends SimpleFormController {
 						} else {
 							error = msa.getMessage("dataintegrity.checksList.columns.sql") + " " + msa.getMessage("dataintegrity.checksList.columns.blank");
 						}
+						view = "integrityCheck.form?checkId=" + checkId;
 					}
 				} catch (Exception e) {
 					error = msa.getMessage("dataintegrity.addeditCheck.failed") + " " + checkName;
+					view = "integrityCheck.form?checkId=" + checkId;
 				}
 			} else {
 				try {
