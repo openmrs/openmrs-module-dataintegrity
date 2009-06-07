@@ -65,9 +65,8 @@ public class DeleteIntegrityCheckFormController extends SimpleFormController{
 				String notDeleted = msa.getMessage("dataintegrity.deleteCheck.notdelete");
 				for (String checkId : checkList) {
 					try {
-						DataIntegrityCheckTemplate temp = new DataIntegrityCheckTemplate();
-						temp.setIntegrityCheckId(Integer.valueOf(checkId));
-						service.deleteDataIntegrityCheckTemplate(temp);
+						DataIntegrityCheckTemplate template = service.getDataIntegrityCheckTemplate(Integer.valueOf(checkId));
+						service.deleteDataIntegrityCheckTemplate(template);
 						
 						if (!success.equals(""))
 							success += "<br/>";
@@ -76,7 +75,7 @@ public class DeleteIntegrityCheckFormController extends SimpleFormController{
 					catch (Exception e) {
 						if (!error.equals(""))
 							error += "<br/>";
-						error += check + " #" + checkId + " " + notDeleted;
+						error += check + " #" + checkId + " " + notDeleted + e.getMessage();
 					}
 				}
 				view = error.equals("") ? getSuccessView() : "deleteIntegrityCheck.form";

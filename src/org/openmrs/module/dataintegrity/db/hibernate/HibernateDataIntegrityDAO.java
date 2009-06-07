@@ -58,4 +58,8 @@ public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
 		
 	}
 
+	public int runDataIntegrityCheck(Integer checkId) {
+		return 0;
+	}
+
 }

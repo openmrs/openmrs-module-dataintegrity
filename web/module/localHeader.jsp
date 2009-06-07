@@ -9,4 +9,16 @@
 			</a>
 		</li>
 	</openmrs:hasPrivilege>
+	<openmrs:hasPrivilege privilege="Run Data Integrity Checks">
+		<li <c:if test='<%= request.getRequestURI().contains("runSingleCheck") %>'>class="active"</c:if>>
+			<a href="${pageContext.request.contextPath}/module/dataintegrity/runSingleCheck.list">
+				<spring:message code="dataintegrity.runSingleCheck.link"/>
+			</a>
+		</li>
+		<li <c:if test='<%= request.getRequestURI().contains("runMultipleChecks") %>'>class="active"</c:if>>
+			<a href="${pageContext.request.contextPath}/module/dataintegrity/runMultipleChecks.list">
+				<spring:message code="dataintegrity.runMultipleChecks.link"/>
+			</a>
+		</li>
+	</openmrs:hasPrivilege>
 </ul>

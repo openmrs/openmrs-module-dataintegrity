@@ -55,12 +55,22 @@ public class IntegrityCheckFormController extends SimpleFormController {
 				try {
 					checkName = request.getParameter("name");
 					String checkSql = request.getParameter("sql");
-					Double checkScore= Double.parseDouble(request.getParameter("score"));
-					if (checkName != "" && checkSql != "") {
+					int checkBase = Integer.valueOf(request.getParameter("base"));
+					Double checkScore = 0.0;
+					boolean isScoreCorrent = true;
+					if (checkBase == 2 && request.getParameter("score") != "") {
+						checkScore= Double.parseDouble(request.getParameter("score"));
+						isScoreCorrent = true;
+					} else if (checkBase == 2 && request.getParameter("score") == "") {
+						error += msa.getMessage("dataintegrity.checksList.columns.score") + " " + msa.getMessage("dataintegrity.checksList.columns.blank") + "<br \\>";
+						isScoreCorrent = false;
+					}
+					if (checkName != "" && checkSql != "" && isScoreCorrent) {
 						DataIntegrityCheckTemplate check = new DataIntegrityCheckTemplate();
-						check.setIntegrityCheckId(Integer.parseInt(checkId));
+						check.setIntegrityCheckId(Integer.valueOf(checkId));
 						check.setIntegrityCheckName(checkName);
 						check.setIntegrityCheckSql(checkSql);
+						check.setIntegrityCheckBaseForFailure(checkBase);
 						check.setIntegrityCheckScore(checkScore);
 						DataIntegrityService service = (DataIntegrityService)Context.getService(DataIntegrityService.class);
 						service.saveDataIntegrityCheckTemplate(check);
@@ -68,12 +78,12 @@ public class IntegrityCheckFormController extends SimpleFormController {
 						view = getSuccessView();
 					} else {
 						if (checkName == "" && checkSql == "") {
-							error = msa.getMessage("dataintegrity.checksList.columns.name") + " " + msa.getMessage("dataintegrity.checksList.columns.blank") + "<br \\>";
+							error += msa.getMessage("dataintegrity.checksList.columns.name") + " " + msa.getMessage("dataintegrity.checksList.columns.blank") + "<br \\>";
 							error += msa.getMessage("dataintegrity.checksList.columns.sql") + " " + msa.getMessage("dataintegrity.checksList.columns.blank");
 						} else if (checkName == "") {
-							error = msa.getMessage("dataintegrity.checksList.columns.name") + " " + msa.getMessage("dataintegrity.checksList.columns.blank");
-						} else {
-							error = msa.getMessage("dataintegrity.checksList.columns.sql") + " " + msa.getMessage("dataintegrity.checksList.columns.blank");
+							error += msa.getMessage("dataintegrity.checksList.columns.name") + " " + msa.getMessage("dataintegrity.checksList.columns.blank");
+						} else if (checkSql == "") {
+							error += msa.getMessage("dataintegrity.checksList.columns.sql") + " " + msa.getMessage("dataintegrity.checksList.columns.blank");
 						}
 						view = "integrityCheck.form?checkId=" + checkId;
 					}
@@ -85,11 +95,21 @@ public class IntegrityCheckFormController extends SimpleFormController {
 				try {
 					checkName = request.getParameter("name");
 					String checkSql = request.getParameter("sql");
-					Double checkScore= Double.parseDouble(request.getParameter("score"));
-					if (checkName != "" && checkSql != "") {
+					int checkBase = Integer.valueOf(request.getParameter("base"));
+					Double checkScore = 0.0;
+					boolean isScoreCorrent = true;
+					if (checkBase == 2 && request.getParameter("score") != "") {
+						checkScore= Double.parseDouble(request.getParameter("score"));
+						isScoreCorrent = true;
+					} else if (checkBase == 2 && request.getParameter("score") == "") {
+						error += msa.getMessage("dataintegrity.checksList.columns.score") + " " + msa.getMessage("dataintegrity.checksList.columns.blank") + "<br \\>";
+						isScoreCorrent = false;
+					}
+					if (checkName != "" && checkSql != "" && isScoreCorrent) {
 						DataIntegrityCheckTemplate check = new DataIntegrityCheckTemplate();
 						check.setIntegrityCheckName(checkName);
 						check.setIntegrityCheckSql(checkSql);
+						check.setIntegrityCheckBaseForFailure(checkBase);
 						check.setIntegrityCheckScore(checkScore);
 						DataIntegrityService service = (DataIntegrityService)Context.getService(DataIntegrityService.class);
 						service.saveDataIntegrityCheckTemplate(check);
@@ -97,17 +117,17 @@ public class IntegrityCheckFormController extends SimpleFormController {
 						view = getSuccessView();
 					} else {
 						if (checkName == "" && checkSql == "") {
-							error = msa.getMessage("dataintegrity.checksList.columns.name") + " " + msa.getMessage("dataintegrity.checksList.columns.blank") + "<br \\>";
+							error += msa.getMessage("dataintegrity.checksList.columns.name") + " " + msa.getMessage("dataintegrity.checksList.columns.blank") + "<br \\>";
 							error += msa.getMessage("dataintegrity.checksList.columns.sql") + " " + msa.getMessage("dataintegrity.checksList.columns.blank");
 						} else if (checkName == "") {
-							error = msa.getMessage("dataintegrity.checksList.columns.name") + " " + msa.getMessage("dataintegrity.checksList.columns.blank");
-						} else {
-							error = msa.getMessage("dataintegrity.checksList.columns.sql") + " " + msa.getMessage("dataintegrity.checksList.columns.blank");
+							error += msa.getMessage("dataintegrity.checksList.columns.name") + " " + msa.getMessage("dataintegrity.checksList.columns.blank");
+						} else if (checkSql == "") {
+							error += msa.getMessage("dataintegrity.checksList.columns.sql") + " " + msa.getMessage("dataintegrity.checksList.columns.blank");
 						}
 						view = "integrityCheck.form";
 					}
 				} catch (Exception e) {
-					error = msa.getMessage("dataintegrity.addeditCheck.failed") + " " + checkName;
+					error = msa.getMessage("dataintegrity.addeditCheck.failed") + " " + checkName + " " + e.getMessage();
 					view = "integrityCheck.form";
 				}
 			}

@@ -43,5 +43,7 @@ public interface DataIntegrityService {
     public List<DataIntegrityCheckTemplate> getAllDataIntegrityCheckTemplates() throws APIException;
     
     public void deleteDataIntegrityCheckTemplate(DataIntegrityCheckTemplate template);
+    
+    public int runDataIntegrityCheck(Integer checkId);
 
 }

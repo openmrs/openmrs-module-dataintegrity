@@ -14,21 +14,21 @@
 	</help>
 	
 	<diff>
-		<version>1.3.0</version>
+		<version>1.4.0</version>
 		<author>Nimantha Baranasuriya</author>
 		<date>April 28th 2009</date>
 		<description>
 			Data Integrity Test table added
 		</description>
 		<sql>
-			CREATE TABLE `dataintegrity_integrity_checks` (
-  				`dataintegrity_integrity_check_id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  				`check_name` VARCHAR(45) NOT NULL,
-  				`check_sql` VARCHAR(500) NOT NULL,
-  				`check_score` DOUBLE NOT NULL,
-  				PRIMARY KEY (`dataintegrity_integrity_check_id`)
-			)
-			ENGINE = InnoDB;
+			CREATE TABLE  `dataintegrity_integrity_checks` (
+			  `dataintegrity_integrity_check_id` int(10) unsigned NOT NULL auto_increment,
+			  `check_name` varchar(45) NOT NULL,
+			  `check_sql` varchar(500) NOT NULL,
+			  `check_score` double default NULL,
+			  `check_base_for_failure` int(10) unsigned NOT NULL,
+			  PRIMARY KEY  (`dataintegrity_integrity_check_id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		</sql>
 	</diff>
 </sqldiff>
