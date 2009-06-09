@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Expression;
 import org.openmrs.api.db.DAOException;
@@ -58,8 +59,9 @@ public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
 		
 	}
 
-	public int runDataIntegrityCheck(Integer checkId) {
-		return 0;
+	public List<Object[]> executeSQLQuery(String sqlQuery) {
+		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
+		List<Object[]> resultList = query.list();
+		return resultList;
 	}
-
 }

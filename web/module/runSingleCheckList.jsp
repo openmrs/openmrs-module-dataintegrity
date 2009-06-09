@@ -9,7 +9,7 @@
 <br />
 
 <b class="boxHeader"><spring:message code="dataintegrity.runSingleCheck.title"/></b>
-<form class="box" method="post" action="${pageContext.request.contextPath}/moduleServlet/dataintegrity/results">
+<form class="box" method="post">
 	<c:if test="${not empty runSingleCheckList}">
 	<table>
 		<tr>

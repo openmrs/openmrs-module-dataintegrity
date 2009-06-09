@@ -19,7 +19,7 @@ public class DataIntegrityCheckTemplate {
 	private String integrityCheckName;
 	private String integrityCheckSql;
 	private int integrityCheckBaseForFailure;
-	private double integrityCheckScore;
+	private int integrityCheckScore;
 	
 	public int getIntegrityCheckId() {
 		return integrityCheckId;
@@ -45,10 +45,10 @@ public class DataIntegrityCheckTemplate {
 	public void setIntegrityCheckBaseForFailure(int integrityCheckBaseForFailure) {
 		this.integrityCheckBaseForFailure = integrityCheckBaseForFailure;
 	}
-	public double getIntegrityCheckScore() {
+	public int getIntegrityCheckScore() {
 		return integrityCheckScore;
 	}
-	public void setIntegrityCheckScore(double integrityScore) {
+	public void setIntegrityCheckScore(int integrityScore) {
 		this.integrityCheckScore = integrityScore;
 	}
 }

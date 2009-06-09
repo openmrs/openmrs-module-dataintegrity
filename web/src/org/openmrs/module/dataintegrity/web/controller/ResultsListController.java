@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 import org.openmrs.web.WebConstants;
@@ -32,7 +33,12 @@ public class ResultsListController extends SimpleFormController {
 	
 	@Override
 	protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
-		return null;
+		Map<String, Object> map = new HashMap<String, Object>();
+		HttpSession session = request.getSession();
+		DataIntegrityCheckResultTemplate temp = (DataIntegrityCheckResultTemplate)session.getAttribute("singleCheckResults"); 
+		session.removeAttribute("singleCheckResults");
+		map.put("checkResults", temp);
+		return map;
 	}
 	
 	

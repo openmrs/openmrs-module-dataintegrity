@@ -44,6 +44,5 @@ public interface DataIntegrityService {
     
     public void deleteDataIntegrityCheckTemplate(DataIntegrityCheckTemplate template);
     
-    public int runDataIntegrityCheck(Integer checkId);
-
+    public DataIntegrityCheckResultTemplate runIntegrityCheck(DataIntegrityCheckTemplate template);
 }

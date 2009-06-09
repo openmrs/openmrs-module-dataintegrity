@@ -14,6 +14,6 @@
 		<property name="integrityCheckName" type="java.lang.String" not-null="true" length="45" column="check_name" />
 		<property name="integrityCheckSql" type="java.lang.String" not-null="true" length="500" column="check_sql" />
 		<property name="integrityCheckBaseForFailure" type="java.lang.Integer" not-null="true" column="check_base_for_failure" />
-		<property name="integrityCheckScore" type="java.lang.Double" not-null="false" column="check_score" />
+		<property name="integrityCheckScore" type="java.lang.Integer" not-null="true" column="check_score" />
 	</class>
 </hibernate-mapping>

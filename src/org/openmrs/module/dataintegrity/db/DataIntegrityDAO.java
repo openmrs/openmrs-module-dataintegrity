@@ -32,5 +32,5 @@ public interface DataIntegrityDAO {
     
     public void deleteDataIntegrityCheckTemplate(DataIntegrityCheckTemplate template) throws DAOException;
     
-    public int runDataIntegrityCheck(Integer checkId);
+    public List<Object[]> executeSQLQuery(String sqlQuery);
 }

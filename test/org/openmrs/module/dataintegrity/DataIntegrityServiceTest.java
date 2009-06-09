@@ -21,6 +21,11 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest{
         return false;
     }
     
+    @Before
+    public void runBeforeEachTest() throws Exception {
+        authenticate();
+    }
+    
 	//@Test
 	public void shouldGetOneDataIntegrityTemplate() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
@@ -42,22 +47,34 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest{
 		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
 		List<DataIntegrityCheckTemplate> templates = service.getAllDataIntegrityCheckTemplates();
 		int templateCountBeforeAdding = templates.size();
-		System.out.println(templateCountBeforeAdding);
 		DataIntegrityCheckTemplate temp = new DataIntegrityCheckTemplate();
+		temp.setIntegrityCheckBaseForFailure(1);
+		temp.setIntegrityCheckScore(5);
 		temp.setIntegrityCheckName("Sample Test");
 		temp.setIntegrityCheckSql("Sample SQL string");
 		service.saveDataIntegrityCheckTemplate(temp);
 		int templateCountAfterAdding = service.getAllDataIntegrityCheckTemplates().size();
-		System.out.println(templateCountAfterAdding);
 		Assert.isTrue(templateCountBeforeAdding == (templateCountAfterAdding - 1));
 	}
 	
-	@Test
+	//@Test
 	public void shouldDeleteIntegrityTemplates() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
-		DataIntegrityCheckTemplate temp = new DataIntegrityCheckTemplate();
-		temp.setIntegrityCheckId(6);
+		List<DataIntegrityCheckTemplate> templates = service.getAllDataIntegrityCheckTemplates();
+		int templateCountBeforeAdding = templates.size();
+		DataIntegrityCheckTemplate temp = service.getDataIntegrityCheckTemplate(1);
 		service.deleteDataIntegrityCheckTemplate(temp);
-		System.out.println("deleted");
+		int templateCountAfterAdding = service.getAllDataIntegrityCheckTemplates().size();
+		Assert.isTrue(templateCountBeforeAdding == (templateCountAfterAdding + 1));
 	}
+	
+	@Test
+	public void shouldExecuteIntegrityCheck() throws Exception {
+		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
+		DataIntegrityCheckTemplate template = service.getDataIntegrityCheckTemplate(1);
+		DataIntegrityCheckResultTemplate result = service.runIntegrityCheck(template);
+		Assert.notNull(result);
+	}
+	
+	
 }

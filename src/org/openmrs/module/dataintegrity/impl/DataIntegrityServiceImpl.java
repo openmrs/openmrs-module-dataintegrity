@@ -17,6 +17,7 @@ package org.openmrs.module.dataintegrity.impl;
 import java.util.List;
 
 import org.openmrs.api.APIException;
+import org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 import org.openmrs.module.dataintegrity.db.DataIntegrityDAO;
@@ -52,7 +53,14 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 		this.dao.deleteDataIntegrityCheckTemplate(template);
 	}
 
-	public int runDataIntegrityCheck(Integer checkId) {
-		return this.dao.runDataIntegrityCheck(checkId);
+	public DataIntegrityCheckResultTemplate runIntegrityCheck(DataIntegrityCheckTemplate template) {
+		DataIntegrityCheckResultTemplate resultTemplate = new DataIntegrityCheckResultTemplate();
+		List<Object[]> failedRecords = this.dao.executeSQLQuery(template.getIntegrityCheckSql());
+		boolean checkPassed = (failedRecords.size() <= template.getIntegrityCheckScore()) ? true : false;
+		resultTemplate.setCheckName(template.getIntegrityCheckName());
+		resultTemplate.setFailedRecords(failedRecords);
+		resultTemplate.setCheckPassed(checkPassed);
+		resultTemplate.setFailedRecordCount(failedRecords.size());
+		return resultTemplate;
 	}
 }

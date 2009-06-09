@@ -56,10 +56,10 @@ public class IntegrityCheckFormController extends SimpleFormController {
 					checkName = request.getParameter("name");
 					String checkSql = request.getParameter("sql");
 					int checkBase = Integer.valueOf(request.getParameter("base"));
-					Double checkScore = 0.0;
+					int checkScore = 0;
 					boolean isScoreCorrent = true;
 					if (checkBase == 2 && request.getParameter("score") != "") {
-						checkScore= Double.parseDouble(request.getParameter("score"));
+						checkScore= Integer.valueOf(request.getParameter("score"));
 						isScoreCorrent = true;
 					} else if (checkBase == 2 && request.getParameter("score") == "") {
 						error += msa.getMessage("dataintegrity.checksList.columns.score") + " " + msa.getMessage("dataintegrity.checksList.columns.blank") + "<br \\>";
@@ -96,10 +96,10 @@ public class IntegrityCheckFormController extends SimpleFormController {
 					checkName = request.getParameter("name");
 					String checkSql = request.getParameter("sql");
 					int checkBase = Integer.valueOf(request.getParameter("base"));
-					Double checkScore = 0.0;
+					int checkScore = 0;
 					boolean isScoreCorrent = true;
 					if (checkBase == 2 && request.getParameter("score") != "") {
-						checkScore= Double.parseDouble(request.getParameter("score"));
+						checkScore= Integer.valueOf(request.getParameter("score"));
 						isScoreCorrent = true;
 					} else if (checkBase == 2 && request.getParameter("score") == "") {
 						error += msa.getMessage("dataintegrity.checksList.columns.score") + " " + msa.getMessage("dataintegrity.checksList.columns.blank") + "<br \\>";

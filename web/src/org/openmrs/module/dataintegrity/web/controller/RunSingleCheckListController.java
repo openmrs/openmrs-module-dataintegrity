@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate;
 import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.openmrs.web.WebConstants;
@@ -44,9 +45,21 @@ public class RunSingleCheckListController extends SimpleFormController {
 			String checkName = "";
 			
 			if (checkId != null) {
-				success = "ela kiri";
+				try {
+					int id = Integer.valueOf(checkId);
+					DataIntegrityCheckTemplate template = getDataIntegrityService().getDataIntegrityCheckTemplate(id);
+					checkName = template.getIntegrityCheckName();
+					DataIntegrityCheckResultTemplate resultTemplate = getDataIntegrityService().runIntegrityCheck(template);
+					httpSession.setAttribute("singleCheckResults", resultTemplate);
+					success = checkName + " " + msa.getMessage("dataintegrity.runSingleCheck.success");
+					view = getSuccessView();
+				} catch (Exception e) {
+					error = msa.getMessage("dataintegrity.runSingleCheck.error") + " " + checkName;
+					view = "runSingleCheck.list";
+				}
 			} else {
-				error = "huta";
+				error = msa.getMessage("dataintegrity.runSingleCheck.blank");
+				view = "runSingleCheck.list";
 			}
 			
 			if (!success.equals(""))
@@ -54,10 +67,8 @@ public class RunSingleCheckListController extends SimpleFormController {
 			if (!error.equals(""))
 				httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, error);
 		}
-		view = "results.list";
-		System.out.println("*******************************" + view);
+		view = getSuccessView();
 		ModelAndView model = new ModelAndView(new RedirectView(view));
-		//model.addObject("attribute", "baduma thamai");
 		return model;
 	}
 }

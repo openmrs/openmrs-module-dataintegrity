@@ -29,7 +29,7 @@ public class TemplateServlet extends HttpServlet {
 			DataIntegrityCheckTemplate temp = new DataIntegrityCheckTemplate();
 			temp.setIntegrityCheckName(request.getParameter("tempName"));
 			temp.setIntegrityCheckSql("select * from PersonName");
-			temp.setIntegrityCheckScore(5.5);
+			temp.setIntegrityCheckScore(0);
 			service.saveDataIntegrityCheckTemplate(temp);
 			response.sendRedirect("../../module/dataintegrity/displayTemplate.form");
 		}
