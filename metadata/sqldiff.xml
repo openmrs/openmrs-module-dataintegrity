@@ -14,14 +14,14 @@
 	</help>
 	
 	<diff>
-		<version>1.5.0</version>
+		<version>1.6.0</version>
 		<author>Nimantha Baranasuriya</author>
 		<date>April 28th 2009</date>
 		<description>
 			Data Integrity Test table added
 		</description>
 		<sql>
-			CREATE TABLE  `dataintegrity_integrity_checks` (
+			CREATE TABLE  IF NOT EXISTS `dataintegrity_integrity_checks` (
 			  `dataintegrity_integrity_check_id` int(10) unsigned NOT NULL auto_increment,
 			  `check_name` varchar(45) NOT NULL,
 			  `check_sql` varchar(500) NOT NULL,
@@ -29,6 +29,9 @@
 			  `check_base_for_failure` int(10) unsigned NOT NULL,
 			  PRIMARY KEY  (`dataintegrity_integrity_check_id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			
+			INSERT INTO `dataintegrity_integrity_checks` (check_name, check_sql, check_score, check_base_for_failure) 
+			VALUES ('Person Name Check', 'SELECT person_id FROM person p WHERE NOT EXISTS (SELECT * FROM person_name pn WHERE pn.person_id = p.person_id)', 0, 2);
 		</sql>
 	</diff>
 </sqldiff>
