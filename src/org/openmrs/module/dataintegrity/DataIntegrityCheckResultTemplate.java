@@ -3,11 +3,19 @@ package org.openmrs.module.dataintegrity;
 import java.util.List;
 
 public class DataIntegrityCheckResultTemplate {
+	private int checkId;
 	private int failedRecordCount;
+	private int columnCount;
 	private String checkName;
 	private boolean checkPassed;
 	private List<Object[]> failedRecords;
 	
+	public int getCheckId() {
+		return checkId;
+	}
+	public void setCheckId(int checkId) {
+		this.checkId = checkId;
+	}
 	public int getFailedRecordCount() {
 		return failedRecordCount;
 	}
@@ -31,6 +39,12 @@ public class DataIntegrityCheckResultTemplate {
 	}
 	public void setFailedRecords(List<Object[]> failedRecords) {
 		this.failedRecords = failedRecords;
+	}
+	public int getColumnCount() {
+		return columnCount;
+	}
+	public void setColumnCount(int columnCount) {
+		this.columnCount = columnCount;
 	}
 
 }

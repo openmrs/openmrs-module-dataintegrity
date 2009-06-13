@@ -50,7 +50,9 @@ public class RunSingleCheckListController extends SimpleFormController {
 					DataIntegrityCheckTemplate template = getDataIntegrityService().getDataIntegrityCheckTemplate(id);
 					checkName = template.getIntegrityCheckName();
 					DataIntegrityCheckResultTemplate resultTemplate = getDataIntegrityService().runIntegrityCheck(template);
-					httpSession.setAttribute("singleCheckResults", resultTemplate);
+					List<DataIntegrityCheckResultTemplate> result = new ArrayList<DataIntegrityCheckResultTemplate>();
+					result.add(resultTemplate);
+					httpSession.setAttribute("singleCheckResults", result);
 					success = checkName + " " + msa.getMessage("dataintegrity.runSingleCheck.success");
 					view = getSuccessView();
 				} catch (Exception e) {
