@@ -50,6 +50,8 @@ public class RunMultipleChecksListController extends SimpleFormController {
 			
 			String[] checkList = request.getParameterValues("integrityCheckId");
 			if (checkList != null) {
+				int successCount = 0;
+				int errorCount = 0;
 				List<DataIntegrityCheckResultTemplate> results = new ArrayList<DataIntegrityCheckResultTemplate>();
 				for (String checkId : checkList) {
 					try {
@@ -58,15 +60,17 @@ public class RunMultipleChecksListController extends SimpleFormController {
 						checkName = template.getIntegrityCheckName();
 						DataIntegrityCheckResultTemplate resultTemplate = service.runIntegrityCheck(template);
 						results.add(resultTemplate);
-						success += checkName + " " + msa.getMessage("dataintegrity.runSingleCheck.success") + "<br/>";
+						successCount++;
 					} catch (Exception e) {
-						error = msa.getMessage("dataintegrity.runSingleCheck.error") + " " + checkName;
+						errorCount++;
 						view = "runMultipleChecks.list";
 					}
 				}
 				httpSession.setAttribute("multipleCheckResults", results);
 				view = getSuccessView();
-				
+				success = msa.getMessage("dataintegrity.runMultipleChecks.totalCount") + " " + (successCount + errorCount) + "<br/>";
+				success += msa.getMessage("dataintegrity.runMultipleChecks.successCount") + " " + successCount+ "<br/>";
+				error = errorCount > 0 ? (msa.getMessage("dataintegrity.runMultipleChecks.errorCount") + " " + errorCount) : "";
 			} else { 
 				error = msa.getMessage("dataintegrity.runMultipleChecks.error");
 				view = "runMultipleChecks.list";
