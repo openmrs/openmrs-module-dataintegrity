@@ -17,20 +17,27 @@
 	<c:if test="${not empty dataIntegrityChecksList}">
 	<table>
 		<tr>
-			<th align="left"> <spring:message code="dataintegrity.checksList.columns.name"/> </th>
-			<th align="left"> <spring:message code="dataintegrity.checksList.columns.sql"/> </th>
-			<th align="left"> <spring:message code="dataintegrity.checksList.columns.base"/> </th>
-			<th align="left"> <spring:message code="dataintegrity.checksList.columns.score"/> </th>
+			<th><spring:message code="dataintegrity.checksList.columns.name"/></th>
+			<th><spring:message code="dataintegrity.checksList.columns.checkType"/></th>
+			<th><spring:message code="dataintegrity.checksList.columns.code"/></th>
+			<th><spring:message code="dataintegrity.checksList.columns.resultType"/></th>
+			<th><spring:message code="dataintegrity.checksList.columns.failOp"/></th>
+			<th><spring:message code="dataintegrity.checksList.columns.fail"/></th>
+			<th><spring:message code="dataintegrity.checksList.columns.repairType"/></th>
+			<th><spring:message code="dataintegrity.checksList.columns.repair"/></th>
+			<th><spring:message code="dataintegrity.checksList.columns.parameters"/></th>
 		</tr>
-		<c:forEach items="${dataIntegrityChecksList}" var="integrityChecksObj">
-		<tr>
-			<td align="left"><a href="integrityCheck.form?checkId=${integrityChecksObj.integrityCheckId}">${integrityChecksObj.integrityCheckName}</a></td>
-			<td align="left">${integrityChecksObj.integrityCheckSql}</td>
-			<td align="left">
-				<c:if test="${integrityChecksObj.integrityCheckBaseForFailure == 1}"><spring:message code="dataintegrity.addeditCheck.base.all"/></c:if>
-				<c:if test="${integrityChecksObj.integrityCheckBaseForFailure == 2}"><spring:message code="dataintegrity.addeditCheck.base.some"/></c:if>
-			</td>
-			<td align="left">${integrityChecksObj.integrityCheckScore}</td>
+		<c:forEach items="${dataIntegrityChecksList}" var="integrityChecksObj" varStatus="varStatus">
+		<tr class="<c:choose><c:when test="${varStatus.index % 2 == 0}">oddRow</c:when><c:otherwise>evenRow</c:otherwise></c:choose>" id="${module.moduleId}">
+			<td valign="top"><a href="integrityCheck.form?checkId=${integrityChecksObj.integrityCheckId}">${integrityChecksObj.integrityCheckName}</a></td>
+			<td valign="top">${integrityChecksObj.integrityCheckType}</td>
+			<td valign="top">${integrityChecksObj.integrityCheckCode}</td>
+			<td valign="top">${integrityChecksObj.integrityCheckResultType}</td>
+			<td valign="top">${integrityChecksObj.integrityCheckFailDirectiveOperator}</td>
+			<td valign="top">${integrityChecksObj.integrityCheckFailDirective}</td>
+			<td valign="top">${integrityChecksObj.integrityCheckRepairType}</td>
+			<td valign="top">${integrityChecksObj.integrityCheckRepairDirective}</td>
+			<td valign="top">${integrityChecksObj.integrityCheckParameters}</td>
 		</tr>
 		</c:forEach>
 	</table>

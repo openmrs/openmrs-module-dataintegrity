@@ -23,19 +23,6 @@ public class TemplateServlet extends HttpServlet {
 		
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		PrintWriter writer = response.getWriter();
-		try {
-			DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
-			DataIntegrityCheckTemplate temp = new DataIntegrityCheckTemplate();
-			temp.setIntegrityCheckName(request.getParameter("tempName"));
-			temp.setIntegrityCheckSql("select * from PersonName");
-			temp.setIntegrityCheckScore(0);
-			service.saveDataIntegrityCheckTemplate(temp);
-			response.sendRedirect("../../module/dataintegrity/displayTemplate.form");
-		}
-		catch (APIException apiexception) {
-			apiexception.printStackTrace(writer);
-		}	
 	}
 
 }

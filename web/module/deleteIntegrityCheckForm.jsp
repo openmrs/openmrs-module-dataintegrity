@@ -14,20 +14,11 @@
 			<tr>
 				<th></th>
 				<th align="left"> <spring:message code="dataintegrity.checksList.columns.name"/> </th>
-				<th align="left"> <spring:message code="dataintegrity.checksList.columns.sql"/> </th>
-				<th align="left"> <spring:message code="dataintegrity.checksList.columns.base"/> </th>
-				<th align="left"> <spring:message code="dataintegrity.checksList.columns.score"/> </th>
 			</tr>
 			<c:forEach items="${existingChecks}" var="integrityChecksObj">
 			<tr>
 				<td valign="top"><input type="checkbox" name="integrityCheckId" value="${integrityChecksObj.integrityCheckId}"></td>
 				<td align="left">${integrityChecksObj.integrityCheckName}</td>
-				<td align="left">${integrityChecksObj.integrityCheckSql}</td>
-				<td align="left">
-					<c:if test="${integrityChecksObj.integrityCheckBaseForFailure == 1}"><spring:message code="dataintegrity.addeditCheck.base.all"/></c:if>
-					<c:if test="${integrityChecksObj.integrityCheckBaseForFailure == 2}"><spring:message code="dataintegrity.addeditCheck.base.some"/></c:if>
-				</td>
-				<td align="left">${integrityChecksObj.integrityCheckScore}</td>
 			</tr>
 			</c:forEach>
 			<tr>

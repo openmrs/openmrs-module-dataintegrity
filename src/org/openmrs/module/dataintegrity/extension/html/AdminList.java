@@ -45,6 +45,7 @@ public class AdminList extends AdministrationSectionExt {
 		} 
 		if (Context.hasPrivilege("Manage Integrity Checks")) {
 			map.put("module/dataintegrity/dataIntegrityChecks.list", "dataintegrity.manage.link");
+			map.put("module/dataintegrity/uploadCheck.list", "dataintegrity.upload.link");
 		} 
 		return map;
 	}

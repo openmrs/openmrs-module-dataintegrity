@@ -68,10 +68,10 @@ public class IntegrityCheckFormController extends SimpleFormController {
 					if (checkName != "" && checkSql != "" && isScoreCorrent) {
 						DataIntegrityCheckTemplate check = new DataIntegrityCheckTemplate();
 						check.setIntegrityCheckId(Integer.valueOf(checkId));
-						check.setIntegrityCheckName(checkName);
+						/*check.setIntegrityCheckName(checkName);
 						check.setIntegrityCheckSql(checkSql);
 						check.setIntegrityCheckBaseForFailure(checkBase);
-						check.setIntegrityCheckScore(checkScore);
+						check.setIntegrityCheckScore(checkScore);*/
 						DataIntegrityService service = (DataIntegrityService)Context.getService(DataIntegrityService.class);
 						service.saveDataIntegrityCheckTemplate(check);
 						success = checkName + " " + msa.getMessage("dataintegrity.addeditCheck.saved");
@@ -108,9 +108,9 @@ public class IntegrityCheckFormController extends SimpleFormController {
 					if (checkName != "" && checkSql != "" && isScoreCorrent) {
 						DataIntegrityCheckTemplate check = new DataIntegrityCheckTemplate();
 						check.setIntegrityCheckName(checkName);
-						check.setIntegrityCheckSql(checkSql);
+						/*check.setIntegrityCheckSql(checkSql);
 						check.setIntegrityCheckBaseForFailure(checkBase);
-						check.setIntegrityCheckScore(checkScore);
+						check.setIntegrityCheckScore(checkScore);*/
 						DataIntegrityService service = (DataIntegrityService)Context.getService(DataIntegrityService.class);
 						service.saveDataIntegrityCheckTemplate(check);
 						success = checkName + " " + msa.getMessage("dataintegrity.addeditCheck.saved");

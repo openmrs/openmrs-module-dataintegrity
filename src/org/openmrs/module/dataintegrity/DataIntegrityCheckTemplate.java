@@ -17,9 +17,14 @@ package org.openmrs.module.dataintegrity;
 public class DataIntegrityCheckTemplate {
 	private int integrityCheckId;
 	private String integrityCheckName;
-	private String integrityCheckSql;
-	private int integrityCheckBaseForFailure;
-	private int integrityCheckScore;
+	private String integrityCheckType;
+	private String integrityCheckCode;
+	private String integrityCheckResultType;
+	private String integrityCheckFailDirective;
+	private String integrityCheckFailDirectiveOperator;
+	private String integrityCheckRepairType;
+	private String integrityCheckRepairDirective;
+	private String integrityCheckParameters;
 	
 	public int getIntegrityCheckId() {
 		return integrityCheckId;
@@ -33,22 +38,54 @@ public class DataIntegrityCheckTemplate {
 	public void setIntegrityCheckName(String integrityCheckName) {
 		this.integrityCheckName = integrityCheckName;
 	}
-	public String getIntegrityCheckSql() {
-		return integrityCheckSql;
+	public String getIntegrityCheckType() {
+		return integrityCheckType;
 	}
-	public void setIntegrityCheckSql(String integrityCheckSql) {
-		this.integrityCheckSql = integrityCheckSql;
+	public void setIntegrityCheckType(String integrityCheckType) {
+		this.integrityCheckType = integrityCheckType;
 	}
-	public int getIntegrityCheckBaseForFailure() {
-		return integrityCheckBaseForFailure;
+	public String getIntegrityCheckCode() {
+		return integrityCheckCode;
 	}
-	public void setIntegrityCheckBaseForFailure(int integrityCheckBaseForFailure) {
-		this.integrityCheckBaseForFailure = integrityCheckBaseForFailure;
+	public void setIntegrityCheckCode(String integrityCheckCode) {
+		this.integrityCheckCode = integrityCheckCode;
 	}
-	public int getIntegrityCheckScore() {
-		return integrityCheckScore;
+	public String getIntegrityCheckResultType() {
+		return integrityCheckResultType;
 	}
-	public void setIntegrityCheckScore(int integrityScore) {
-		this.integrityCheckScore = integrityScore;
+	public void setIntegrityCheckResultType(String integrityCheckResultType) {
+		this.integrityCheckResultType = integrityCheckResultType;
+	}
+	public String getIntegrityCheckFailDirective() {
+		return integrityCheckFailDirective;
+	}
+	public void setIntegrityCheckFailDirective(String integrityCheckFailDirective) {
+		this.integrityCheckFailDirective = integrityCheckFailDirective;
+	}
+	public String getIntegrityCheckFailDirectiveOperator() {
+		return integrityCheckFailDirectiveOperator;
+	}
+	public void setIntegrityCheckFailDirectiveOperator(
+			String integrityCheckFailDirectiveOperator) {
+		this.integrityCheckFailDirectiveOperator = integrityCheckFailDirectiveOperator;
+	}
+	public String getIntegrityCheckRepairType() {
+		return integrityCheckRepairType;
+	}
+	public void setIntegrityCheckRepairType(String integrityCheckRepairType) {
+		this.integrityCheckRepairType = integrityCheckRepairType;
+	}
+	public String getIntegrityCheckRepairDirective() {
+		return integrityCheckRepairDirective;
+	}
+	public void setIntegrityCheckRepairDirective(
+			String integrityCheckRepairDirective) {
+		this.integrityCheckRepairDirective = integrityCheckRepairDirective;
+	}
+	public String getIntegrityCheckParameters() {
+		return integrityCheckParameters;
+	}
+	public void setIntegrityCheckParameters(String integrityCheckParameters) {
+		this.integrityCheckParameters = integrityCheckParameters;
 	}
 }

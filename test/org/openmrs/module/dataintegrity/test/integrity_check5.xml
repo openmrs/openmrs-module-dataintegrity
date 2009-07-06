@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checks>
+	<check type="sql">
+		<name>Person Name Check Temp</name>
+		<code>Select id from person_name</code>
+		<resultType>String</resultType>
+		<fail operator="not contains">Hello World</fail>
+		<repair type="script">openmrs/personName4?${id}</repair>
+	</check>
+</checks>

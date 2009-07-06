@@ -15,6 +15,7 @@
                 <prop key="module/dataintegrity/runSingleCheck.list">runSingleCheckList</prop>
                 <prop key="module/dataintegrity/runMultipleChecks.list">runMultipleChecksList</prop>
                 <prop key="module/dataintegrity/results.list">resultsList</prop>
+                <prop key="module/dataintegrity/uploadCheck.list">uploadCheckList</prop>
             </props>
 		</property>
 	</bean>
@@ -87,5 +88,11 @@
         <property name="commandName"><value>resultsList</value></property>
         <property name="formView"><value>/module/dataintegrity/resultsList</value></property>
         <property name="successView"><value>results.list</value></property>
+    </bean>
+    
+    <bean id="uploadCheckList" class="org.openmrs.module.dataintegrity.web.controller.UploadCheckListController">
+        <property name="commandName"><value>uploadCheckList</value></property>
+        <property name="formView"><value>/module/dataintegrity/uploadCheckList</value></property>
+        <property name="successView"><value>uploadCheck.list</value></property>
     </bean>
 </beans>

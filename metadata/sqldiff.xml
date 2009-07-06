@@ -14,7 +14,7 @@
 	</help>
 	
 	<diff>
-		<version>2.1.0</version>
+		<version>2.5.0</version>
 		<author>Nimantha Baranasuriya</author>
 		<date>April 28th 2009</date>
 		<description>
@@ -25,24 +25,16 @@
 			CREATE TABLE  `dataintegrity_integrity_checks` (
 			  `dataintegrity_integrity_check_id` int(10) unsigned NOT NULL auto_increment,
 			  `check_name` varchar(100) NOT NULL,
-			  `check_sql` varchar(500) NOT NULL,
-			  `check_score` int(10) unsigned NOT NULL,
-			  `check_base_for_failure` int(10) unsigned NOT NULL,
+			  `check_type` varchar(45) NOT NULL,
+			  `check_code` varchar(1000) NOT NULL,
+			  `check_result_type` varchar(45) NOT NULL,
+			  `check_fail` varchar(45) NOT NULL,
+			  `check_fail_operator` varchar(45) NOT NULL,
+			  `check_repair_type` varchar(45) default NULL,
+			  `check_repair` varchar(1000) default NULL,
+			  `check_parameters` varchar(500) default NULL,
 			  PRIMARY KEY  (`dataintegrity_integrity_check_id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-			
-			INSERT INTO `dataintegrity_integrity_checks` (check_name, check_sql, check_score, check_base_for_failure) 
-			VALUES ('Person Name Check', 'SELECT person_id FROM person p WHERE NOT EXISTS (SELECT * FROM person_name pn WHERE pn.person_id = p.person_id)', 0, 1);
-			
-			INSERT INTO `dataintegrity_integrity_checks` (check_name, check_sql, check_score, check_base_for_failure)
-			VALUES ('Patients with no Preferred Identifier Check', 
-					'select patient_id from patient p where not exists (select * from patient_identifier pi where p.patient_id = pi.patient_id and preferred = 1 and pi.voided = 0 and p.voided = 0)',
-					0, 1);
-					
-			INSERT INTO `dataintegrity_integrity_checks` (check_name, check_sql, check_score, check_base_for_failure)
-			VALUES ('Patients with More than one Preferred Identifier Check', 
-					'select patient_id from patient where (select count(*) from patient_identifier pi where patient.patient_id = pi.patient_id and pi.preferred = 1 and pi.voided = 0) > 1 and voided = 0',
-					0, 1);
 		</sql>
 	</diff>
 </sqldiff>

@@ -11,9 +11,15 @@
 				<generator class="native" />
 		</id>
 
-		<property name="integrityCheckName" type="java.lang.String" not-null="true" length="45" column="check_name" />
-		<property name="integrityCheckSql" type="java.lang.String" not-null="true" length="500" column="check_sql" />
-		<property name="integrityCheckBaseForFailure" type="java.lang.Integer" not-null="true" column="check_base_for_failure" />
-		<property name="integrityCheckScore" type="java.lang.Integer" not-null="true" column="check_score" />
+		<property name="integrityCheckName" type="java.lang.String" not-null="true" length="100" column="check_name" />
+		<property name="integrityCheckCode" type="java.lang.String" not-null="true" length="1000" column="check_code" />
+		<property name="integrityCheckType" type="java.lang.String" not-null="true" length="45" column="check_type" />
+		<property name="integrityCheckResultType" type="java.lang.String" not-null="true" length="45" column="check_result_type" />
+		<property name="integrityCheckFailDirective" type="java.lang.String" not-null="true" length="45" column="check_fail" />
+		<property name="integrityCheckFailDirectiveOperator" type="java.lang.String" not-null="true" length="45" column="check_fail_operator" />
+		<property name="integrityCheckRepairType" type="java.lang.String" not-null="false" length="45" column="check_repair_type" />
+		<property name="integrityCheckRepairDirective" type="java.lang.String" not-null="false" length="1000" column="check_repair" />
+		<property name="integrityCheckParameters" type="java.lang.String" not-null="false" length="500" column="check_parameters" />
+		
 	</class>
 </hibernate-mapping>

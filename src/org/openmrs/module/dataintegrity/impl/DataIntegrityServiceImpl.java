@@ -55,7 +55,7 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 
 	public DataIntegrityCheckResultTemplate runIntegrityCheck(DataIntegrityCheckTemplate template) {
 		DataIntegrityCheckResultTemplate resultTemplate = new DataIntegrityCheckResultTemplate();
-		List<Object[]> failedRecords = this.dao.executeSQLQuery(template.getIntegrityCheckSql());
+		/*List<Object[]> failedRecords = this.dao.executeSQLQuery(template.getIntegrityCheckSql());
 		boolean checkPassed = (failedRecords.size() <= template.getIntegrityCheckScore()) ? true : false;
 		resultTemplate.setCheckId(template.getIntegrityCheckId());
 		resultTemplate.setCheckName(template.getIntegrityCheckName());
@@ -73,7 +73,7 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 			}
 		} else {
 			resultTemplate.setColumnCount(0);
-		}
+		}*/
 		
 		return resultTemplate;
 	}
