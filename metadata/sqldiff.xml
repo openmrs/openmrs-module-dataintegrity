@@ -28,7 +28,7 @@
 			  `check_type` varchar(45) NOT NULL,
 			  `check_code` varchar(1000) NOT NULL,
 			  `check_result_type` varchar(45) NOT NULL,
-			  `check_fail` varchar(45) NOT NULL,
+			  `check_fail` varchar(100) NOT NULL,
 			  `check_fail_operator` varchar(45) NOT NULL,
 			  `check_repair_type` varchar(45) default NULL,
 			  `check_repair` varchar(1000) default NULL,

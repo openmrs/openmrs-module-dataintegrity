@@ -47,8 +47,8 @@ public class DataIntegritySqlUpload implements IDataIntegrityCheckUpload {
 			this.repairDirective = repairNode.getFirstChild().getNodeValue();
 			this.repairType = repairNode.getAttribute("type");
 		} else {
-			this.repairDirective = "";
-			this.repairType = "";
+			this.repairDirective = "none";
+			this.repairType = "none";
 		}
 		
 		NodeList parameterList = element.getElementsByTagName("parameters");
@@ -56,7 +56,7 @@ public class DataIntegritySqlUpload implements IDataIntegrityCheckUpload {
 			Element parameterNode = (Element) parameterList.item(0);
 			this.parameters = parameterNode.getFirstChild().getNodeValue();
 		} else {
-			this.parameters = "";
+			this.parameters = "none";
 		}
 	}
 	

@@ -27,14 +27,14 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest{
         authenticate();
     }
     
-	//@Test
+	@Test
 	public void shouldGetOneDataIntegrityTemplate() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
-		DataIntegrityCheckTemplate template = service.getDataIntegrityCheckTemplate(1);
+		DataIntegrityCheckTemplate template = service.getDataIntegrityCheckTemplate(16);
 		Assert.notNull(template);
 	}
 	
-	//@Test
+	@Test
 	public void shouldGetAllDataIntegrityTemplates() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
 		List<DataIntegrityCheckTemplate> templates = service.getAllDataIntegrityCheckTemplates();
@@ -62,12 +62,12 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest{
 		Assert.isTrue(templateCountBeforeAdding == (templateCountAfterAdding - 1));
 	}
 	
-	//@Test
+	@Test
 	public void shouldDeleteIntegrityTemplates() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
 		List<DataIntegrityCheckTemplate> templates = service.getAllDataIntegrityCheckTemplates();
 		int templateCountBeforeAdding = templates.size();
-		DataIntegrityCheckTemplate temp = service.getDataIntegrityCheckTemplate(1);
+		DataIntegrityCheckTemplate temp = service.getDataIntegrityCheckTemplate(16);
 		service.deleteDataIntegrityCheckTemplate(temp);
 		int templateCountAfterAdding = service.getAllDataIntegrityCheckTemplates().size();
 		Assert.isTrue(templateCountBeforeAdding == (templateCountAfterAdding + 1));
@@ -101,7 +101,7 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest{
 		List<DataIntegrityCheckTemplate> templates = service.getAllDataIntegrityCheckTemplates();
 		int templateCountBeforeAdding = templates.size();
 		
-		File file = new File("F:\\GSOC2009\\workspaces\\DataIntegrityModule\\test\\org\\openmrs\\module\\dataintegrity\\test\\integrity_check4.xml");
+		File file = new File("F:\\GSOC2009\\workspaces\\DataIntegrityModule\\test\\org\\openmrs\\module\\dataintegrity\\test\\integrity_check5.xml");
 		DataIntegrityXmlFileParser parser = new DataIntegrityXmlFileParser(file);
 		List<IDataIntegrityCheckUpload> checks = parser.getChecksToAdd();
 		for (int i=0; i<checks.size(); i++) {
