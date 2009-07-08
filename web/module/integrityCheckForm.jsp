@@ -76,13 +76,26 @@
 
 	function inputValidator() {
 		var errorDivElement = document.getElementById("errorDiv");
-		var nameElement = document.getElementById("nameTxt");
-		if (nameElement.value == "") {
-			errorDivElement.style.display = '';
-			return false;
+		var name = document.getElementById("nameTxt").value;
+		var code = document.getElementById("codeTxt").value;
+		var fail = document.getElementById("failTxt").value;
+		var repair = document.getElementById("repairTxt").value;
+		var repairType = document.getElementById("repairTypeSelect").selectedIndex;
+		
+		if (repairType == 3) {
+			if (name == "" || code == "" || fail == "") {
+				errorDivElement.style.display = '';
+				return false;
+			} else {
+				return true;
+			}
 		} else {
-			errorDivElement.style.display = 'none';
-			return true;
+			if (name == "" || code == "" || fail == "" || repair == "") {
+				errorDivElement.style.display = '';
+				return false;
+			} else {
+				return true;
+			}
 		}
 	}
 </script>
@@ -92,7 +105,7 @@
 		<table>
 			<tr>
 				<td valign="top"><spring:message code="dataintegrity.checksList.columns.checkType"/></td>
-				<td>
+				<td colspan="2">
 					<select name="checkType" id="typeSelect" style="width: 130px">
 						<option value="sql">SQL</option>
 						<!-- Other check types to be implemented later
@@ -105,14 +118,16 @@
 			<tr>
 				<td><spring:message code="dataintegrity.checksList.columns.name"/></td>
 				<td><input type="text" name="name" value="" size="52" maxlength="100" id="nameTxt"/></td>
+				<td valign="top"><div style="color: red">*</div></td>
 			</tr>
 			<tr>
 				<td valign="top"><spring:message code="dataintegrity.checksList.columns.code"/></td>
-				<td><textarea rows="5" cols="50" name="code"></textarea></td>
+				<td><textarea rows="5" cols="50" name="code" id="codeTxt"></textarea></td>
+				<td valign="top"><div style="color: red">*</div></td>
 			</tr>
 			<tr>
 				<td valign="top"><spring:message code="dataintegrity.checksList.columns.resultType"/></td>
-				<td>
+				<td colspan="2">
 					<select name="resultType" id="resultTypeSelect" style="width: 130px" onchange="changeSelectContents()">
 						<option value="count">Count</option>
 						<option value="number">Number</option>
@@ -123,7 +138,7 @@
 			</tr>
 			<tr>
 				<td valign="top"><spring:message code="dataintegrity.checksList.columns.failOp"/></td>
-				<td>
+				<td colspan="2">
 					<select name="failOp" id="failOpSelect" style="width: 130px">
 						<option value="less">Less Than</option>
 						<option value="great">Greater Than</option>
@@ -134,11 +149,12 @@
 			</tr>
 			<tr>
 				<td><spring:message code="dataintegrity.checksList.columns.fail"/></td>
-				<td><input type="text" name="fail" value="" size="52" maxlength="100"/></td>
+				<td><input type="text" name="fail" value="" size="52" maxlength="100" id="failTxt"/></td>
+				<td valign="top"><div style="color: red">*</div></td>
 			</tr>
 			<tr>
 				<td valign="top"><spring:message code="dataintegrity.checksList.columns.repairType"/></td>
-				<td>
+				<td colspan="2">
 					<select name="repairType" id="repairTypeSelect" style="width: 130px" onchange="enableRepairDirective()">
 						<option value="link">Link</option>
 						<option value="script">Script</option>
@@ -149,14 +165,15 @@
 			</tr>
 			<tr id="repairRow">
 				<td valign="top"><spring:message code="dataintegrity.checksList.columns.repair"/></td>
-				<td><textarea rows="5" cols="50" name="repair"></textarea></td>
+				<td><textarea rows="5" cols="50" name="repair" id="repairTxt"></textarea></td>
+				<td valign="top"><div style="color: red">*</div></td>
 			</tr>
 			<tr>
 				<td><spring:message code="dataintegrity.checksList.columns.parameters"/></td>
-				<td><input type="text" name="parameters" value="" size="52" maxlength="500"/></td>
+				<td colspan="2"><input type="text" name="parameters" value="" size="52" maxlength="500"/></td>
 			</tr>
 			<tr>
-				<td>
+				<td colspan="3">
 					<input type="submit" value="<spring:message code="dataintegrity.addeditCheck.save"/>"/>
 				</td>
 			</tr>
