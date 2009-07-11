@@ -59,9 +59,7 @@ public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
 		
 	}
 
-	public List<Object[]> executeSQLQuery(String sqlQuery) {
-		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
-		List<Object[]> resultList = query.list();
-		return resultList;
+	public SessionFactory getSessionFactory() {
+		return this.sessionFactory;
 	}
 }

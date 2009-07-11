@@ -18,8 +18,11 @@ import java.util.List;
 
 import org.openmrs.api.APIException;
 import org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate;
+import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
+import org.openmrs.module.dataintegrity.ICheckExecutor;
+import org.openmrs.module.dataintegrity.NumberCheckExecutor;
 import org.openmrs.module.dataintegrity.db.DataIntegrityDAO;
 
 public class DataIntegrityServiceImpl implements DataIntegrityService {
@@ -53,10 +56,17 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 		this.dao.deleteDataIntegrityCheckTemplate(template);
 	}
 
-	public DataIntegrityCheckResultTemplate runIntegrityCheck(DataIntegrityCheckTemplate template) {
+	public DataIntegrityCheckResultTemplate runIntegrityCheck(DataIntegrityCheckTemplate template, String parameterValues) throws Exception {
+		ICheckExecutor executor = null;
+		if (template.getIntegrityCheckResultType().equals(DataIntegrityConstants.RESULT_TYPE_NUMBER)) {
+			executor = new NumberCheckExecutor(this.dao);
+		}
+		executor.initializeExecutor(template, parameterValues);
+		executor.executeCheck();
+		
 		DataIntegrityCheckResultTemplate resultTemplate = new DataIntegrityCheckResultTemplate();
-		/*List<Object[]> failedRecords = this.dao.executeSQLQuery(template.getIntegrityCheckSql());
-		boolean checkPassed = (failedRecords.size() <= template.getIntegrityCheckScore()) ? true : false;
+		List<Object[]> failedRecords = executor.getFailedRecords();
+		boolean checkPassed = (failedRecords.size() > 0) ? false : true;
 		resultTemplate.setCheckId(template.getIntegrityCheckId());
 		resultTemplate.setCheckName(template.getIntegrityCheckName());
 		resultTemplate.setFailedRecords(failedRecords);
@@ -73,7 +83,7 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 			}
 		} else {
 			resultTemplate.setColumnCount(0);
-		}*/
+		}
 		
 		return resultTemplate;
 	}

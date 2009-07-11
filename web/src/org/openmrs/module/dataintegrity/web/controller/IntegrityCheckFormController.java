@@ -22,6 +22,9 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.servlet.view.RedirectView;
 
 public class IntegrityCheckFormController extends SimpleFormController {
+	private String success = "";
+	private String error = "";
+	
 	private DataIntegrityService getDataIntegrityService() {
         return (DataIntegrityService)Context.getService(DataIntegrityService.class);
     }
@@ -39,104 +42,67 @@ public class IntegrityCheckFormController extends SimpleFormController {
         return map;
 	}
 	
+	private String saveIntegrityCheck(HttpServletRequest request) {
+		String checkName = "";
+		String view = "";
+		MessageSourceAccessor msa = getMessageSourceAccessor();
+		
+		try {
+			String checkId = request.getParameter("checkId");
+			checkName = request.getParameter("name");
+			String code = request.getParameter("code");
+			String checkType = request.getParameter("checkType");
+			String resultType = request.getParameter("resultType");
+			String fail = request.getParameter("fail");
+			String failOp = request.getParameter("failOp");
+			String repairType = request.getParameter("repairType");
+			String repair;
+			if (!repairType.equals("none")) {
+				repair = request.getParameter("repair");
+			} else {
+				repair = "";
+			}
+			String parameters = request.getParameter("parameters");
+			
+			DataIntegrityCheckTemplate check = new DataIntegrityCheckTemplate();
+			if (checkId != null) {
+				check.setIntegrityCheckId(Integer.valueOf(checkId));
+			}
+			check.setIntegrityCheckName(checkName);
+			check.setIntegrityCheckCode(code);
+			check.setIntegrityCheckType(checkType);
+			check.setIntegrityCheckResultType(resultType);
+			check.setIntegrityCheckFailDirective(fail);
+			check.setIntegrityCheckFailDirectiveOperator(failOp);
+			check.setIntegrityCheckRepairType(repairType);
+			check.setIntegrityCheckRepairDirective(repair);
+			check.setIntegrityCheckParameters(parameters);
+			
+			DataIntegrityService service = (DataIntegrityService)Context.getService(DataIntegrityService.class);
+			service.saveDataIntegrityCheckTemplate(check);
+			success = checkName + " " + msa.getMessage("dataintegrity.addeditCheck.saved");
+			view = getSuccessView();
+			return view;
+			
+		} catch (Exception e) {
+			error = msa.getMessage("dataintegrity.addeditCheck.failed") + " " + checkName + " " + e.getMessage();
+			view = "integrityCheck.form";
+			return view;
+		}
+	}
+	
 	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object obj,
             BindException errors) throws Exception {
 		HttpSession httpSession = request.getSession();
-		MessageSourceAccessor msa = getMessageSourceAccessor();
 		
-		String view = getFormView();
+		String view = getSuccessView();
 		if (Context.isAuthenticated()) {
-			String checkId = request.getParameter("checkId");
-			String success = "";
-			String error = "";
-			String checkName = "";
-			
-			if (checkId != null) {
-				try {
-					checkName = request.getParameter("name");
-					String checkSql = request.getParameter("sql");
-					int checkBase = Integer.valueOf(request.getParameter("base"));
-					int checkScore = 0;
-					boolean isScoreCorrent = true;
-					if (checkBase == 2 && request.getParameter("score") != "") {
-						checkScore= Integer.valueOf(request.getParameter("score"));
-						isScoreCorrent = true;
-					} else if (checkBase == 2 && request.getParameter("score") == "") {
-						error += msa.getMessage("dataintegrity.checksList.columns.score") + " " + msa.getMessage("dataintegrity.checksList.columns.blank") + "<br \\>";
-						isScoreCorrent = false;
-					}
-					if (checkName != "" && checkSql != "" && isScoreCorrent) {
-						DataIntegrityCheckTemplate check = new DataIntegrityCheckTemplate();
-						check.setIntegrityCheckId(Integer.valueOf(checkId));
-						/*check.setIntegrityCheckName(checkName);
-						check.setIntegrityCheckSql(checkSql);
-						check.setIntegrityCheckBaseForFailure(checkBase);
-						check.setIntegrityCheckScore(checkScore);*/
-						DataIntegrityService service = (DataIntegrityService)Context.getService(DataIntegrityService.class);
-						service.saveDataIntegrityCheckTemplate(check);
-						success = checkName + " " + msa.getMessage("dataintegrity.addeditCheck.saved");
-						view = getSuccessView();
-					} else {
-						if (checkName == "" && checkSql == "") {
-							error += msa.getMessage("dataintegrity.checksList.columns.name") + " " + msa.getMessage("dataintegrity.checksList.columns.blank") + "<br \\>";
-							error += msa.getMessage("dataintegrity.checksList.columns.sql") + " " + msa.getMessage("dataintegrity.checksList.columns.blank");
-						} else if (checkName == "") {
-							error += msa.getMessage("dataintegrity.checksList.columns.name") + " " + msa.getMessage("dataintegrity.checksList.columns.blank");
-						} else if (checkSql == "") {
-							error += msa.getMessage("dataintegrity.checksList.columns.sql") + " " + msa.getMessage("dataintegrity.checksList.columns.blank");
-						}
-						view = "integrityCheck.form?checkId=" + checkId;
-					}
-				} catch (Exception e) {
-					error = msa.getMessage("dataintegrity.addeditCheck.failed") + " " + checkName;
-					view = "integrityCheck.form?checkId=" + checkId;
-				}
-			} else {
-				try {
-					checkName = request.getParameter("name");
-					String checkSql = request.getParameter("sql");
-					int checkBase = Integer.valueOf(request.getParameter("base"));
-					int checkScore = 0;
-					boolean isScoreCorrent = true;
-					if (checkBase == 2 && request.getParameter("score") != "") {
-						checkScore= Integer.valueOf(request.getParameter("score"));
-						isScoreCorrent = true;
-					} else if (checkBase == 2 && request.getParameter("score") == "") {
-						error += msa.getMessage("dataintegrity.checksList.columns.score") + " " + msa.getMessage("dataintegrity.checksList.columns.blank") + "<br \\>";
-						isScoreCorrent = false;
-					}
-					if (checkName != "" && checkSql != "" && isScoreCorrent) {
-						DataIntegrityCheckTemplate check = new DataIntegrityCheckTemplate();
-						check.setIntegrityCheckName(checkName);
-						/*check.setIntegrityCheckSql(checkSql);
-						check.setIntegrityCheckBaseForFailure(checkBase);
-						check.setIntegrityCheckScore(checkScore);*/
-						DataIntegrityService service = (DataIntegrityService)Context.getService(DataIntegrityService.class);
-						service.saveDataIntegrityCheckTemplate(check);
-						success = checkName + " " + msa.getMessage("dataintegrity.addeditCheck.saved");
-						view = getSuccessView();
-					} else {
-						if (checkName == "" && checkSql == "") {
-							error += msa.getMessage("dataintegrity.checksList.columns.name") + " " + msa.getMessage("dataintegrity.checksList.columns.blank") + "<br \\>";
-							error += msa.getMessage("dataintegrity.checksList.columns.sql") + " " + msa.getMessage("dataintegrity.checksList.columns.blank");
-						} else if (checkName == "") {
-							error += msa.getMessage("dataintegrity.checksList.columns.name") + " " + msa.getMessage("dataintegrity.checksList.columns.blank");
-						} else if (checkSql == "") {
-							error += msa.getMessage("dataintegrity.checksList.columns.sql") + " " + msa.getMessage("dataintegrity.checksList.columns.blank");
-						}
-						view = "integrityCheck.form";
-					}
-				} catch (Exception e) {
-					error = msa.getMessage("dataintegrity.addeditCheck.failed") + " " + checkName + " " + e.getMessage();
-					view = "integrityCheck.form";
-				}
-			}
-			
-			if (!success.equals(""))
-				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, success);
-			if (!error.equals(""))
-				httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, error);
+			view = saveIntegrityCheck(request);
 		}
+		if (!success.equals(""))
+			httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, success);
+		if (!error.equals(""))
+			httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, error);
 		
 		return new ModelAndView(new RedirectView(view));
 	}

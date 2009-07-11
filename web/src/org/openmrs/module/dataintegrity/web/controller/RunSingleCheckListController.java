@@ -49,7 +49,7 @@ public class RunSingleCheckListController extends SimpleFormController {
 					int id = Integer.valueOf(checkId);
 					DataIntegrityCheckTemplate template = getDataIntegrityService().getDataIntegrityCheckTemplate(id);
 					checkName = template.getIntegrityCheckName();
-					DataIntegrityCheckResultTemplate resultTemplate = getDataIntegrityService().runIntegrityCheck(template);
+					DataIntegrityCheckResultTemplate resultTemplate = getDataIntegrityService().runIntegrityCheck(template, null);
 					List<DataIntegrityCheckResultTemplate> result = new ArrayList<DataIntegrityCheckResultTemplate>();
 					result.add(resultTemplate);
 					httpSession.setAttribute("singleCheckResults", result);

@@ -58,7 +58,7 @@ public class RunMultipleChecksListController extends SimpleFormController {
 						int id = Integer.valueOf(checkId);
 						DataIntegrityCheckTemplate template = service.getDataIntegrityCheckTemplate(id);
 						checkName = template.getIntegrityCheckName();
-						DataIntegrityCheckResultTemplate resultTemplate = service.runIntegrityCheck(template);
+						DataIntegrityCheckResultTemplate resultTemplate = service.runIntegrityCheck(template, null);
 						results.add(resultTemplate);
 						successCount++;
 					} catch (Exception e) {
