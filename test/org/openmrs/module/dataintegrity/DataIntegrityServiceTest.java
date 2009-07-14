@@ -76,7 +76,7 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest{
 	@Test
 	public void shouldExecuteIntegrityCheck() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
-		DataIntegrityCheckTemplate template = service.getDataIntegrityCheckTemplate(19);
+		DataIntegrityCheckTemplate template = service.getDataIntegrityCheckTemplate(21);
 		DataIntegrityCheckResultTemplate result = service.runIntegrityCheck(template, null);
 		Assert.notNull(result);
 		List<Object[]> records = result.getFailedRecords();

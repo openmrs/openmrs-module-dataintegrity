@@ -46,14 +46,9 @@
 			<table>
 				<c:forEach items="${results.failedRecords}" var="failedRecord">
 				<tr>
-					<c:if test="${results.columnCount < 2}">
-						<td>${failedRecord}</td>
-					</c:if>
-					<c:if test="${results.columnCount > 1}">
-						<c:forEach items="${failedRecord}" var="record">
-							<td>${record}</td>
-						</c:forEach>
-					</c:if>
+					<c:forEach items="${failedRecord}" var="record">
+						<td>${record}</td>
+					</c:forEach>
 				</tr>
 				</c:forEach>
 			</table>

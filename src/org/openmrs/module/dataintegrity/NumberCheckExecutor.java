@@ -66,6 +66,78 @@ public class NumberCheckExecutor implements ICheckExecutor {
 							}
 						}
 					}
+				} else if (check.getIntegrityCheckFailDirectiveOperator().equals(DataIntegrityConstants.FAILURE_OPERATOR_GREATER_THAN)) {
+					for (int i=0; i<resultList.size(); i++) {
+						if (columnCount > 1) {
+							Double[] doubleArray = new Double[columnCount];
+							for (int j=0; j<columnCount; j++) {
+								Double value = (Double) resultList.get(i)[j];
+								if (value > failDirective) {
+									for (int k=0; k<columnCount; k++) {
+										doubleArray[k] = (Double) resultList.get(i)[k];
+									}
+									failedRecords.add(doubleArray);
+									break;
+								}
+							}
+						} else {
+							Object value = resultList.get(i);
+							Double doubleValue = (Double)value;
+							if (doubleValue > failDirective) {
+								Double[] doubleArray = new Double[1];
+								doubleArray[0] = doubleValue;
+								failedRecords.add(doubleArray);
+							}
+						}
+					}
+				} else if (check.getIntegrityCheckFailDirectiveOperator().equals(DataIntegrityConstants.FAILURE_OPERATOR_EQUALS)) {
+					for (int i=0; i<resultList.size(); i++) {
+						if (columnCount > 1) {
+							Double[] doubleArray = new Double[columnCount];
+							for (int j=0; j<columnCount; j++) {
+								Double value = (Double) resultList.get(i)[j];
+								if (value.equals(failDirective)) {
+									for (int k=0; k<columnCount; k++) {
+										doubleArray[k] = (Double) resultList.get(i)[k];
+									}
+									failedRecords.add(doubleArray);
+									break;
+								}
+							}
+						} else {
+							Object value = resultList.get(i);
+							Double doubleValue = (Double)value;
+							if (value.equals(failDirective)) {
+								Double[] doubleArray = new Double[1];
+								doubleArray[0] = doubleValue;
+								failedRecords.add(doubleArray);
+							}
+						}
+					}
+				} else if (check.getIntegrityCheckFailDirectiveOperator().equals(DataIntegrityConstants.FAILURE_OPERATOR_NOT_EQUALS)) {
+					for (int i=0; i<resultList.size(); i++) {
+						if (columnCount > 1) {
+							Double[] doubleArray = new Double[columnCount];
+							for (int j=0; j<columnCount; j++) {
+								Double value = (Double) resultList.get(i)[j];
+								if (!value.equals(failDirective)) {
+									for (int k=0; k<columnCount; k++) {
+										doubleArray[k] = (Double) resultList.get(i)[k];
+									}
+									failedRecords.add(doubleArray);
+									break;
+								}
+							}
+						} else {
+							Object value = resultList.get(i);
+							Double doubleValue = (Double)value;
+							if (!value.equals(failDirective)) {
+								Double[] doubleArray = new Double[1];
+								doubleArray[0] = doubleValue;
+								failedRecords.add(doubleArray);
+							}
+						}
+					}
 				}
 			} else {
 				throw new Exception("Query returned no results");
