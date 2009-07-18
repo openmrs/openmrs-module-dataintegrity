@@ -68,6 +68,11 @@ public class IntegrityCheckFormController extends SimpleFormController {
 			if (checkId != null) {
 				check.setIntegrityCheckId(Integer.valueOf(checkId));
 			}
+			
+			String codeCopy = code;
+			if (codeCopy.toLowerCase().contains("delete") || codeCopy.toLowerCase().contains("update")) {
+				throw new Exception("Code will modify the database hence not allowed");
+			}
 			check.setIntegrityCheckName(checkName);
 			check.setIntegrityCheckCode(code);
 			check.setIntegrityCheckType(checkType);
@@ -85,7 +90,7 @@ public class IntegrityCheckFormController extends SimpleFormController {
 			return view;
 			
 		} catch (Exception e) {
-			error = msa.getMessage("dataintegrity.addeditCheck.failed") + " " + checkName + " " + e.getMessage();
+			error = msa.getMessage("dataintegrity.addeditCheck.failed") + " " + checkName + ". Message: " + e.getMessage();
 			view = "integrityCheck.form";
 			return view;
 		}
@@ -99,10 +104,14 @@ public class IntegrityCheckFormController extends SimpleFormController {
 		if (Context.isAuthenticated()) {
 			view = saveIntegrityCheck(request);
 		}
-		if (!success.equals(""))
+		if (!success.equals("")) {
 			httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, success);
-		if (!error.equals(""))
+			success = "";
+		}
+		if (!error.equals("")) {
 			httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, error);
+			error = "";
+		}
 		
 		return new ModelAndView(new RedirectView(view));
 	}

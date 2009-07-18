@@ -85,7 +85,7 @@ public class UploadCheckListController extends SimpleFormController {
 						}
 					}
 					catch (Exception e) {
-						error = msa.getMessage("dataintegrity.upload.fail") + ". " + e.getMessage();
+						error = msa.getMessage("dataintegrity.upload.fail") + ". Message: " + e.getMessage();
 						if (checkFile != null) {
 							checkFile.delete();
 						}

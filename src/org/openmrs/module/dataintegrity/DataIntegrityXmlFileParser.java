@@ -48,7 +48,7 @@ public class DataIntegrityXmlFileParser {
 			}
 			return checks;
 		} catch (Exception e) {
-			throw new Exception("Error in parsing the XML file");
+			throw new Exception("Error in parsing the XML file. " + e.getMessage());
 		}
 	}
 	

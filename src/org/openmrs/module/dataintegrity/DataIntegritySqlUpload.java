@@ -17,8 +17,8 @@ public class DataIntegritySqlUpload implements IDataIntegrityCheckUpload {
 	private String repairType;
 	private String parameters;
 	
-	public DataIntegritySqlUpload(Element element) {
-		this.checkType = "sql";
+	public DataIntegritySqlUpload(Element element) throws Exception {
+		this.checkType = DataIntegrityConstants.CHECK_TYPE_SQL;
 		
 		NodeList nameList = element.getElementsByTagName("name");
 		Element nameNode = (Element) nameList.item(0);
@@ -28,6 +28,11 @@ public class DataIntegritySqlUpload implements IDataIntegrityCheckUpload {
 		Element codeNode = (Element) codeList.item(0);
 		this.code = codeNode.getFirstChild().getNodeValue();
 		
+		String codeCopy = this.code;
+		if (codeCopy.toLowerCase().contains("delete") || codeCopy.toLowerCase().contains("update")) {
+			throw new Exception("Code will modify the database hence not allowed");
+		}
+		
 		NodeList resultTypeList = element.getElementsByTagName("resultType");
 		Element resultTypeNode = (Element) resultTypeList.item(0);
 		this.resultType = resultTypeNode.getFirstChild().getNodeValue().toLowerCase();
@@ -35,7 +40,7 @@ public class DataIntegritySqlUpload implements IDataIntegrityCheckUpload {
 		NodeList failList = element.getElementsByTagName("fail");
 		Element failNode = (Element) failList.item(0);
 		this.failDirective = failNode.getFirstChild().getNodeValue();
-		if (!this.resultType.equals("boolean")) {
+		if (!this.resultType.equals(DataIntegrityConstants.RESULT_TYPE_BOOLEAN)) {
 			this.failDirectiveOperator = failNode.getAttribute("operator");
 		} else {
 			this.failDirectiveOperator = "equals";

@@ -17,6 +17,7 @@ package org.openmrs.module.dataintegrity.impl;
 import java.util.List;
 
 import org.openmrs.api.APIException;
+import org.openmrs.module.dataintegrity.CountCheckExecutor;
 import org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate;
 import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
@@ -60,6 +61,8 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 		ICheckExecutor executor = null;
 		if (template.getIntegrityCheckResultType().equals(DataIntegrityConstants.RESULT_TYPE_NUMBER)) {
 			executor = new NumberCheckExecutor(this.dao);
+		} else if (template.getIntegrityCheckResultType().equals(DataIntegrityConstants.RESULT_TYPE_COUNT)) {
+			executor = new CountCheckExecutor(this.dao);
 		}
 		executor.initializeExecutor(template, parameterValues);
 		executor.executeCheck();
@@ -72,19 +75,6 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 		resultTemplate.setFailedRecords(failedRecords);
 		resultTemplate.setCheckPassed(checkPassed);
 		resultTemplate.setFailedRecordCount(failedRecords.size());
-		
-		//Getting the column count
-		if (failedRecords.size() > 0) {
-			try {
-				Object[] records = failedRecords.get(0);
-				resultTemplate.setColumnCount(records.length);
-			} catch (Exception e) {
-				resultTemplate.setColumnCount(1);
-			}
-		} else {
-			resultTemplate.setColumnCount(0);
-		}
-		
 		return resultTemplate;
 	}
 }
