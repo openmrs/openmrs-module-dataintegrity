@@ -30,7 +30,9 @@ public class NumberCheckExecutor implements ICheckExecutor {
 	public void executeCheck() throws Exception {
 		try {
 			Double failDirective = Double.valueOf(this.check.getIntegrityCheckFailDirective());
-			String checkCode = getModifiedCheckCode();
+			String checkCode = IntegrityCheckUtil.getModifiedCheckCode(this.check.getIntegrityCheckCode(), 
+																	   this.check.getIntegrityCheckParameters(), 
+																	   this.parameterValues);
 			SessionFactory factory = this.dao.getSessionFactory();
 			SQLQuery query = factory.getCurrentSession().createSQLQuery(checkCode);
 			List<Object[]> resultList = query.list();
@@ -138,6 +140,8 @@ public class NumberCheckExecutor implements ICheckExecutor {
 							}
 						}
 					}
+				} else {
+					throw new Exception("Specified failure operator is unsupported");
 				}
 			} else {
 				throw new Exception("Query returned no results");
@@ -145,18 +149,5 @@ public class NumberCheckExecutor implements ICheckExecutor {
 		} catch (Exception ex) {
 			throw new Exception(ex.getMessage());
 		}
-		
-	}
-	
-	private String getModifiedCheckCode() {
-		String checkCode = this.check.getIntegrityCheckCode();
-		String[] parameters = this.check.getIntegrityCheckParameters().split(";");
-		if (this.parameterValues != null) {
-			String[] parameterValuesArray = this.parameterValues.split(";");
-			for (int i=0; i<parameters.length; i++) {
-				checkCode.replace(parameters[i], parameterValuesArray[i]);
-			}
-		}
-		return checkCode;
 	}
 }

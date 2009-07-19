@@ -67,4 +67,15 @@ public class IntegrityCheckUtil {
 		
 		return folder;
 	}
+	
+	public static String getModifiedCheckCode(String checkCode, String parameterList, String parameterValuesList) {
+		String[] parameters = parameterList.split(";");
+		if (parameterValuesList != null) {
+			String[] parameterValuesArray = parameterValuesList.split(";");
+			for (int i=0; i<parameters.length; i++) {
+				checkCode.replace(parameters[i], parameterValuesArray[i]);
+			}
+		}
+		return checkCode;
+	}
 }

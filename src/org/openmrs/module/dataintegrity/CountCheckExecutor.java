@@ -20,7 +20,9 @@ public class CountCheckExecutor implements ICheckExecutor {
 	public void executeCheck() throws Exception {
 		try {
 			int failDirective = Integer.valueOf(this.check.getIntegrityCheckFailDirective());
-			String checkCode = getModifiedCheckCode();
+			String checkCode = IntegrityCheckUtil.getModifiedCheckCode(this.check.getIntegrityCheckCode(), 
+																	   this.check.getIntegrityCheckParameters(), 
+																	   this.parameterValues);
 			SessionFactory factory = this.dao.getSessionFactory();
 			SQLQuery query = factory.getCurrentSession().createSQLQuery(checkCode);
 			List<Object[]> resultList = query.list();
@@ -105,6 +107,8 @@ public class CountCheckExecutor implements ICheckExecutor {
 							}
 						}
 					}
+				} else {
+					throw new Exception("Specified failure operator is unsupported");
 				}
 			}
 		} catch (Exception e) {
@@ -123,17 +127,4 @@ public class CountCheckExecutor implements ICheckExecutor {
 		this.parameterValues = parameterValues;
 		this.failedRecords = new ArrayList<Object[]>();
 	}
-	
-	private String getModifiedCheckCode() {
-		String checkCode = this.check.getIntegrityCheckCode();
-		String[] parameters = this.check.getIntegrityCheckParameters().split(";");
-		if (this.parameterValues != null) {
-			String[] parameterValuesArray = this.parameterValues.split(";");
-			for (int i=0; i<parameters.length; i++) {
-				checkCode.replace(parameters[i], parameterValuesArray[i]);
-			}
-		}
-		return checkCode;
-	}
-
 }

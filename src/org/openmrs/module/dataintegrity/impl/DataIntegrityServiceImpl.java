@@ -17,6 +17,7 @@ package org.openmrs.module.dataintegrity.impl;
 import java.util.List;
 
 import org.openmrs.api.APIException;
+import org.openmrs.module.dataintegrity.BooleanCheckExecutor;
 import org.openmrs.module.dataintegrity.CountCheckExecutor;
 import org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate;
 import org.openmrs.module.dataintegrity.DataIntegrityConstants;
@@ -24,6 +25,7 @@ import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 import org.openmrs.module.dataintegrity.ICheckExecutor;
 import org.openmrs.module.dataintegrity.NumberCheckExecutor;
+import org.openmrs.module.dataintegrity.StringCheckExecutor;
 import org.openmrs.module.dataintegrity.db.DataIntegrityDAO;
 
 public class DataIntegrityServiceImpl implements DataIntegrityService {
@@ -63,6 +65,10 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 			executor = new NumberCheckExecutor(this.dao);
 		} else if (template.getIntegrityCheckResultType().equals(DataIntegrityConstants.RESULT_TYPE_COUNT)) {
 			executor = new CountCheckExecutor(this.dao);
+		} else if (template.getIntegrityCheckResultType().equals(DataIntegrityConstants.RESULT_TYPE_BOOLEAN)) {
+			executor = new BooleanCheckExecutor(this.dao);
+		} else if (template.getIntegrityCheckResultType().equals(DataIntegrityConstants.RESULT_TYPE_STRING)) {
+			executor = new StringCheckExecutor(this.dao);
 		}
 		executor.initializeExecutor(template, parameterValues);
 		executor.executeCheck();
