@@ -156,4 +156,8 @@ public class StringCheckExecutor implements ICheckExecutor {
 		this.failedRecords = new ArrayList<String[]>();
 	}
 
+	public boolean getCheckResult() {
+		boolean checkPassed = (failedRecords.size() > 0) ? false : true;
+		return checkPassed;
+	}
 }

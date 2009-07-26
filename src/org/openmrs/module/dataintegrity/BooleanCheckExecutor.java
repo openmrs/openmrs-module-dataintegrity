@@ -75,6 +75,11 @@ public class BooleanCheckExecutor implements ICheckExecutor {
 	public List<Object[]> getFailedRecords() {
 		return this.failedRecords;
 	}
+	
+	public boolean getCheckResult() {
+		boolean checkPassed = (failedRecords.size() > 0) ? false : true;
+		return checkPassed;
+	}
 
 	public void initializeExecutor(DataIntegrityCheckTemplate check,
 			String parameterValues) {

@@ -75,11 +75,10 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 		
 		DataIntegrityCheckResultTemplate resultTemplate = new DataIntegrityCheckResultTemplate();
 		List<Object[]> failedRecords = executor.getFailedRecords();
-		boolean checkPassed = (failedRecords.size() > 0) ? false : true;
 		resultTemplate.setCheckId(template.getIntegrityCheckId());
 		resultTemplate.setCheckName(template.getIntegrityCheckName());
 		resultTemplate.setFailedRecords(failedRecords);
-		resultTemplate.setCheckPassed(checkPassed);
+		resultTemplate.setCheckPassed(executor.getCheckResult());
 		resultTemplate.setFailedRecordCount(failedRecords.size());
 		return resultTemplate;
 	}

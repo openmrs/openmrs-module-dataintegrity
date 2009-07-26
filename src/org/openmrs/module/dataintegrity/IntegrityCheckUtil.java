@@ -9,6 +9,17 @@ import java.io.InputStream;
 import org.openmrs.util.OpenmrsUtil;
 
 public class IntegrityCheckUtil {
+	public static File getExportIntegrityCheckFile() throws Exception {
+		File file = null;
+		try {
+			File folder = getTemporaryCheckRepository();
+			file = new File(folder.getAbsolutePath() + File.separator + "export_checks_temp.xml");
+			return file;
+		} catch (Exception ex) {
+			throw new Exception("Cannot create export file");
+		}
+	}
+	
 	public static File uploadIntegrityCheckFile(InputStream inputStream, String filename) throws Exception {
 		FileOutputStream outputStream = null;
 		File file = null;

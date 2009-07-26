@@ -9,7 +9,7 @@
 			</a>
 		</li>
 		<li <c:if test='<%= request.getRequestURI().contains("uploadCheck") %>'>class="active"</c:if>>
-			<a href="${pageContext.request.contextPath}/module/dataintegrity/uploadCheck.list">
+			<a href="${pageContext.request.contextPath}/module/dataintegrity/transferCheck.list">
 				<spring:message code="dataintegrity.upload.link"/>
 			</a>
 		</li>

@@ -21,7 +21,7 @@
 		</tr>
 		<tr>
 			<td width="20%"><spring:message code="dataintegrity.results.status"/></td>
-			<td bgcolor="Green" width="25%"></td>
+			<td align="center" bgcolor="Green" width="25%" style="font-weight: bold; color: white;"><spring:message code="dataintegrity.results.pass"/></td>
 			<td width="55%"></td>
 		</tr>
 	</c:if>
@@ -33,7 +33,7 @@
 		</tr>
 		<tr>
 			<td width="20%"><spring:message code="dataintegrity.results.status"/></td>
-			<td bgcolor="Red" width="25%"></td>
+			<td align="center" bgcolor="Red" width="25%" style="font-weight: bold; color: white;"><spring:message code="dataintegrity.results.fail"/></td>
 			<td width="55%"></td>
 		</tr>
 	</c:if>

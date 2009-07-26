@@ -12,6 +12,7 @@ public class CountCheckExecutor implements ICheckExecutor {
 	private DataIntegrityDAO dao;
 	private String parameterValues;
 	private List<Object[]> failedRecords;
+	private boolean checkPassed;
 	
 	public CountCheckExecutor(DataIntegrityDAO dao) {
 		this.dao = dao;
@@ -35,77 +36,36 @@ public class CountCheckExecutor implements ICheckExecutor {
 				} catch (Exception e) {
 					columnCount = 1;
 				}
+				for (int i=0; i<resultList.size(); i++) {
+					if (columnCount > 1) {
+						Object[] objectArray = new Object[columnCount];
+						for (int j=0; j<columnCount; j++) {
+							Object value = resultList.get(i)[j];
+							objectArray[j] = value;
+						}
+						failedRecords.add(objectArray);
+					} else {
+						Object value = resultList.get(i);
+						Object[] objectArray = new Object[1];
+						objectArray[0] = value;
+						failedRecords.add(objectArray);
+					}
+				}
 				if (check.getIntegrityCheckFailDirectiveOperator().equals(DataIntegrityConstants.FAILURE_OPERATOR_LESS_THAN)) {
 					if (resultList.size() < failDirective) {
-						for (int i=0; i<resultList.size(); i++) {
-							if (columnCount > 1) {
-								Object[] objectArray = new Object[columnCount];
-								for (int j=0; j<columnCount; j++) {
-									Object value = resultList.get(i)[j];
-									objectArray[j] = value;
-								}
-								failedRecords.add(objectArray);
-							} else {
-								Object value = resultList.get(i);
-								Object[] objectArray = new Object[1];
-								objectArray[0] = value;
-								failedRecords.add(objectArray);
-							}
-						}
+						checkPassed = false;
 					}
 				} else if (check.getIntegrityCheckFailDirectiveOperator().equals(DataIntegrityConstants.FAILURE_OPERATOR_GREATER_THAN)) {
 					if (resultList.size() > failDirective) {
-						for (int i=0; i<resultList.size(); i++) {
-							if (columnCount > 1) {
-								Object[] objectArray = new Object[columnCount];
-								for (int j=0; j<columnCount; j++) {
-									Object value = resultList.get(i)[j];
-									objectArray[j] = value;
-								}
-								failedRecords.add(objectArray);
-							} else {
-								Object value = resultList.get(i);
-								Object[] objectArray = new Object[1];
-								objectArray[0] = value;
-								failedRecords.add(objectArray);
-							}
-						}
+						checkPassed = false;
 					}
 				} else if (check.getIntegrityCheckFailDirectiveOperator().equals(DataIntegrityConstants.FAILURE_OPERATOR_EQUALS)) {
 					if (resultList.size() == failDirective) {
-						for (int i=0; i<resultList.size(); i++) {
-							if (columnCount > 1) {
-								Object[] objectArray = new Object[columnCount];
-								for (int j=0; j<columnCount; j++) {
-									Object value = resultList.get(i)[j];
-									objectArray[j] = value;
-								}
-								failedRecords.add(objectArray);
-							} else {
-								Object value = resultList.get(i);
-								Object[] objectArray = new Object[1];
-								objectArray[0] = value;
-								failedRecords.add(objectArray);
-							}
-						}
+						checkPassed = false;
 					}
 				} else if (check.getIntegrityCheckFailDirectiveOperator().equals(DataIntegrityConstants.FAILURE_OPERATOR_NOT_EQUALS)) {
 					if (resultList.size() != failDirective) {
-						for (int i=0; i<resultList.size(); i++) {
-							if (columnCount > 1) {
-								Object[] objectArray = new Object[columnCount];
-								for (int j=0; j<columnCount; j++) {
-									Object value = resultList.get(i)[j];
-									objectArray[j] = value;
-								}
-								failedRecords.add(objectArray);
-							} else {
-								Object value = resultList.get(i);
-								Object[] objectArray = new Object[1];
-								objectArray[0] = value;
-								failedRecords.add(objectArray);
-							}
-						}
+						checkPassed = false;
 					}
 				} else {
 					throw new Exception("Specified failure operator is unsupported");
@@ -116,7 +76,7 @@ public class CountCheckExecutor implements ICheckExecutor {
 		}
 
 	}
-
+	
 	public List<Object[]> getFailedRecords() {
 		return this.failedRecords;
 	}
@@ -126,5 +86,10 @@ public class CountCheckExecutor implements ICheckExecutor {
 		this.check = check;
 		this.parameterValues = parameterValues;
 		this.failedRecords = new ArrayList<Object[]>();
+		this.checkPassed = true;
+	}
+
+	public boolean getCheckResult() {
+		return checkPassed;
 	}
 }

@@ -3,8 +3,19 @@
 	<check type="sql">
 		<name>Person Name Check Temp</name>
 		<code>Select id from person_name</code>
-		<resultType>String</resultType>
-		<fail operator="not contains">Hello World</fail>
+		<resultType>String</resultType> <!-- valid types: string, number, count, boolean -->
+		<fail operator="not contains">Hello World</fail> 
 		<repair type="script">openmrs/personName4?${id}</repair>
+		<parameters>test</parameters>
 	</check>
 </checks>
+
+<!-- if the result type is string the valid fail operators are: equals, not equals, contains, not contains-->
+<!-- if the result type is number the valid fail operators are: equals, not equals, greater than, less than-->
+<!-- if the result type is count the valid fail operators are: equals, not equals, greater than, less than-->
+<!-- if the result type is boolean the valid fail operator is: equals-->
+
+<!-- valid repair types are: script, link, instructions -->
+
+<!-- If no repairs are need to be done you can exclude the repair type tag-->
+<!-- If no parameters need to be added, you can exclude the parameters tag-->

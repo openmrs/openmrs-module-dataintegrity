@@ -26,6 +26,11 @@ public class NumberCheckExecutor implements ICheckExecutor {
 	public List<Double[]> getFailedRecords() {
 		return this.failedRecords;
 	}
+	
+	public boolean getCheckResult() {
+		boolean checkPassed = (failedRecords.size() > 0) ? false : true;
+		return checkPassed;
+	}
 
 	public void executeCheck() throws Exception {
 		try {

@@ -73,7 +73,7 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest{
 		Assert.isTrue(templateCountBeforeAdding == (templateCountAfterAdding + 1));
 	}
 	
-	@Test
+	//@Test
 	public void shouldExecuteIntegrityCheck() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
 		DataIntegrityCheckTemplate template = service.getDataIntegrityCheckTemplate(30);
@@ -86,13 +86,13 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest{
 		}
 	}
 	
-	//@Test
+	@Test
 	public void shouldUploadDataIntegrityCheck() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
 		List<DataIntegrityCheckTemplate> templates = service.getAllDataIntegrityCheckTemplates();
 		int templateCountBeforeAdding = templates.size();
 		
-		File file = new File("F:\\GSOC2009\\workspaces\\DataIntegrityModule\\test\\org\\openmrs\\module\\dataintegrity\\test\\integrity_check5.xml");
+		File file = new File("F:\\GSOC2009\\workspaces\\DataIntegrityModule\\test\\org\\openmrs\\module\\dataintegrity\\test\\test.xml");
 		DataIntegrityXmlFileParser parser = new DataIntegrityXmlFileParser(file);
 		List<IDataIntegrityCheckUpload> checks = parser.getChecksToAdd();
 		for (int i=0; i<checks.size(); i++) {
