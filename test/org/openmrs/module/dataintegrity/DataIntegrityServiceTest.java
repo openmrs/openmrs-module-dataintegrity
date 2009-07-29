@@ -73,11 +73,11 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest{
 		Assert.isTrue(templateCountBeforeAdding == (templateCountAfterAdding + 1));
 	}
 	
-	//@Test
+	@Test
 	public void shouldExecuteIntegrityCheck() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
-		DataIntegrityCheckTemplate template = service.getDataIntegrityCheckTemplate(30);
-		DataIntegrityCheckResultTemplate result = service.runIntegrityCheck(template, null);
+		DataIntegrityCheckTemplate template = service.getDataIntegrityCheckTemplate(19);
+		DataIntegrityCheckResultTemplate result = service.runIntegrityCheck(template, "1");
 		Assert.notNull(result);
 		List<Object[]> records = result.getFailedRecords();
 		
@@ -86,7 +86,7 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest{
 		}
 	}
 	
-	@Test
+	//@Test
 	public void shouldUploadDataIntegrityCheck() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
 		List<DataIntegrityCheckTemplate> templates = service.getAllDataIntegrityCheckTemplates();

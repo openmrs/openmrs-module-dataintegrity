@@ -84,7 +84,7 @@ public class IntegrityCheckUtil {
 		if (parameterValuesList != null) {
 			String[] parameterValuesArray = parameterValuesList.split(";");
 			for (int i=0; i<parameters.length; i++) {
-				checkCode.replace(parameters[i], parameterValuesArray[i]);
+				checkCode = checkCode.replace(parameters[i], parameterValuesArray[i]);
 			}
 		}
 		return checkCode;
