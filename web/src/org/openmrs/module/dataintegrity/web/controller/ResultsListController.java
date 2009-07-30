@@ -69,7 +69,11 @@ public class ResultsListController extends SimpleFormController {
 					int id = Integer.valueOf(checkId);
 					DataIntegrityCheckTemplate template = getDataIntegrityService().getDataIntegrityCheckTemplate(id);
 					checkName = template.getIntegrityCheckName();
-					DataIntegrityCheckResultTemplate resultTemplate = getDataIntegrityService().runIntegrityCheck(template, null);
+					String parameterValues = null;
+					if (!template.getIntegrityCheckParameters().equals("")) {
+						parameterValues = request.getParameter("checkParameter" + checkId);
+					}
+					DataIntegrityCheckResultTemplate resultTemplate = getDataIntegrityService().runIntegrityCheck(template, parameterValues);
 					List<DataIntegrityCheckResultTemplate> result = new ArrayList<DataIntegrityCheckResultTemplate>();
 					result.add(resultTemplate);
 					httpSession.setAttribute("singleCheckResults", result);

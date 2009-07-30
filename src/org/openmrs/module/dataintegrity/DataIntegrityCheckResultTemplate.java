@@ -8,6 +8,7 @@ public class DataIntegrityCheckResultTemplate {
 	private String checkName;
 	private boolean checkPassed;
 	private List<Object[]> failedRecords;
+	private String parameters;
 	
 	public int getCheckId() {
 		return checkId;
@@ -38,5 +39,11 @@ public class DataIntegrityCheckResultTemplate {
 	}
 	public void setFailedRecords(List<Object[]> failedRecords) {
 		this.failedRecords = failedRecords;
+	}
+	public String getParameters() {
+		return parameters;
+	}
+	public void setParameters(String parameters) {
+		this.parameters = parameters;
 	}
 }

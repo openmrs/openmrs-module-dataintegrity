@@ -8,6 +8,23 @@
 <%@ include file="localHeader.jsp" %>
 
 <h2><spring:message code="dataintegrity.results.title"/></h2>
+
+<script type="text/javascript">
+	function checkParameters() {
+		var parameters = document.getElementById("paramHidden").value
+		if (parameters != "") {
+			var message = "Enter parameter values for: " + parameters;
+			var parameterValues = window.prompt(message,"");
+			if (parameterValues != null) {
+				document.getElementById("paramValueHidden").value = parameterValues;
+			} else {
+				return false;
+			}
+		}
+		return true;
+	}
+</script>
+
 <br />
 <c:if test="${not empty checkResults}">
 <c:forEach items="${checkResults}" var="results">
@@ -58,14 +75,18 @@
 	<tr>
 		<td colspan="3">
 			<c:if test="${single == false}">
-				<form method="post" target="_blank">
+				<form method="post" target="_blank" onsubmit="return checkParameters();">
 					<input type="hidden" value="${results.checkId}" name="checkId" />
+					<input type="hidden" value="${results.parameters}" id="paramHidden"/>
+					<input type="hidden" value="" id="paramValueHidden" name="checkParameter${results.checkId}"/>"
 					<input type="submit" value="<spring:message code="dataintegrity.results.runAgain"/>"/>
 				</form>
 			</c:if>
 			<c:if test="${single == true}">
-				<form method="post">
+				<form method="post" onsubmit="return checkParameters();">
 					<input type="hidden" value="${results.checkId}" name="checkId" />
+					<input type="hidden" value="${results.parameters}" id="paramHidden"/>
+					<input type="hidden" value="" id="paramValueHidden" name="checkParameter${results.checkId}"/>
 					<input type="submit" value="<spring:message code="dataintegrity.results.runAgain"/>"/>
 				</form>
 			</c:if>
