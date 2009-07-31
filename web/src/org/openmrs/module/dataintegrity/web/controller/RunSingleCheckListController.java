@@ -1,5 +1,8 @@
 package org.openmrs.module.dataintegrity.web.controller;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +63,11 @@ public class RunSingleCheckListController extends SimpleFormController {
 					success = checkName + " " + msa.getMessage("dataintegrity.runSingleCheck.success");
 					view = getSuccessView();
 				} catch (Exception e) {
-					error = msa.getMessage("dataintegrity.runSingleCheck.error") + " " + checkName;
+					error = msa.getMessage("dataintegrity.runSingleCheck.error") + " " + checkName + ". Message: " + e.getMessage() + "<br />";
+					Writer writer = new StringWriter();
+					PrintWriter printWriter = new PrintWriter(writer);
+					e.printStackTrace(printWriter);
+					error += "Stack Trace: " + writer.toString();
 					view = "runSingleCheck.list";
 				}
 			} else {

@@ -1,5 +1,8 @@
 package org.openmrs.module.dataintegrity.web.controller;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +56,7 @@ public class RunMultipleChecksListController extends SimpleFormController {
 				int successCount = 0;
 				int errorCount = 0;
 				List<DataIntegrityCheckResultTemplate> results = new ArrayList<DataIntegrityCheckResultTemplate>();
+				StringBuffer buffer = new StringBuffer();
 				for (String checkId : checkList) {
 					try {
 						int id = Integer.valueOf(checkId);
@@ -62,7 +66,10 @@ public class RunMultipleChecksListController extends SimpleFormController {
 						results.add(resultTemplate);
 						successCount++;
 					} catch (Exception e) {
-						errorCount++;
+						errorCount++;Writer writer = new StringWriter();
+						PrintWriter printWriter = new PrintWriter(writer);
+						e.printStackTrace(printWriter);
+						buffer.append("\r\n" + writer.toString());
 						view = "runMultipleChecks.list";
 					}
 				}
@@ -70,7 +77,8 @@ public class RunMultipleChecksListController extends SimpleFormController {
 				view = getSuccessView();
 				success = msa.getMessage("dataintegrity.runMultipleChecks.totalCount") + " " + (successCount + errorCount) + "<br/>";
 				success += msa.getMessage("dataintegrity.runMultipleChecks.successCount") + " " + successCount+ "<br/>";
-				error = errorCount > 0 ? (msa.getMessage("dataintegrity.runMultipleChecks.errorCount") + " " + errorCount) : "";
+				error = errorCount > 0 ? (msa.getMessage("dataintegrity.runMultipleChecks.errorCount") + " " + errorCount + "<br/>") : "";
+				error += "Stack Trace: "  + buffer.toString();
 			} else { 
 				error = msa.getMessage("dataintegrity.runMultipleChecks.error");
 				view = "runMultipleChecks.list";

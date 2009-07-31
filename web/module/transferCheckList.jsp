@@ -7,6 +7,23 @@
 
 <h2><spring:message code="dataintegrity.upload.link"/></h2><br />
 
+<script type="text/javascript">
+	function checkAll(field)
+	{
+		for (i = 0; i < field.length; i++) {
+			field[i].checked = true ;
+		}
+	}
+	
+	function uncheckAll(field)
+	{
+		for (i = 0; i < field.length; i++) {
+			field[i].checked = false ;
+		}
+	}
+
+</script>
+
 <b class="boxHeader"><spring:message code="dataintegrity.upload.add" /></b>
 <div class="box">
 	<form id="checkAddForm" action="transferCheck.list" method="post" enctype="multipart/form-data">
@@ -17,7 +34,7 @@
 </div>
 <br />
 <b class="boxHeader"><spring:message code="dataintegrity.upload.export" /></b>
-<form method="post" class="box">
+<form method="post" class="box" name="exportForm">
 	<c:if test="${not empty existingChecks}">
 		<table>
 			<tr>
@@ -31,7 +48,19 @@
 			</tr>
 			</c:forEach>
 			<tr>
-				<td colspan="4"><input type="submit" value='<spring:message code="dataintegrity.upload.exportBtn"/>'></td>
+				<td colspan="2">
+					<table><tr>
+						<td>
+							<a href="#" onclick="checkAll(document.exportForm.integrityCheckId)"><spring:message code="dataintegrity.runMultipleChecks.selectAll"/></a>
+						</td>
+						<td>
+							<a href="#" onclick="uncheckAll(document.exportForm.integrityCheckId)"><spring:message code="dataintegrity.runMultipleChecks.selectNone"/></a>
+						</td>
+					</tr></table>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"><input type="submit" value='<spring:message code="dataintegrity.upload.exportBtn"/>'></td>
 			</tr>
 		</table>
 	</c:if>
