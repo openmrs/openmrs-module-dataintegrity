@@ -13,7 +13,7 @@
 	function checkParameters() {
 		var parameters = document.getElementById("paramHidden").value
 		if (parameters != "") {
-			var message = "Enter parameter values for: " + parameters;
+			var message = "Enter parameter value(s) for: " + parameters;
 			var parameterValues = window.prompt(message,"");
 			if (parameterValues != null) {
 				document.getElementById("paramValueHidden").value = parameterValues;

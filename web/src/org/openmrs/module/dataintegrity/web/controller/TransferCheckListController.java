@@ -129,7 +129,6 @@ public class TransferCheckListController extends SimpleFormController {
 				for (String checkId : checkList) {
 					DataIntegrityCheckTemplate template = service.getDataIntegrityCheckTemplate(Integer.valueOf(checkId));
 					exportString.append("\t<check type=\"" + template.getIntegrityCheckType() + "\">\r\n");
-					exportString.append("\t\t<id>" + template.getIntegrityCheckId() + "</id>\r\n");
 					exportString.append("\t\t<name>" + template.getIntegrityCheckName() + "</name>\r\n");
 					exportString.append("\t\t<code>" + template.getIntegrityCheckCode() + "</code>\r\n");
 					exportString.append("\t\t<resultType>" + template.getIntegrityCheckResultType() + "</resultType>\r\n");
