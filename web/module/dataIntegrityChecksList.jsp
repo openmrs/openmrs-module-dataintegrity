@@ -9,6 +9,7 @@
 <a href="integrityCheck.form"><spring:message code="dataintegrity.addCheck"/></a> 
 <c:if test="${not empty dataIntegrityChecksList}">
 <a href="deleteIntegrityCheck.form"><spring:message code="dataintegrity.deleteCheck"/></a>
+<a href="copyCheck.form"><spring:message code="dataintegrity.copyCheck"/></a>
 </c:if>
 <br /><br />
 
@@ -31,7 +32,7 @@
 		<tr class="<c:choose><c:when test="${varStatus.index % 2 == 0}">oddRow</c:when><c:otherwise>evenRow</c:otherwise></c:choose>" id="${module.moduleId}">
 			<td valign="top"><a href="integrityCheck.form?checkId=${integrityChecksObj.integrityCheckId}">${integrityChecksObj.integrityCheckName}</a></td>
 			<td valign="top">${integrityChecksObj.integrityCheckType}</td>
-			<td valign="top">${integrityChecksObj.integrityCheckCode}</td>
+			<td valign="top" width="20%" height="40"><div style="overflow: auto; height: 40px;">${integrityChecksObj.integrityCheckCode}</div></td>
 			<td valign="top">${integrityChecksObj.integrityCheckResultType}</td>
 			<td valign="top">${integrityChecksObj.integrityCheckFailDirectiveOperator}</td>
 			<td valign="top">${integrityChecksObj.integrityCheckFailDirective}</td>

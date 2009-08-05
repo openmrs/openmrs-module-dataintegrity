@@ -3,12 +3,15 @@ package org.openmrs.module.dataintegrity.web.controller;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -126,6 +129,7 @@ public class TransferCheckListController extends SimpleFormController {
 				for (String checkId : checkList) {
 					DataIntegrityCheckTemplate template = service.getDataIntegrityCheckTemplate(Integer.valueOf(checkId));
 					exportString.append("\t<check type=\"" + template.getIntegrityCheckType() + "\">\r\n");
+					exportString.append("\t\t<id>" + template.getIntegrityCheckId() + "</id>\r\n");
 					exportString.append("\t\t<name>" + template.getIntegrityCheckName() + "</name>\r\n");
 					exportString.append("\t\t<code>" + template.getIntegrityCheckCode() + "</code>\r\n");
 					exportString.append("\t\t<resultType>" + template.getIntegrityCheckResultType() + "</resultType>\r\n");
@@ -141,11 +145,14 @@ public class TransferCheckListController extends SimpleFormController {
 				exportString.append("</checks>\r\n");
 				out.write(exportString.toString());
 				out.close();
+				
+				//Zip the file
+				File zipFile = zipExportFile(exportFile);
 				//Downloading the file
-				FileInputStream fileToDownload = new FileInputStream(exportFile);
+				FileInputStream fileToDownload = new FileInputStream(zipFile);
 				ServletOutputStream output = response.getOutputStream();
 				response.setContentType("application/octet-stream");
-				response.setHeader("Content-Disposition", "attachment; filename=IntegrityChecks.xml");
+				response.setHeader("Content-Disposition", "attachment; filename=IntegrityChecks.zip");
 				response.setContentLength(fileToDownload.available());
 				int c;
 				while ((c = fileToDownload.read()) != -1)
@@ -155,6 +162,8 @@ public class TransferCheckListController extends SimpleFormController {
 				output.flush();
 				output.close();
 				fileToDownload.close();
+				zipFile.delete();
+				exportFile.delete();
 			} catch (Exception e) {
 				error = msa.getMessage("dataintegrity.upload.export.error") + ". Message: " + e.getMessage();
 			}
@@ -166,6 +175,39 @@ public class TransferCheckListController extends SimpleFormController {
 		if (!error.equals(""))
 			httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, error);
 		return new ModelAndView(new RedirectView(view));
+	}
+	
+	private File zipExportFile(File file) throws Exception {
+	    byte[] buf = new byte[1024];
+	    
+	    try {
+	    	File zipFile = IntegrityCheckUtil.getZippedExportIntegrityCheckFile();
+	        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFile));
+	    
+	        // Compress the files
+            FileInputStream in = new FileInputStream(file);
+    
+            // Add ZIP entry to output stream.
+            out.putNextEntry(new ZipEntry(file.getName()));
+    
+            // Transfer bytes from the file to the ZIP file
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+    
+            // Complete the entry
+            out.closeEntry();
+            in.close();
+	    
+	        // Complete the ZIP file
+	        out.close();
+	        return zipFile;
+	    } catch (Exception e) {
+	    	throw new Exception("Failed to zip file. " + e.getMessage());
+	    }
+		
+
 	}
 
 }

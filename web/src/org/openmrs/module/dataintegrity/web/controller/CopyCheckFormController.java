@@ -22,7 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.servlet.view.RedirectView;
 
-public class RunSingleCheckListController extends SimpleFormController {
+public class CopyCheckFormController extends SimpleFormController {
 	private DataIntegrityService getDataIntegrityService() {
         return (DataIntegrityService)Context.getService(DataIntegrityService.class);
     }
@@ -40,11 +40,6 @@ public class RunSingleCheckListController extends SimpleFormController {
 		HttpSession httpSession = request.getSession();
 		MessageSourceAccessor msa = getMessageSourceAccessor();
 		
-		//Clear the previously stored failed records in the session
-		if (httpSession.getAttribute("failedRecords") != null) {
-			httpSession.removeAttribute("failedRecords");
-		}
-		
 		String view = getFormView();
 		if (Context.isAuthenticated()) {
 			String checkId = request.getParameter("checkId");
@@ -56,28 +51,28 @@ public class RunSingleCheckListController extends SimpleFormController {
 				try {
 					int id = Integer.valueOf(checkId);
 					DataIntegrityCheckTemplate template = getDataIntegrityService().getDataIntegrityCheckTemplate(id);
+					DataIntegrityCheckTemplate check = new DataIntegrityCheckTemplate();
 					checkName = template.getIntegrityCheckName();
-					String parameterValues = null;
-					if (!template.getIntegrityCheckParameters().equals("")) {
-						parameterValues = request.getParameter("checkParameter" + checkId);
-					}
-					DataIntegrityCheckResultTemplate resultTemplate = getDataIntegrityService().runIntegrityCheck(template, parameterValues);
-					List<DataIntegrityCheckResultTemplate> result = new ArrayList<DataIntegrityCheckResultTemplate>();
-					result.add(resultTemplate);
-					httpSession.setAttribute("singleCheckResults", result);
-					success = checkName + " " + msa.getMessage("dataintegrity.runSingleCheck.success");
+					check.setIntegrityCheckName(template.getIntegrityCheckName() + " Copy");
+					check.setIntegrityCheckCode(template.getIntegrityCheckCode());
+					check.setIntegrityCheckType(template.getIntegrityCheckType());
+					check.setIntegrityCheckResultType(template.getIntegrityCheckResultType());
+					check.setIntegrityCheckFailDirective(template.getIntegrityCheckFailDirective());
+					check.setIntegrityCheckFailDirectiveOperator(template.getIntegrityCheckFailDirectiveOperator());
+					check.setIntegrityCheckRepairType(template.getIntegrityCheckRepairType());
+					check.setIntegrityCheckRepairDirective(template.getIntegrityCheckRepairDirective());
+					check.setIntegrityCheckParameters(template.getIntegrityCheckParameters());
+					getDataIntegrityService().saveDataIntegrityCheckTemplate(check);
+					
+					success = checkName + " " + msa.getMessage("dataintegrity.copyCheck.success");
 					view = getSuccessView();
 				} catch (Exception e) {
-					error = msa.getMessage("dataintegrity.runSingleCheck.error") + " " + checkName + ". Message: " + e.getMessage() + "<br />";
-					Writer writer = new StringWriter();
-					PrintWriter printWriter = new PrintWriter(writer);
-					e.printStackTrace(printWriter);
-					error += "Stack Trace: " + writer.toString();
-					view = "runSingleCheck.list";
+					error = msa.getMessage("dataintegrity.copyCheck.error") + " " + checkName + ". Message: " + e.getMessage();
+					view = "copyCheck.form";
 				}
 			} else {
 				error = msa.getMessage("dataintegrity.runSingleCheck.blank");
-				view = "runSingleCheck.list";
+				view = "copyCheck.form";
 			}
 			
 			if (!success.equals(""))

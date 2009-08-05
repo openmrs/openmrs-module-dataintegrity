@@ -37,7 +37,7 @@ public class ResultsListController extends SimpleFormController {
 	protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		HttpSession session = request.getSession();
-		List<DataIntegrityCheckResultTemplate> results;
+		List<DataIntegrityCheckResultTemplate> results = null;
 		if (session.getAttribute("singleCheckResults") != null) {
 			results = (List<DataIntegrityCheckResultTemplate>) session.getAttribute("singleCheckResults");
 			map.put("checkResults", results);
@@ -48,6 +48,14 @@ public class ResultsListController extends SimpleFormController {
 			session.removeAttribute("multipleCheckResults");
 			map.put("single", false);
 			map.put("checkResults", results);
+		}
+		if (results != null) {
+			Map<Integer, List<Object[]>> failedRecordMap = new HashMap<Integer, List<Object[]>>();
+			for (int i=0; i<results.size(); i++) {
+				DataIntegrityCheckResultTemplate resultTemplate = results.get(i); 
+				failedRecordMap.put(resultTemplate.getCheckId(), resultTemplate.getFailedRecords());
+			}
+			session.setAttribute("failedRecords", failedRecordMap);
 		}
 		return map;
 	}

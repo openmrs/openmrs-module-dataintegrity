@@ -9,15 +9,6 @@
 <br />
 
 <script type="text/javascript">
-	var parameterArray;
-	
-	/*window.onload = function()
-	{
-		var selectElement = document.getElementById("checkIdSelect");
-		selectElement.selectedIndex = 1;
-		selectElement.selectedIndex = 0;
-	}*/
-
 	function visibleDataRow() 
 	{
 		document.getElementById("errorDiv").style.display = 'none';
@@ -29,11 +20,11 @@
 			checkRow.style.display = 'none';
 		}
 		var selectedCheck = selectElement.selectedIndex;
-		var rowId = "checkRow" + selectedCheck;
+		var rowId = "checkRow" + document.getElementById("checkIdSelect").selectedIndex;
 		var row = document.getElementById(rowId);
-		var tbId = "checkParameterTxt" + selectedCheck;
-		var parameterTxt = document.getElementById(tbId).value;
-		if (parameterTxt != 'none') {
+		var tbId = "checkParameterTxt" + document.getElementById("checkIdSelect").selectedIndex;
+		var parameterTxt = document.getElementById(tbId).textContent;
+		if (parameterTxt != '') {
 			row.style.display = '';
 		} else {
 			row.style.display = 'none';
@@ -48,11 +39,15 @@
 			errorDivElement.style.display = '';
 			return false;
 		} else {
-			var tbId = "checkParameterValueTxt" + selectedCheck;
-			var parameterValue = document.getElementById(tbId).value;
-			if (parameterValue == '') {
-				errorDivPElement.style.display = '';
-				return false;
+			var paramId = "checkParameterTxt" + document.getElementById("checkIdSelect").selectedIndex;
+			var parameterTxt = document.getElementById(paramId).textContent
+			if (parameterTxt != '') {
+				var tbId = "checkParameterValueTxt" + selectedCheck;
+				var parameterValue = document.getElementById(tbId).value;
+				if (parameterValue == '') {
+					errorDivPElement.style.display = '';
+					return false;
+				}
 			}
 		}
 		return true;
@@ -67,7 +62,7 @@
 	<table>
 		<tr>
 			<td> <spring:message code="dataintegrity.runSingleCheck.choose"/> </td>
-			<td colspan="2">
+			<td>
 				<select name="checkId" id="checkIdSelect" onchange="visibleDataRow();">
 					<option value="">--<spring:message code="dataintegrity.runSingleCheck.pick"/>--</option>
 					<c:forEach items="${runSingleCheckList}" var="checkList">
@@ -79,28 +74,18 @@
 		<%int checkCount = 1; %>
 		<c:forEach items="${runSingleCheckList}" var="checkList">
 			<tr id="<%="checkRow" + checkCount%>" style="display: none;">
-				<td> <spring:message code="dataintegrity.runSingleCheck.parameters"/> </td>
-				<td>
-					<c:if test="${checkList.integrityCheckParameters == ''}">
-						<input type="text" value="none" id="<%="checkParameterTxt" + checkCount%>"/>
-					</c:if>
-					<c:if test="${checkList.integrityCheckParameters != ''}">
-						<input type="text" value="${checkList.integrityCheckParameters}" id="<%="checkParameterTxt" + checkCount%>"/>
-					</c:if>
-				</td>
-				<td>
-					<c:if test="${checkList.integrityCheckParameters == ''}">
-						<input type="text" value="none" id="<%="checkParameterValueTxt" + checkCount%>"/>
-					</c:if>
-					<c:if test="${checkList.integrityCheckParameters != ''}">
-						<input type="text" value="" name="checkParameter${checkList.integrityCheckId}" id="<%="checkParameterValueTxt" + checkCount%>"/>
-					</c:if>
+				<td colspan="2"> 
+					<spring:message code="dataintegrity.runSingleCheck.parameters"/>
+					<label id="<%="checkParameterTxt" + checkCount%>">${checkList.integrityCheckParameters}</label>
+					<br />
+					<spring:message code="dataintegrity.runSingleCheck.parameterValues"/>
+					<input type="text" value="" name="checkParameter${checkList.integrityCheckId}" id="<%="checkParameterValueTxt" + checkCount%>"/>
 				</td>
 			</tr>
 			<%checkCount++; %>
 		</c:forEach>
 		<tr>
-			<td colspan="3">
+			<td colspan="2">
 				<br />
 				<input type="submit" value="<spring:message code="dataintegrity.runSingleCheck.run"/>"/> 
 			</td>

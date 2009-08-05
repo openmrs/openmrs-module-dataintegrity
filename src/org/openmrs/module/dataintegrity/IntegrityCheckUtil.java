@@ -20,6 +20,17 @@ public class IntegrityCheckUtil {
 		}
 	}
 	
+	public static File getZippedExportIntegrityCheckFile() throws Exception {
+		File file = null;
+		try {
+			File folder = getTemporaryCheckRepository();
+			file = new File(folder.getAbsolutePath() + File.separator + "export_checks_temp.zip");
+			return file;
+		} catch (Exception ex) {
+			throw new Exception("Cannot create zip file");
+		}
+	}
+	
 	public static File uploadIntegrityCheckFile(InputStream inputStream, String filename) throws Exception {
 		FileOutputStream outputStream = null;
 		File file = null;

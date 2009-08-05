@@ -23,6 +23,17 @@
 		}
 		return true;
 	}
+
+	function openFailedRecordsPopUp()
+	{
+		var url = document.location.href;
+		var components = url.split('/');
+		var last = components[components.length - 1];
+		var checkId = document.getElementById("checkIdHidden").value;
+		var newUrl = url.replace(last, 'failedRecords.list') + '?checkId=' + checkId;
+	   	window.open(newUrl, 'Failed Records', 'width=600,height=400,menubar=no,status=no,location=no,toolbar=no,scrollbars=yes');
+	}
+		
 </script>
 
 <br />
@@ -56,19 +67,9 @@
 	</c:if>
 	<c:if test="${results.failedRecordCount > 0}">
 	<tr>
-		<td colspan="3"><spring:message code="dataintegrity.results.records"/></td>
-	</tr>
-	<tr>
 		<td colspan="3">
-			<table>
-				<c:forEach items="${results.failedRecords}" var="failedRecord">
-				<tr>
-					<c:forEach items="${failedRecord}" var="record">
-						<td>${record}</td>
-					</c:forEach>
-				</tr>
-				</c:forEach>
-			</table>
+			<input type="hidden" value="${results.checkId}" id="checkIdHidden"/>
+			<a href="#" onclick="openFailedRecordsPopUp();"><spring:message code="dataintegrity.results.failedRecords"/></a>
 		</td>
 	</tr>
 	</c:if>
@@ -76,7 +77,7 @@
 		<td colspan="3">
 			<c:if test="${single == false}">
 				<form method="post" target="_blank" onsubmit="return checkParameters();">
-					<input type="hidden" value="${results.checkId}" name="checkId" />
+					<input type="hidden" value="${results.checkId}" name="checkId"/>
 					<input type="hidden" value="${results.parameters}" id="paramHidden"/>
 					<input type="hidden" value="" id="paramValueHidden" name="checkParameter${results.checkId}"/>"
 					<input type="submit" value="<spring:message code="dataintegrity.results.runAgain"/>"/>

@@ -40,6 +40,12 @@ public class RunMultipleChecksListController extends SimpleFormController {
 	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object obj,
             BindException errors) throws Exception {
 		HttpSession httpSession = request.getSession();
+		
+		//Clear the previously stored failed records in the session
+		if (httpSession.getAttribute("failedRecords") != null) {
+			httpSession.removeAttribute("failedRecords");
+		}
+		
 		String view = getFormView();
 		if (Context.isAuthenticated()) {
 			
