@@ -12,6 +12,7 @@
 	function visibleDataRow() 
 	{
 		document.getElementById("errorDiv").style.display = 'none';
+		document.getElementById("errorDivParameter").style.display = 'none';
 		var selectElement = document.getElementById("checkIdSelect");
 		var i=1;
 		for (i=1; i<selectElement.length; i++) {

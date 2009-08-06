@@ -10,13 +10,15 @@
 <h2><spring:message code="dataintegrity.results.title"/></h2>
 
 <script type="text/javascript">
-	function checkParameters() {
-		var parameters = document.getElementById("paramHidden").value
+	function checkParameters(buttonId) {
+		var hiddenId = "paramHidden" + buttonId;
+		var parameters = document.getElementById(hiddenId).value
 		if (parameters != "") {
 			var message = "Enter parameter value(s) for: " + parameters;
 			var parameterValues = window.prompt(message,"");
 			if (parameterValues != null) {
-				document.getElementById("paramValueHidden").value = parameterValues;
+				var hiddenValueId = "paramValueHidden" + buttonId;
+				document.getElementById(hiddenValueId).value = parameterValues;
 			} else {
 				return false;
 			}
@@ -24,20 +26,22 @@
 		return true;
 	}
 
-	function openFailedRecordsPopUp()
+	function openFailedRecordsPopUp(buttonId)
 	{
 		var url = document.location.href;
 		var components = url.split('/');
 		var last = components[components.length - 1];
-		var checkId = document.getElementById("checkIdHidden").value;
+		var hiddenId = "checkIdHidden" + buttonId;
+		var checkId = document.getElementById(hiddenId).value;
 		var newUrl = url.replace(last, 'failedRecords.list') + '?checkId=' + checkId;
-	   	window.open(newUrl, 'Failed Records', 'width=600,height=400,menubar=no,status=no,location=no,toolbar=no,scrollbars=yes');
+	   	window.open(newUrl, 'Failed_Records', 'width=600,height=400,menubar=no,status=no,location=no,toolbar=no,scrollbars=yes');
 	}
 		
 </script>
 
 <br />
 <c:if test="${not empty checkResults}">
+<%int checkCount = 0; %>
 <c:forEach items="${checkResults}" var="results">
 <b class="boxHeader">${results.checkName} <spring:message code="dataintegrity.results.results"/></b>
 <table class="box">
@@ -68,26 +72,26 @@
 	<c:if test="${results.failedRecordCount > 0}">
 	<tr>
 		<td colspan="3">
-			<input type="hidden" value="${results.checkId}" id="checkIdHidden"/>
-			<a href="#" onclick="openFailedRecordsPopUp();"><spring:message code="dataintegrity.results.failedRecords"/></a>
+			<input type="hidden" value="${results.checkId}" id="<%="checkIdHidden" + checkCount%>"/>
+			<a href="#" onclick="openFailedRecordsPopUp(this.id);" id="<%=checkCount%>"><spring:message code="dataintegrity.results.failedRecords"/></a>
 		</td>
 	</tr>
 	</c:if>
 	<tr>
 		<td colspan="3">
 			<c:if test="${single == false}">
-				<form method="post" target="_blank" onsubmit="return checkParameters();">
+				<form method="post" target="_blank" onsubmit="return checkParameters(this.id);" id="<%=checkCount%>">
 					<input type="hidden" value="${results.checkId}" name="checkId"/>
-					<input type="hidden" value="${results.parameters}" id="paramHidden"/>
-					<input type="hidden" value="" id="paramValueHidden" name="checkParameter${results.checkId}"/>"
+					<input type="hidden" value="${results.parameters}" id="<%="paramHidden" + checkCount%>"/>
+					<input type="hidden" value="" id="<%="paramValueHidden" + checkCount%>" name="checkParameter${results.checkId}"/>
 					<input type="submit" value="<spring:message code="dataintegrity.results.runAgain"/>"/>
 				</form>
 			</c:if>
 			<c:if test="${single == true}">
-				<form method="post" onsubmit="return checkParameters();">
-					<input type="hidden" value="${results.checkId}" name="checkId" />
-					<input type="hidden" value="${results.parameters}" id="paramHidden"/>
-					<input type="hidden" value="" id="paramValueHidden" name="checkParameter${results.checkId}"/>
+				<form method="post" onsubmit="return checkParameters(this.id);" id="<%=checkCount%>">
+					<input type="hidden" value="${results.checkId}" name="checkId"/>
+					<input type="hidden" value="${results.parameters}" id="<%="paramHidden" + checkCount%>"/>
+					<input type="hidden" value="" id="<%="paramValueHidden" + checkCount%>" name="checkParameter${results.checkId}"/>
 					<input type="submit" value="<spring:message code="dataintegrity.results.runAgain"/>"/>
 				</form>
 			</c:if>
@@ -95,6 +99,7 @@
 	</tr>
 </table>
 <br />
+<%checkCount++; %>
 </c:forEach>
 </c:if>
 

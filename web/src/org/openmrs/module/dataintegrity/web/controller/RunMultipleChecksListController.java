@@ -68,7 +68,11 @@ public class RunMultipleChecksListController extends SimpleFormController {
 						int id = Integer.valueOf(checkId);
 						DataIntegrityCheckTemplate template = service.getDataIntegrityCheckTemplate(id);
 						checkName = template.getIntegrityCheckName();
-						DataIntegrityCheckResultTemplate resultTemplate = service.runIntegrityCheck(template, null);
+						String parameterValues = null;
+						if (!template.getIntegrityCheckParameters().equals("")) {
+							parameterValues = request.getParameter("checkParameter" + checkId);
+						}
+						DataIntegrityCheckResultTemplate resultTemplate = service.runIntegrityCheck(template, parameterValues);
 						results.add(resultTemplate);
 						successCount++;
 					} catch (Exception e) {
@@ -84,7 +88,9 @@ public class RunMultipleChecksListController extends SimpleFormController {
 				success = msa.getMessage("dataintegrity.runMultipleChecks.totalCount") + " " + (successCount + errorCount) + "<br/>";
 				success += msa.getMessage("dataintegrity.runMultipleChecks.successCount") + " " + successCount+ "<br/>";
 				error = errorCount > 0 ? (msa.getMessage("dataintegrity.runMultipleChecks.errorCount") + " " + errorCount + "<br/>") : "";
-				error += "Stack Trace: "  + buffer.toString();
+				if (!buffer.toString().equals("")) {
+					error += "Stack Trace: "  + buffer.toString();
+				}
 			} else { 
 				error = msa.getMessage("dataintegrity.runMultipleChecks.error");
 				view = "runMultipleChecks.list";
