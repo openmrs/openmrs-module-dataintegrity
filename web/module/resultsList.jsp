@@ -1,11 +1,18 @@
 <%@ include file="/WEB-INF/template/include.jsp" %>
-
-
+<openmrs:require privilege="Run Integrity Checks" otherwise="/login.htm" redirect="/admin/index.htm" />
 <%@page import="org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate"%>
-<%@page import="java.util.List"%><openmrs:require privilege="Run Integrity Checks" otherwise="/login.htm" redirect="/admin/index.htm" />
-
+<%@page import="java.util.List"%>
+<%@page import="org.openmrs.module.dataintegrity.DataIntegrityConstants"%>
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <%@ include file="localHeader.jsp" %>
+
+<%
+	pageContext.setAttribute("stack", session.getAttribute(DataIntegrityConstants.OPENMRS_ERROR_STACK_TRACE));
+  	session.removeAttribute(DataIntegrityConstants.OPENMRS_ERROR_STACK_TRACE);
+%>
+<c:if test="${stack != null}">
+	<div id="openmrs_error"><spring:message code="${stack}" text="${stack}"/></div>
+</c:if>
 
 <h2><spring:message code="dataintegrity.results.title"/></h2>
 
@@ -45,12 +52,22 @@
 <c:forEach items="${checkResults}" var="results">
 <b class="boxHeader">${results.checkName} <spring:message code="dataintegrity.results.results"/></b>
 <table class="box">
+	<tr>
+		<td width="20%"><spring:message code="dataintegrity.results.count"/></td>
+		<td width="25%">${results.failedRecordCount}</td>
+		<td width="55%"></td>
+	</tr>
+	<tr>
+		<td><spring:message code="dataintegrity.checksList.columns.failOp"/></td>
+		<td>${results.failOperator}</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><spring:message code="dataintegrity.checksList.columns.fail"/></td>
+		<td>${results.failDirective}</td>
+		<td></td>
+	</tr>
 	<c:if test="${results.checkPassed == true}">
-		<tr>
-			<td width="20%"><spring:message code="dataintegrity.results.count"/></td>
-			<td width="25%">${results.failedRecordCount}</td>
-			<td width="55%"></td>
-		</tr>
 		<tr>
 			<td width="20%"><spring:message code="dataintegrity.results.status"/></td>
 			<td align="center" bgcolor="Green" width="25%" style="font-weight: bold; color: white;"><spring:message code="dataintegrity.results.pass"/></td>
@@ -58,11 +75,6 @@
 		</tr>
 	</c:if>
 	<c:if test="${results.checkPassed == false}">
-		<tr>
-			<td width="20%"><spring:message code="dataintegrity.results.count"/></td>
-			<td width="25%">${results.failedRecordCount}</td>
-			<td width="55%"></td>
-		</tr>
 		<tr>
 			<td width="20%"><spring:message code="dataintegrity.results.status"/></td>
 			<td align="center" bgcolor="Red" width="25%" style="font-weight: bold; color: white;"><spring:message code="dataintegrity.results.fail"/></td>

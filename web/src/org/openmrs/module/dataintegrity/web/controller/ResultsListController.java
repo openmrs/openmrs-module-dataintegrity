@@ -1,5 +1,8 @@
 package org.openmrs.module.dataintegrity.web.controller;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +17,7 @@ import org.openmrs.PersonAttributeType;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate;
+import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 import org.openmrs.web.WebConstants;
@@ -71,6 +75,7 @@ public class ResultsListController extends SimpleFormController {
 			String success = "";
 			String error = "";
 			String checkName = "";
+			String stack = "";
 			
 			if (checkId != null) {
 				try {
@@ -88,7 +93,11 @@ public class ResultsListController extends SimpleFormController {
 					success = checkName + " " + msa.getMessage("dataintegrity.runSingleCheck.success");
 					view = getSuccessView();
 				} catch (Exception e) {
-					error = msa.getMessage("dataintegrity.runSingleCheck.error") + " " + checkName;
+					error = msa.getMessage("dataintegrity.runSingleCheck.error") + " " + checkName + ". Message: " + e.getMessage() + "<br />";
+					Writer writer = new StringWriter();
+					PrintWriter printWriter = new PrintWriter(writer);
+					e.printStackTrace(printWriter);
+					stack = writer.toString();
 					view = "runSingleCheck.list";
 				}
 			} else {
@@ -100,6 +109,8 @@ public class ResultsListController extends SimpleFormController {
 				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, success);
 			if (!error.equals(""))
 				httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, error);
+			if (!stack.equals(""))
+				httpSession.setAttribute(DataIntegrityConstants.OPENMRS_ERROR_STACK_TRACE, stack);
 		}
 		view = getSuccessView();
 		ModelAndView model = new ModelAndView(new RedirectView(view));

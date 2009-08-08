@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate;
 import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
+import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.openmrs.web.WebConstants;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -50,6 +51,7 @@ public class RunSingleCheckListController extends SimpleFormController {
 			String checkId = request.getParameter("checkId");
 			String success = "";
 			String error = "";
+			String stack = "";
 			String checkName = "";
 			
 			if (checkId != null) {
@@ -72,7 +74,7 @@ public class RunSingleCheckListController extends SimpleFormController {
 					Writer writer = new StringWriter();
 					PrintWriter printWriter = new PrintWriter(writer);
 					e.printStackTrace(printWriter);
-					error += "Stack Trace: " + writer.toString();
+					stack = writer.toString();
 					view = "runSingleCheck.list";
 				}
 			} else {
@@ -84,6 +86,8 @@ public class RunSingleCheckListController extends SimpleFormController {
 				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, success);
 			if (!error.equals(""))
 				httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, error);
+			if (!stack.equals(""))
+				httpSession.setAttribute(DataIntegrityConstants.OPENMRS_ERROR_STACK_TRACE, stack);
 		}
 		view = getSuccessView();
 		ModelAndView model = new ModelAndView(new RedirectView(view));

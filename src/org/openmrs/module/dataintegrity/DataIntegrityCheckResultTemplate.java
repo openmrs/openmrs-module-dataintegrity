@@ -9,6 +9,8 @@ public class DataIntegrityCheckResultTemplate {
 	private boolean checkPassed;
 	private List<Object[]> failedRecords;
 	private String parameters;
+	private String failDirective;
+	private String failOperator;
 	
 	public int getCheckId() {
 		return checkId;
@@ -45,5 +47,17 @@ public class DataIntegrityCheckResultTemplate {
 	}
 	public void setParameters(String parameters) {
 		this.parameters = parameters;
+	}
+	public String getFailDirective() {
+		return failDirective;
+	}
+	public void setFailDirective(String failDirective) {
+		this.failDirective = failDirective;
+	}
+	public String getFailOperator() {
+		return failOperator;
+	}
+	public void setFailOperator(String failOperator) {
+		this.failOperator = failOperator;
 	}
 }

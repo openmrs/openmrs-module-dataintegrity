@@ -81,6 +81,8 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 		resultTemplate.setFailedRecords(failedRecords);
 		resultTemplate.setCheckPassed(executor.getCheckResult());
 		resultTemplate.setFailedRecordCount(failedRecords.size());
+		resultTemplate.setFailDirective(template.getIntegrityCheckFailDirective());
+		resultTemplate.setFailOperator(template.getIntegrityCheckFailDirectiveOperator());
 		return resultTemplate;
 	}
 }

@@ -16,4 +16,5 @@ public class DataIntegrityConstants {
 	public static String FAILURE_OPERATOR_NOT_EQUALS = "not equals";
 	public static String FAILURE_OPERATOR_CONTAINS = "contains";
 	public static String FAILURE_OPERATOR_NOT_CONTAINS = "not contains";
+	public static String OPENMRS_ERROR_STACK_TRACE = "stacktrace";
 }
