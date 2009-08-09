@@ -1,14 +1,12 @@
 <%@ include file="/WEB-INF/template/include.jsp" %>
 <openmrs:require privilege="Run Integrity Checks" otherwise="/login.htm" redirect="/admin/index.htm" />
-<%@page import="org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate"%>
-<%@page import="java.util.List"%>
 <%@page import="org.openmrs.module.dataintegrity.DataIntegrityConstants"%>
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <%@ include file="localHeader.jsp" %>
 
 <%
-	pageContext.setAttribute("stack", session.getAttribute(DataIntegrityConstants.OPENMRS_ERROR_STACK_TRACE));
-  	session.removeAttribute(DataIntegrityConstants.OPENMRS_ERROR_STACK_TRACE);
+	pageContext.setAttribute("stack", session.getAttribute(DataIntegrityConstants.DATA_INTEGRITY_ERROR_STACK_TRACE));
+  	session.removeAttribute(DataIntegrityConstants.DATA_INTEGRITY_ERROR_STACK_TRACE);
 %>
 <c:if test="${stack != null}">
 	<div id="openmrs_error"><spring:message code="${stack}" text="${stack}"/></div>
@@ -85,7 +83,12 @@
 	<tr>
 		<td colspan="3">
 			<input type="hidden" value="${results.checkId}" id="<%="checkIdHidden" + checkCount%>"/>
-			<a href="#" onclick="openFailedRecordsPopUp(this.id);" id="<%=checkCount%>"><spring:message code="dataintegrity.results.failedRecords"/></a>
+			<a onclick="openFailedRecordsPopUp(this.id);" onmouseover="this.style.cursor='pointer'" id="<%=checkCount%>"><spring:message code="dataintegrity.results.failedRecords"/></a>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3">
+			<a href="repairCheck.list?checkId=${results.checkId}" target="_blank"><spring:message code="dataintegrity.repair.failedRecords"/></a>
 		</td>
 	</tr>
 	</c:if>

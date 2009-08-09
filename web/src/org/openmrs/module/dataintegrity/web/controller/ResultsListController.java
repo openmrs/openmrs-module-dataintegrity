@@ -69,6 +69,10 @@ public class ResultsListController extends SimpleFormController {
 		HttpSession httpSession = request.getSession();
 		MessageSourceAccessor msa = getMessageSourceAccessor();
 		
+		if (httpSession.getAttribute("failedRecords") != null) {
+			httpSession.removeAttribute("failedRecords");
+		}
+		
 		String view = getFormView();
 		if (Context.isAuthenticated()) {
 			String checkId = request.getParameter("checkId");
@@ -110,7 +114,7 @@ public class ResultsListController extends SimpleFormController {
 			if (!error.equals(""))
 				httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, error);
 			if (!stack.equals(""))
-				httpSession.setAttribute(DataIntegrityConstants.OPENMRS_ERROR_STACK_TRACE, stack);
+				httpSession.setAttribute(DataIntegrityConstants.DATA_INTEGRITY_ERROR_STACK_TRACE, stack);
 		}
 		view = getSuccessView();
 		ModelAndView model = new ModelAndView(new RedirectView(view));

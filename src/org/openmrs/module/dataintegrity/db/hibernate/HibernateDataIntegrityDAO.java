@@ -62,4 +62,9 @@ public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
 	public SessionFactory getSessionFactory() {
 		return this.sessionFactory;
 	}
+
+	public void repairDataIntegrityCheckViaScript(DataIntegrityCheckTemplate template) throws DAOException {
+		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(template.getIntegrityCheckRepairDirective());
+		query.executeUpdate();
+	}
 }

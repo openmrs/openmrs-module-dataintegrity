@@ -33,4 +33,6 @@ public interface DataIntegrityDAO {
     public void deleteDataIntegrityCheckTemplate(DataIntegrityCheckTemplate template) throws DAOException;
     
     public SessionFactory getSessionFactory();
+    
+    public void repairDataIntegrityCheckViaScript(DataIntegrityCheckTemplate template) throws DAOException;
 }

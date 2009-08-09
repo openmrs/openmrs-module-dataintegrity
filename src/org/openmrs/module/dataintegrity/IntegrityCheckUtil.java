@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.openmrs.util.OpenmrsUtil;
 
 public class IntegrityCheckUtil {
@@ -99,5 +101,10 @@ public class IntegrityCheckUtil {
 			}
 		}
 		return checkCode;
+	}
+	
+	public static String getWebAppUrl(HttpServletRequest request) {
+		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+		return url;
 	}
 }

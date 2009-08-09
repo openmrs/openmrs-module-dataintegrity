@@ -70,7 +70,7 @@ public class IntegrityCheckFormController extends SimpleFormController {
 			}
 			
 			String codeCopy = code;
-			if (codeCopy.toLowerCase().contains("delete") || codeCopy.toLowerCase().contains("update")) {
+			if (codeCopy.toLowerCase().contains("delete") || codeCopy.toLowerCase().contains("update") || codeCopy.toLowerCase().contains("insert")) {
 				throw new Exception("Code will modify the database hence not allowed");
 			}
 			check.setIntegrityCheckName(checkName);

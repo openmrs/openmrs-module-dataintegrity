@@ -29,7 +29,7 @@ public class DataIntegritySqlUpload implements IDataIntegrityCheckUpload {
 		this.code = codeNode.getFirstChild().getNodeValue();
 		
 		String codeCopy = this.code;
-		if (codeCopy.toLowerCase().contains("delete") || codeCopy.toLowerCase().contains("update")) {
+		if (codeCopy.toLowerCase().contains("delete") || codeCopy.toLowerCase().contains("update") || codeCopy.toLowerCase().contains("insert")) {
 			throw new Exception("Code will modify the database hence not allowed");
 		}
 		

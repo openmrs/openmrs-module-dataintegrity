@@ -70,7 +70,7 @@ public class RunSingleCheckListController extends SimpleFormController {
 					success = checkName + " " + msa.getMessage("dataintegrity.runSingleCheck.success");
 					view = getSuccessView();
 				} catch (Exception e) {
-					error = msa.getMessage("dataintegrity.runSingleCheck.error") + " " + checkName + ". Message: " + e.getMessage() + "<br />";
+					error = msa.getMessage("dataintegrity.runSingleCheck.error") + " " + checkName + ". Message: " + e.getMessage();
 					Writer writer = new StringWriter();
 					PrintWriter printWriter = new PrintWriter(writer);
 					e.printStackTrace(printWriter);
@@ -87,7 +87,7 @@ public class RunSingleCheckListController extends SimpleFormController {
 			if (!error.equals(""))
 				httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, error);
 			if (!stack.equals(""))
-				httpSession.setAttribute(DataIntegrityConstants.OPENMRS_ERROR_STACK_TRACE, stack);
+				httpSession.setAttribute(DataIntegrityConstants.DATA_INTEGRITY_ERROR_STACK_TRACE, stack);
 		}
 		view = getSuccessView();
 		ModelAndView model = new ModelAndView(new RedirectView(view));

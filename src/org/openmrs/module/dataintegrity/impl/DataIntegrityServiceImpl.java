@@ -85,4 +85,8 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 		resultTemplate.setFailOperator(template.getIntegrityCheckFailDirectiveOperator());
 		return resultTemplate;
 	}
+	
+	public void repairDataIntegrityCheckViaScript(DataIntegrityCheckTemplate template) throws Exception {
+		this.dao.repairDataIntegrityCheckViaScript(template);
+	}
 }

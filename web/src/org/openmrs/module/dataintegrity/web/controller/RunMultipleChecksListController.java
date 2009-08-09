@@ -103,7 +103,7 @@ public class RunMultipleChecksListController extends SimpleFormController {
 			if (!error.equals(""))
 				httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, error);
 			if (!stack.equals(""))
-				httpSession.setAttribute(DataIntegrityConstants.OPENMRS_ERROR_STACK_TRACE, stack);
+				httpSession.setAttribute(DataIntegrityConstants.DATA_INTEGRITY_ERROR_STACK_TRACE, stack);
 		}
 		
 		return new ModelAndView(new RedirectView(view));

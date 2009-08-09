@@ -44,12 +44,12 @@
 			<td valign="top">${integrityChecksObj.integrityCheckId}</td>
 			<td valign="top" width="20%"><a href="integrityCheck.form?checkId=${integrityChecksObj.integrityCheckId}">${integrityChecksObj.integrityCheckName}</a></td>
 			<td valign="top">${integrityChecksObj.integrityCheckType}</td>
-			<td valign="top" width="20%" height="50"><div style="overflow: auto; height: 50px;">${integrityChecksObj.integrityCheckCode}</div></td>
+			<td valign="top" width="20%" height="55"><div style="overflow: auto; height: 55px;">${integrityChecksObj.integrityCheckCode}</div></td>
 			<td valign="top">${integrityChecksObj.integrityCheckResultType}</td>
 			<td valign="top">${integrityChecksObj.integrityCheckFailDirectiveOperator}</td>
 			<td valign="top">${integrityChecksObj.integrityCheckFailDirective}</td>
 			<td valign="top">${integrityChecksObj.integrityCheckRepairType}</td>
-			<td valign="top">${integrityChecksObj.integrityCheckRepairDirective}</td>
+			<td valign="top" width="20%" height="55"><div style="overflow: auto; height: 55px;">${integrityChecksObj.integrityCheckRepairDirective}</div></td>
 			<td valign="top">${integrityChecksObj.integrityCheckParameters}</td>
 		</tr>
 		</c:forEach>
