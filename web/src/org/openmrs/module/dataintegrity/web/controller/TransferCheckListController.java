@@ -151,7 +151,9 @@ public class TransferCheckListController extends SimpleFormController {
 				FileInputStream fileToDownload = new FileInputStream(zipFile);
 				ServletOutputStream output = response.getOutputStream();
 				response.setContentType("application/octet-stream");
-				response.setHeader("Content-Disposition", "attachment; filename=IntegrityChecks.zip");
+				String exportFileName = request.getParameter("fileName");
+				String header = (exportFileName == null || exportFileName.equals("")) ? "attachment; filename=IntegrityChecks.zip" : "attachment; filename=" + exportFileName + ".zip";
+				response.setHeader("Content-Disposition", header);
 				response.setContentLength(fileToDownload.available());
 				int c;
 				while ((c = fileToDownload.read()) != -1)

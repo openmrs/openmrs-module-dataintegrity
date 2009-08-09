@@ -39,16 +39,17 @@
 		<table>
 			<tr>
 				<th></th>
-				<th align="left"> <spring:message code="dataintegrity.checksList.columns.name"/> </th>
+				<th align="left"><spring:message code="dataintegrity.checksList.columns.name"/></th>
+				<th></th>
 			</tr>
 			<c:forEach items="${existingChecks}" var="integrityChecksObj">
 			<tr>
 				<td valign="top"><input type="checkbox" name="integrityCheckId" value="${integrityChecksObj.integrityCheckId}"></td>
-				<td align="left">${integrityChecksObj.integrityCheckName}</td>
+				<td align="left" colspan="2">${integrityChecksObj.integrityCheckName}</td>
 			</tr>
 			</c:forEach>
 			<tr>
-				<td colspan="2">
+				<td colspan="3">
 					<table><tr>
 						<td>
 							<a href="#" onclick="checkAll(document.exportForm.integrityCheckId)"><spring:message code="dataintegrity.runMultipleChecks.selectAll"/></a>
@@ -60,7 +61,11 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2"><input type="submit" value='<spring:message code="dataintegrity.upload.exportBtn"/>'></td>
+				<td colspan="2"><br /><spring:message code="dataintegrity.upload.exportFile"/></td>
+				<td><input type="text" name="fileName" value="">.zip</td>
+			</tr>
+			<tr>
+				<td colspan="3"><input type="submit" value='<spring:message code="dataintegrity.upload.exportBtn"/>'></td>
 			</tr>
 		</table>
 	</c:if>
