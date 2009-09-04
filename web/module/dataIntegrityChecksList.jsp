@@ -41,16 +41,16 @@
 		</thead>
 		<c:forEach items="${dataIntegrityChecksList}" var="integrityChecksObj" varStatus="varStatus">
 		<tr class="<c:choose><c:when test="${varStatus.index % 2 == 0}">oddRow</c:when><c:otherwise>evenRow</c:otherwise></c:choose>" id="${module.moduleId}">
-			<td valign="top">${integrityChecksObj.integrityCheckId}</td>
-			<td valign="top" width="20%"><a href="integrityCheck.form?checkId=${integrityChecksObj.integrityCheckId}">${integrityChecksObj.integrityCheckName}</a></td>
-			<td valign="top">${integrityChecksObj.integrityCheckType}</td>
-			<td valign="top" width="20%" height="55"><div style="overflow: auto; height: 55px;">${integrityChecksObj.integrityCheckCode}</div></td>
-			<td valign="top">${integrityChecksObj.integrityCheckResultType}</td>
-			<td valign="top">${integrityChecksObj.integrityCheckFailDirectiveOperator}</td>
-			<td valign="top">${integrityChecksObj.integrityCheckFailDirective}</td>
-			<td valign="top">${integrityChecksObj.integrityCheckRepairType}</td>
-			<td valign="top" width="20%" height="55"><div style="overflow: auto; height: 55px;">${integrityChecksObj.integrityCheckRepairDirective}</div></td>
-			<td valign="top">${integrityChecksObj.integrityCheckParameters}</td>
+			<td valign="top" width="20">${integrityChecksObj.integrityCheckId}</td>
+			<td valign="top" width="225"><a href="integrityCheck.form?checkId=${integrityChecksObj.integrityCheckId}">${integrityChecksObj.integrityCheckName}</a></td>
+			<td valign="top" width="40">${integrityChecksObj.integrityCheckType}</td>
+			<td valign="top" width="250" height="55"><div style="overflow: auto; height: 55px;">${integrityChecksObj.integrityCheckCode}</div></td>
+			<td valign="top" width="60">${integrityChecksObj.integrityCheckResultType}</td>
+			<td valign="top" width="80">${integrityChecksObj.integrityCheckFailDirectiveOperator}</td>
+			<td valign="top" width="80">${integrityChecksObj.integrityCheckFailDirective}</td>
+			<td valign="top" width="60">${integrityChecksObj.integrityCheckRepairType}</td>
+			<td valign="top" width="150" height="55"><div style="overflow: auto; height: 55px; width: 50">${integrityChecksObj.integrityCheckRepairDirective}</div></td>
+			<td valign="top" width="80">${integrityChecksObj.integrityCheckParameters}</td>
 		</tr>
 		</c:forEach>
 	</table>
