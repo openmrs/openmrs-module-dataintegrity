@@ -1,6 +1,8 @@
-package org.openmrs.module.dataintegrity;
+package org.openmrs.module.dataintegrity.executors;
 
 import java.util.List;
+
+import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 
 public interface ICheckExecutor {
 	/**

@@ -1,10 +1,13 @@
-package org.openmrs.module.dataintegrity;
+package org.openmrs.module.dataintegrity.executors;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
+import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
+import org.openmrs.module.dataintegrity.DataIntegrityConstants;
+import org.openmrs.module.dataintegrity.IntegrityCheckUtil;
 import org.openmrs.module.dataintegrity.db.DataIntegrityDAO;
 
 public class BooleanCheckExecutor implements ICheckExecutor {

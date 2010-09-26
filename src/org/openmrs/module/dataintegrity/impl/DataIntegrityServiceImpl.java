@@ -17,16 +17,16 @@ package org.openmrs.module.dataintegrity.impl;
 import java.util.List;
 
 import org.openmrs.api.APIException;
-import org.openmrs.module.dataintegrity.BooleanCheckExecutor;
-import org.openmrs.module.dataintegrity.CountCheckExecutor;
 import org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate;
+import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
-import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
-import org.openmrs.module.dataintegrity.ICheckExecutor;
-import org.openmrs.module.dataintegrity.NumberCheckExecutor;
-import org.openmrs.module.dataintegrity.StringCheckExecutor;
 import org.openmrs.module.dataintegrity.db.DataIntegrityDAO;
+import org.openmrs.module.dataintegrity.executors.BooleanCheckExecutor;
+import org.openmrs.module.dataintegrity.executors.CountCheckExecutor;
+import org.openmrs.module.dataintegrity.executors.ICheckExecutor;
+import org.openmrs.module.dataintegrity.executors.NumberCheckExecutor;
+import org.openmrs.module.dataintegrity.executors.StringCheckExecutor;
 
 public class DataIntegrityServiceImpl implements DataIntegrityService {
 
