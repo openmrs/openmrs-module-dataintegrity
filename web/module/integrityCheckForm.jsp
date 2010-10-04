@@ -276,6 +276,10 @@
 				<td colspan="2"><input type="text" name="parameters" value="${existingCheck.integrityCheckParameters}" size="52" maxlength="500"/></td>
 			</tr>
 			<tr>
+				<td><spring:message code="dataintegrity.addeditCheck.clearResults"/></td>
+				<td colspan="2"><input type="checkbox" name="clearResults" /></td>
+			</tr>
+			<tr>
 				<td colspan="3">
 					<input type="hidden" name="checkId" value="${existingCheck.integrityCheckId}" />
 					<input type="submit" value="<spring:message code="dataintegrity.addeditCheck.save"/>"/>

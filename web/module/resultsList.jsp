@@ -42,13 +42,28 @@
 	   	window.open(newUrl, 'Failed_Records', 'width=600,height=400,menubar=no,status=no,location=no,toolbar=no,scrollbars=yes');
 	}
 		
+	function millisToEnglish(millis) {
+		hours = Math.floor(millis/3600000);
+		millis -= hours*3600000;
+		minutes = Math.floor(millis/60000);
+		millis -= minutes*60000;
+		seconds = millis/1000;
+		out = "";
+		if (hours > 0)
+			out += hours + " hours, ";
+		if (hours > 0 || minutes > 0)
+			out += minutes + " minutes, ";
+		if (hours > 0 || minutes > 0 || seconds > 0)
+			out += seconds + " seconds";
+		return out;
+	}
 </script>
 
 <br />
 <c:if test="${not empty checkResults}">
 <%int checkCount = 0; %>
 <c:forEach items="${checkResults}" var="results">
-<b class="boxHeader">${results.checkName} <spring:message code="dataintegrity.results.results"/></b>
+<b class="boxHeader">${results.integrityCheck.name} <spring:message code="dataintegrity.results.results"/></b>
 <table class="box">
 	<tr>
 		<td width="20%"><spring:message code="dataintegrity.results.count"/></td>
@@ -57,12 +72,12 @@
 	</tr>
 	<tr>
 		<td><spring:message code="dataintegrity.checksList.columns.failOp"/></td>
-		<td>${results.failOperator}</td>
+		<td>${results.integrityCheck.failDirectiveOperator}</td>
 		<td></td>
 	</tr>
 	<tr>
 		<td><spring:message code="dataintegrity.checksList.columns.fail"/></td>
-		<td>${results.failDirective}</td>
+		<td>${results.integrityCheck.failDirective}</td>
 		<td></td>
 	</tr>
 	<c:if test="${results.checkPassed == true}">
@@ -79,16 +94,28 @@
 			<td width="55%"></td>
 		</tr>
 	</c:if>
+	<c:if test="${not empty results.dateOccurred}">
+		<tr>
+			<td width="20%"><spring:message code="dataintegrity.results.date"/></td>
+			<td width="75%" colspan="3"><openmrs:formatDate type="long" date="${results.dateOccurred}"/></td>
+		</tr>
+	</c:if>
+	<c:if test="${not empty results.duration}">
+		<tr>
+			<td width="20%"><spring:message code="dataintegrity.results.duration"/></td>
+			<td width="75%" colspan="3"><script type="text/javascript">document.write(millisToEnglish(${results.duration}));</script></td>
+		</tr>
+	</c:if>
 	<c:if test="${results.failedRecordCount > 0}">
 	<tr>
 		<td colspan="3">
-			<input type="hidden" value="${results.checkId}" id="<%="checkIdHidden" + checkCount%>"/>
+			<input type="hidden" value="${results.integrityCheck.id}" id="<%="checkIdHidden" + checkCount%>"/>
 			<a onclick="openFailedRecordsPopUp(this.id);" onmouseover="this.style.cursor='pointer'" id="<%=checkCount%>"><spring:message code="dataintegrity.results.failedRecords"/></a>
 		</td>
 	</tr>
 	<tr>
 		<td colspan="3">
-			<a href="repairCheck.list?checkId=${results.checkId}" target="_blank"><spring:message code="dataintegrity.repair.failedRecords"/></a>
+			<a href="repairCheck.list?checkId=${results.id}" target="_blank"><spring:message code="dataintegrity.repair.failedRecords"/></a>
 		</td>
 	</tr>
 	</c:if>
@@ -96,17 +123,17 @@
 		<td colspan="3">
 			<c:if test="${single == false}">
 				<form method="post" target="_blank" onsubmit="return checkParameters(this.id);" id="<%=checkCount%>">
-					<input type="hidden" value="${results.checkId}" name="checkId"/>
-					<input type="hidden" value="${results.parameters}" id="<%="paramHidden" + checkCount%>"/>
-					<input type="hidden" value="" id="<%="paramValueHidden" + checkCount%>" name="checkParameter${results.checkId}"/>
+					<input type="hidden" value="${results.integrityCheck.id}" name="checkId"/>
+					<input type="hidden" value="${results.integrityCheck.repairParameters}" id="<%="paramHidden" + checkCount%>"/>
+					<input type="hidden" value="" id="<%="paramValueHidden" + checkCount%>" name="checkParameter${results.integrityCheck.id}"/>
 					<input type="submit" value="<spring:message code="dataintegrity.results.runAgain"/>"/>
 				</form>
 			</c:if>
 			<c:if test="${single == true}">
 				<form method="post" onsubmit="return checkParameters(this.id);" id="<%=checkCount%>">
-					<input type="hidden" value="${results.checkId}" name="checkId"/>
-					<input type="hidden" value="${results.parameters}" id="<%="paramHidden" + checkCount%>"/>
-					<input type="hidden" value="" id="<%="paramValueHidden" + checkCount%>" name="checkParameter${results.checkId}"/>
+					<input type="hidden" value="${results.integrityCheck.id}" name="checkId"/>
+					<input type="hidden" value="${results.integrityCheck.repairParameters}" id="<%="paramHidden" + checkCount%>"/>
+					<input type="hidden" value="" id="<%="paramValueHidden" + checkCount%>" name="checkParameter${results.integrityCheck.id}"/>
 					<input type="submit" value="<spring:message code="dataintegrity.results.runAgain"/>"/>
 				</form>
 			</c:if>

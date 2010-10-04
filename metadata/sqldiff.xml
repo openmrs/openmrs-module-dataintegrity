@@ -37,4 +37,36 @@
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		</sql>
 	</diff>
+	<diff>
+		<version>2.5.1</version>
+		<author>Jeremy Keiper</author>
+		<date>October 1st 2010</date>
+		<description>
+			Data Integrity Results table added
+		</description>
+		<sql>
+			DROP TABLE IF EXISTS `dataintegrity_results`;
+			CREATE TABLE  `dataintegrity_results` (
+			  `results_id` int(10) unsigned NOT NULL auto_increment,
+			  `integrity_check_id` int(10) unsigned NOT NULL,
+			  `failed_record_count` int(10) NOT NULL,
+			  `check_passed` int(1) NOT NULL,
+			  `failed_records` mediumtext default NULL,
+			  `date_occurred` datetime NOT NULL,
+			  PRIMARY KEY  (`results_id`),
+			  CONSTRAINT `linked data integrity check` FOREIGN KEY (`integrity_check_id`) REFERENCES `dataintegrity_integrity_checks` (`dataintegrity_integrity_check_id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		</sql>
+	</diff>
+	<diff>
+		<version>2.5.2</version>
+		<author>Jeremy Keiper</author>
+		<date>October 4th 2010</date>
+		<description>
+			Added duration column to results table
+		</description>
+		<sql>
+			ALTER TABLE `dataintegrity_results` ADD COLUMN `duration` BIGINT NOT NULL;
+		</sql>
+	</diff>
 </sqldiff>

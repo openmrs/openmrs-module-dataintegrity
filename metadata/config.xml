@@ -5,7 +5,7 @@
 	<!-- DataIntegrity Module Properties -->
 	<id>dataintegrity</id>
 	<name>DataIntegrity Module</name>
-	<version>1.0</version>
+	<version>1.1</version>
 	<package>org.openmrs.module.@MODULE_ID@</package>
 	<author>Nimantha Baranasuriya</author>
 	<description>An OpenMRS Module to check data integrity</description>
@@ -50,6 +50,7 @@
 	<!-- Hibernate Mapping -->
 	<mappingFiles>
         DataIntegrityTemplate.hbm.xml
+		DataIntegrityResults.hbm.xml
     </mappingFiles>
     <!-- /Hibernate Mapping -->
     

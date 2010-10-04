@@ -4,9 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -54,7 +52,6 @@ public class RunMultipleChecksListController extends SimpleFormController {
 			
 			String success = "";
 			String error = "";
-			String checkName = "";
 			String stack = "";
 			DataIntegrityService service = getDataIntegrityService();
 			
@@ -68,9 +65,8 @@ public class RunMultipleChecksListController extends SimpleFormController {
 					try {
 						int id = Integer.valueOf(checkId);
 						DataIntegrityCheckTemplate template = service.getDataIntegrityCheckTemplate(id);
-						checkName = template.getIntegrityCheckName();
 						String parameterValues = null;
-						if (!template.getIntegrityCheckParameters().equals("")) {
+						if (!template.getRepairParameters().equals("")) {
 							parameterValues = request.getParameter("checkParameter" + checkId);
 						}
 						DataIntegrityCheckResultTemplate resultTemplate = service.runIntegrityCheck(template, parameterValues);

@@ -1,63 +1,197 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
+
 package org.openmrs.module.dataintegrity;
 
-import java.util.List;
+import java.util.Date;
 
+/**
+ * @TODO put description here :-/
+ */
 public class DataIntegrityCheckResultTemplate {
-	private int checkId;
-	private int failedRecordCount;
-	private String checkName;
-	private boolean checkPassed;
-	private List<Object[]> failedRecords;
-	private String parameters;
-	private String failDirective;
-	private String failOperator;
-	
-	public int getCheckId() {
-		return checkId;
+	private Integer id = null;
+	private DataIntegrityCheckTemplate integrityCheck = null;
+	private Integer failedRecordCount = null;
+	private Boolean checkPassed = null;
+	private QueryResults failedRecords = null;
+	private Date dateOccurred = null;
+	private Long duration = null;
+
+	/**
+	 * default constructor
+	 */
+	public DataIntegrityCheckResultTemplate() {
+		// pass
 	}
-	public void setCheckId(int checkId) {
-		this.checkId = checkId;
+
+	/**
+	 * convenience constructor to connect results with the associated integrity
+	 * check template
+	 */
+	public DataIntegrityCheckResultTemplate(DataIntegrityCheckTemplate template) {
+		this.setIntegrityCheck(template);
 	}
-	public int getFailedRecordCount() {
+
+	/**
+	 * @return the id
+	 */
+	public Integer getId() {
+		return id;
+	}
+
+	/**
+	 * @param id
+	 *            the id to set
+	 */
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the integrityCheck
+	 */
+	public DataIntegrityCheckTemplate getIntegrityCheck() {
+		return integrityCheck;
+	}
+
+	/**
+	 * @param integrityCheck
+	 *            the integrityCheck to set
+	 */
+	public void setIntegrityCheck(DataIntegrityCheckTemplate integrityCheck) {
+		this.integrityCheck = integrityCheck;
+	}
+
+	/**
+	 * @return
+	 */
+	public Integer getFailedRecordCount() {
 		return failedRecordCount;
 	}
-	public void setFailedRecordCount(int failedRecordCount) {
+
+	/**
+	 * @param failedRecordCount
+	 */
+	public void setFailedRecordCount(Integer failedRecordCount) {
 		this.failedRecordCount = failedRecordCount;
 	}
-	public String getCheckName() {
-		return checkName;
-	}
-	public void setCheckName(String checkName) {
-		this.checkName = checkName;
-	}
-	public boolean isCheckPassed() {
+
+	/**
+	 * @return
+	 */
+	public Boolean isCheckPassed() {
 		return checkPassed;
 	}
-	public void setCheckPassed(boolean checkPassed) {
+
+	/**
+	 * needed for hibernate
+	 * 
+	 * @return
+	 */
+	public Boolean getCheckPassed() {
+		return checkPassed;
+	}
+
+	/**
+	 * @param checkPassed
+	 */
+	public void setCheckPassed(Boolean checkPassed) {
 		this.checkPassed = checkPassed;
 	}
-	public List<Object[]> getFailedRecords() {
+
+	/**
+	 * @return
+	 */
+	public QueryResults getFailedRecords() {
 		return failedRecords;
 	}
-	public void setFailedRecords(List<Object[]> failedRecords) {
+
+	/**
+	 * @param failedRecords
+	 */
+	public void setFailedRecords(QueryResults failedRecords) {
 		this.failedRecords = failedRecords;
 	}
+
+	/**
+	 * @return the dateOccurred
+	 */
+	public Date getDateOccurred() {
+		return dateOccurred;
+	}
+
+	/**
+	 * @param dateOccurred
+	 *            the dateOccurred to set
+	 */
+	public void setDateOccurred(Date dateOccurred) {
+		this.dateOccurred = dateOccurred;
+	}
+
+	/**
+	 * @return the duration
+	 */
+	public Long getDuration() {
+		return duration;
+	}
+
+	/**
+	 * @param duration
+	 *            the duration to set
+	 */
+	public void setDuration(Long duration) {
+		this.duration = duration;
+	}
+
+	/**
+	 * @deprecated see {@link DataIntegrityCheckTemplate#getRepairParameters()}
+	 */
 	public String getParameters() {
-		return parameters;
+		if (this.getIntegrityCheck() != null)
+			return this.getIntegrityCheck().getRepairParameters();
+		return null;
 	}
-	public void setParameters(String parameters) {
-		this.parameters = parameters;
-	}
+
+	/**
+	 * @deprecated see {@link DataIntegrityCheckTemplate#getFailDirective()}
+	 */
 	public String getFailDirective() {
-		return failDirective;
+		if (this.getIntegrityCheck() != null)
+			return this.getIntegrityCheck().getFailDirective();
+		return null;
 	}
-	public void setFailDirective(String failDirective) {
-		this.failDirective = failDirective;
+
+	/**
+	 * @deprecated see {@link DataIntegrityCheckTemplate#getName()}
+	 */
+	public String getCheckName() {
+		if (this.getIntegrityCheck() != null)
+			return this.getIntegrityCheck().getName();
+		return null;
 	}
+
+	/**
+	 * @return the fail operator
+	 * @deprecated see
+	 *             {@link DataIntegrityCheckTemplate#getIntegrityCheckFailDirectiveOperator()}
+	 */
+	@Deprecated
 	public String getFailOperator() {
-		return failOperator;
+		if (this.getIntegrityCheck() != null)
+			return this.getIntegrityCheck()
+					.getIntegrityCheckFailDirectiveOperator();
+		return null;
 	}
-	public void setFailOperator(String failOperator) {
-		this.failOperator = failOperator;
-	}
+
 }

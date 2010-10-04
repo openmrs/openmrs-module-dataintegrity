@@ -1,8 +1,5 @@
 package org.openmrs.module.dataintegrity.web.controller;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate;
 import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.openmrs.web.WebConstants;
@@ -52,16 +48,16 @@ public class CopyCheckFormController extends SimpleFormController {
 					int id = Integer.valueOf(checkId);
 					DataIntegrityCheckTemplate template = getDataIntegrityService().getDataIntegrityCheckTemplate(id);
 					DataIntegrityCheckTemplate check = new DataIntegrityCheckTemplate();
-					checkName = template.getIntegrityCheckName();
-					check.setIntegrityCheckName(template.getIntegrityCheckName() + " Copy");
-					check.setIntegrityCheckCode(template.getIntegrityCheckCode());
-					check.setIntegrityCheckType(template.getIntegrityCheckType());
-					check.setIntegrityCheckResultType(template.getIntegrityCheckResultType());
-					check.setIntegrityCheckFailDirective(template.getIntegrityCheckFailDirective());
-					check.setIntegrityCheckFailDirectiveOperator(template.getIntegrityCheckFailDirectiveOperator());
-					check.setIntegrityCheckRepairType(template.getIntegrityCheckRepairType());
-					check.setIntegrityCheckRepairDirective(template.getIntegrityCheckRepairDirective());
-					check.setIntegrityCheckParameters(template.getIntegrityCheckParameters());
+					checkName = template.getName();
+					check.setName(template.getName() + " Copy");
+					check.setCheckCode(template.getCheckCode());
+					check.setCheckType(template.getCheckType());
+					check.setResultType(template.getResultType());
+					check.setFailDirective(template.getFailDirective());
+					check.setFailDirectiveOperator(template.getFailDirectiveOperator());
+					check.setRepairType(template.getRepairType());
+					check.setRepairDirective(template.getRepairDirective());
+					check.setRepairParameters(template.getRepairParameters());
 					getDataIntegrityService().saveDataIntegrityCheckTemplate(check);
 					
 					success = checkName + " " + msa.getMessage("dataintegrity.copyCheck.success");

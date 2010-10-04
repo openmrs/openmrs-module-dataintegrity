@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -21,10 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.Module;
-import org.openmrs.module.ModuleException;
-import org.openmrs.module.ModuleFactory;
-import org.openmrs.module.ModuleUtil;
 import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.openmrs.module.dataintegrity.DataIntegrityXmlFileParser;
@@ -51,7 +46,7 @@ public class TransferCheckListController extends SimpleFormController {
     }
 	
 	@Override
-	protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
+	protected Map<String, Object> referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (Context.isAuthenticated()) {
 			map.put("existingChecks", getDataIntegrityService().getAllDataIntegrityCheckTemplates());
@@ -84,15 +79,15 @@ public class TransferCheckListController extends SimpleFormController {
 							for (int i=0; i<checksToUpload.size(); i++) {
 								IDataIntegrityCheckUpload check = checksToUpload.get(i);
 								DataIntegrityCheckTemplate template = new DataIntegrityCheckTemplate();
-								template.setIntegrityCheckType(check.getCheckType());
-								template.setIntegrityCheckCode(check.getCheckCode());
-								template.setIntegrityCheckFailDirective(check.getCheckFailDirective());
-								template.setIntegrityCheckFailDirectiveOperator(check.getCheckFailDirectiveOperator());
-								template.setIntegrityCheckName(check.getCheckName());
-								template.setIntegrityCheckRepairDirective(check.getCheckRepairDirective());
-								template.setIntegrityCheckResultType(check.getCheckResultType());
-								template.setIntegrityCheckRepairType(check.getCheckRepairType());
-								template.setIntegrityCheckParameters(check.getCheckParameters());
+								template.setCheckType(check.getCheckType());
+								template.setCheckCode(check.getCheckCode());
+								template.setFailDirective(check.getCheckFailDirective());
+								template.setFailDirectiveOperator(check.getCheckFailDirectiveOperator());
+								template.setName(check.getCheckName());
+								template.setRepairDirective(check.getCheckRepairDirective());
+								template.setResultType(check.getCheckResultType());
+								template.setRepairType(check.getCheckRepairType());
+								template.setRepairParameters(check.getCheckParameters());
 								getDataIntegrityService().saveDataIntegrityCheckTemplate(template);
 								success += check.getCheckName() + " " + msa.getMessage("dataintegrity.upload.success") + "<br />";
 							}
@@ -128,16 +123,16 @@ public class TransferCheckListController extends SimpleFormController {
 				exportString.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<checks>\r\n");
 				for (String checkId : checkList) {
 					DataIntegrityCheckTemplate template = service.getDataIntegrityCheckTemplate(Integer.valueOf(checkId));
-					exportString.append("\t<check type=\"" + template.getIntegrityCheckType() + "\">\r\n");
-					exportString.append("\t\t<name>" + template.getIntegrityCheckName() + "</name>\r\n");
-					exportString.append("\t\t<code>" + template.getIntegrityCheckCode() + "</code>\r\n");
-					exportString.append("\t\t<resultType>" + template.getIntegrityCheckResultType() + "</resultType>\r\n");
-					exportString.append("\t\t<fail operator=\"" + template.getIntegrityCheckFailDirectiveOperator() + "\">" + template.getIntegrityCheckFailDirective() + "</fail>\r\n");
-					if (!template.getIntegrityCheckRepairType().equals("none")) {
-						exportString.append("\t\t<repair type=\"" + template.getIntegrityCheckRepairType() + "\">" + template.getIntegrityCheckRepairDirective() + "</repair>\r\n");
+					exportString.append("\t<check type=\"" + template.getCheckType() + "\">\r\n");
+					exportString.append("\t\t<name>" + template.getName() + "</name>\r\n");
+					exportString.append("\t\t<code>" + template.getCheckCode() + "</code>\r\n");
+					exportString.append("\t\t<resultType>" + template.getResultType() + "</resultType>\r\n");
+					exportString.append("\t\t<fail operator=\"" + template.getFailDirectiveOperator() + "\">" + template.getFailDirective() + "</fail>\r\n");
+					if (!template.getRepairType().equals("none")) {
+						exportString.append("\t\t<repair type=\"" + template.getRepairType() + "\">" + template.getRepairDirective() + "</repair>\r\n");
 					}
-					if (!template.getIntegrityCheckParameters().equals("")) {
-						exportString.append("\t\t<parameters>" + template.getIntegrityCheckParameters() + "</parameters>\r\n");
+					if (!template.getRepairParameters().equals("")) {
+						exportString.append("\t\t<parameters>" + template.getRepairParameters() + "</parameters>\r\n");
 					}
 					exportString.append("\t</check>\r\n");
 				}

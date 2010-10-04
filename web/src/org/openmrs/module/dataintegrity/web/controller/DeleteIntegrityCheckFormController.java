@@ -10,13 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.openmrs.GlobalProperty;
-import org.openmrs.api.AdministrationService;
-import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
-import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.web.WebConstants;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.validation.BindException;
@@ -36,7 +32,7 @@ public class DeleteIntegrityCheckFormController extends SimpleFormController{
 	}
 	
 	@Override
-	protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
+	protected Map<String, Object> referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (Context.isAuthenticated()) {
 			map.put("existingChecks", getDataIntegrityService().getAllDataIntegrityCheckTemplates());

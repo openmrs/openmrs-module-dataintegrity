@@ -30,7 +30,8 @@ public class RepairCheckListController extends SimpleFormController {
     }
 	
 	@Override
-	protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
+	@SuppressWarnings("unchecked")
+	protected Map<String, Object> referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
 		MessageSourceAccessor msa = getMessageSourceAccessor();
 		Map<String, Object> map = new HashMap<String, Object>();
 		HttpSession session = request.getSession();
@@ -39,19 +40,19 @@ public class RepairCheckListController extends SimpleFormController {
 			//First get the check which was executed
 			int checkId = Integer.valueOf(stringCheckId);
 			DataIntegrityCheckTemplate template = getDataIntegrityService().getDataIntegrityCheckTemplate(checkId);
-			map.put("checkName", template.getIntegrityCheckName());
+			map.put("checkName", template.getName());
 			map.put("checkId", stringCheckId);
-			String repairType = template.getIntegrityCheckRepairType();
+			String repairType = template.getRepairType();
 			//Check its repair type
 			if (repairType.equals(DataIntegrityConstants.REPAIR_TYPE_INSTRUCTIONS)) {
-				map.put("repairCheckInstructions", template.getIntegrityCheckRepairDirective());
+				map.put("repairCheckInstructions", template.getRepairDirective());
 			} else if (repairType.equals(DataIntegrityConstants.REPAIR_TYPE_SCRIPT)) {
 				try {
 					getDataIntegrityService().repairDataIntegrityCheckViaScript(template);
-					String success = msa.getMessage("dataintegrity.repair.success") + " " + template.getIntegrityCheckName();
+					String success = msa.getMessage("dataintegrity.repair.success") + " " + template.getName();
 					map.put("repairCheckScript", success);
 				} catch (Exception e) {
-					String error = msa.getMessage("dataintegrity.repair.error") + " " + template.getIntegrityCheckName() + ". Message: " + e.getMessage();
+					String error = msa.getMessage("dataintegrity.repair.error") + " " + template.getName() + ". Message: " + e.getMessage();
 					map.put("repairCheckScript", error);
 					Writer writer = new StringWriter();
 					PrintWriter printWriter = new PrintWriter(writer);
@@ -59,10 +60,10 @@ public class RepairCheckListController extends SimpleFormController {
 					session.setAttribute(DataIntegrityConstants.DATA_INTEGRITY_ERROR_STACK_TRACE, writer.toString());
 				}
 			} else if (repairType.equals(DataIntegrityConstants.REPAIR_TYPE_LINK)) {
-				if (session.getAttribute("failedRecords") != null && template.getIntegrityCheckRepairDirective().contains("{result}")) {
+				if (session.getAttribute("failedRecords") != null && template.getRepairDirective().contains("{result}")) {
 					Map<Integer, List<Object[]>> recordMap = (Map<Integer, List<Object[]>>) session.getAttribute("failedRecords");
 					List<Object[]> records = recordMap.get(checkId);
-					String repairDirective = template.getIntegrityCheckRepairDirective();
+					String repairDirective = template.getRepairDirective();
 					StringBuffer repairList = new StringBuffer();
 					repairList.append("<table><tr><th>" + msa.getMessage("dataintegrity.checksList.columns.id") + "</th><th>" + msa.getMessage("dataintegrity.repair.repair") + "</th></tr>");
 					String url = IntegrityCheckUtil.getWebAppUrl(request);
@@ -85,7 +86,7 @@ public class RepairCheckListController extends SimpleFormController {
 					repairList.append("</table>");
 					map.put("repairCheckLink", repairList.toString());
 				} else {
-					String href = "<a target=\"_blank\" href=\"" + template.getIntegrityCheckRepairDirective() + "\">" + template.getIntegrityCheckRepairDirective() + "</a>";
+					String href = "<a target=\"_blank\" href=\"" + template.getRepairDirective() + "\">" + template.getRepairDirective() + "</a>";
 					map.put("repairCheckLink", href);
 				}
 			} else if (repairType.equals(DataIntegrityConstants.REPAIR_TYPE_NONE)) {

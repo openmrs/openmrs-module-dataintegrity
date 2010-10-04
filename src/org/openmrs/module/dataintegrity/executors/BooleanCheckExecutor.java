@@ -9,6 +9,7 @@ import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.IntegrityCheckUtil;
 import org.openmrs.module.dataintegrity.db.DataIntegrityDAO;
+import org.openmrs.util.OpenmrsUtil;
 
 public class BooleanCheckExecutor implements ICheckExecutor {
 	private DataIntegrityCheckTemplate check;
@@ -20,12 +21,13 @@ public class BooleanCheckExecutor implements ICheckExecutor {
 		this.dao = dao;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void executeCheck() throws Exception {
 		try {
-			boolean failDirective = Boolean.valueOf(this.check.getIntegrityCheckFailDirective());
-			String checkCode = IntegrityCheckUtil.getModifiedCheckCode(this.check.getIntegrityCheckCode(), 
-																	   this.check.getIntegrityCheckParameters(), 
-																	   this.parameterValues);
+			boolean failDirective = Boolean.valueOf(this.check.getFailDirective());
+			String checkCode = IntegrityCheckUtil.getModifiedCheckCode(
+					this.check.getCheckCode(),
+					this.check.getRepairParameters(), this.parameterValues);
 			SessionFactory factory = this.dao.getSessionFactory();
 			SQLQuery query = factory.getCurrentSession().createSQLQuery(checkCode);
 			List<Object[]> resultList = query.list();
@@ -38,7 +40,9 @@ public class BooleanCheckExecutor implements ICheckExecutor {
 				} catch (Exception e) {
 					columnCount = 1;
 				}
-				if (check.getIntegrityCheckFailDirectiveOperator().equals(DataIntegrityConstants.FAILURE_OPERATOR_EQUALS)) {
+				if (OpenmrsUtil.nullSafeEquals(
+						check.getFailDirectiveOperator(),
+						DataIntegrityConstants.FAILURE_OPERATOR_EQUALS)) {
 					for (int i=0; i<resultList.size(); i++) {
 						if (columnCount > 1) {
 							Boolean[] boolArray = new Boolean[columnCount];

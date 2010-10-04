@@ -13,15 +13,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.openmrs.PersonAttributeType;
-import org.openmrs.api.PersonService;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate;
+import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
-import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 import org.openmrs.web.WebConstants;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -30,49 +30,81 @@ import org.springframework.web.servlet.view.RedirectView;
 
 public class ResultsListController extends SimpleFormController {
 	private DataIntegrityService getDataIntegrityService() {
-        return (DataIntegrityService)Context.getService(DataIntegrityService.class);
-    }
-	
-	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+		return (DataIntegrityService) Context
+				.getService(DataIntegrityService.class);
+	}
+
+	protected Object formBackingObject(HttpServletRequest request)
+			throws ServletException {
 		return "not used";
-    }
-	
+	}
+
+	@SuppressWarnings("unchecked")
 	@Override
-	protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
+	protected Map<String, Object> referenceData(HttpServletRequest request,
+			Object command, Errors errors) throws Exception {
+
 		Map<String, Object> map = new HashMap<String, Object>();
-		HttpSession session = request.getSession();
 		List<DataIntegrityCheckResultTemplate> results = null;
-		if (session.getAttribute("singleCheckResults") != null) {
-			results = (List<DataIntegrityCheckResultTemplate>) session.getAttribute("singleCheckResults");
-			map.put("checkResults", results);
-			map.put("single", true);
-			session.removeAttribute("singleCheckResults");
-		} else if (session.getAttribute("multipleCheckResults") != null) {
-			results = (List<DataIntegrityCheckResultTemplate>) session.getAttribute("multipleCheckResults");
-			session.removeAttribute("multipleCheckResults");
-			map.put("single", false);
-			map.put("checkResults", results);
+		HttpSession session = request.getSession();
+
+		// check for specifically requested results
+		String checkId = request.getParameter("checkId");
+		Integer checkNo = null;
+		if (StringUtils.hasText(checkId)) {
+			try {
+				checkNo = Integer.parseInt(checkId);
+			} catch (NumberFormatException e) {
+				throw new APIException("cannot find DataIntegrityCheckTemplate #" + checkId);
+			}
+			DataIntegrityService ds = (DataIntegrityService) Context.getService(DataIntegrityService.class);
+			DataIntegrityCheckTemplate check = ds.getDataIntegrityCheckTemplate(checkNo);
+			DataIntegrityCheckResultTemplate res = check.getLatestResults();
+			if (res != null) {
+				results = new ArrayList<DataIntegrityCheckResultTemplate>();
+				results.add(res);
+				map.put("checkResults", results);
+				map.put("single", true);
+			}
+		} else {
+			// try the old way ...
+			if (session.getAttribute("singleCheckResults") != null) {
+				results = (List<DataIntegrityCheckResultTemplate>) session
+						.getAttribute("singleCheckResults");
+				map.put("checkResults", results);
+				map.put("single", true);
+				session.removeAttribute("singleCheckResults");
+			} else if (session.getAttribute("multipleCheckResults") != null) {
+				results = (List<DataIntegrityCheckResultTemplate>) session
+						.getAttribute("multipleCheckResults");
+				session.removeAttribute("multipleCheckResults");
+				map.put("single", false);
+				map.put("checkResults", results);
+			}
 		}
 		if (results != null) {
 			Map<Integer, List<Object[]>> failedRecordMap = new HashMap<Integer, List<Object[]>>();
-			for (int i=0; i<results.size(); i++) {
-				DataIntegrityCheckResultTemplate resultTemplate = results.get(i); 
-				failedRecordMap.put(resultTemplate.getCheckId(), resultTemplate.getFailedRecords());
+			for (int i = 0; i < results.size(); i++) {
+				DataIntegrityCheckResultTemplate resultTemplate = results
+						.get(i);
+				failedRecordMap.put(resultTemplate.getIntegrityCheck().getId(),
+						resultTemplate.getFailedRecords());
 			}
 			session.setAttribute("failedRecords", failedRecordMap);
 		}
 		return map;
 	}
-	
-	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object obj,
-            BindException errors) throws Exception {
+
+	protected ModelAndView onSubmit(HttpServletRequest request,
+			HttpServletResponse response, Object obj, BindException errors)
+			throws Exception {
 		HttpSession httpSession = request.getSession();
 		MessageSourceAccessor msa = getMessageSourceAccessor();
-		
+
 		if (httpSession.getAttribute("failedRecords") != null) {
 			httpSession.removeAttribute("failedRecords");
 		}
-		
+
 		String view = getFormView();
 		if (Context.isAuthenticated()) {
 			String checkId = request.getParameter("checkId");
@@ -80,24 +112,35 @@ public class ResultsListController extends SimpleFormController {
 			String error = "";
 			String checkName = "";
 			String stack = "";
-			
+
 			if (checkId != null) {
 				try {
 					int id = Integer.valueOf(checkId);
-					DataIntegrityCheckTemplate template = getDataIntegrityService().getDataIntegrityCheckTemplate(id);
-					checkName = template.getIntegrityCheckName();
+					DataIntegrityCheckTemplate template = getDataIntegrityService()
+							.getDataIntegrityCheckTemplate(id);
+					checkName = template.getName();
 					String parameterValues = null;
-					if (!template.getIntegrityCheckParameters().equals("")) {
-						parameterValues = request.getParameter("checkParameter" + checkId);
+					if (StringUtils.hasText(template.getRepairParameters())) {
+						parameterValues = request.getParameter("checkParameter"
+								+ checkId);
 					}
-					DataIntegrityCheckResultTemplate resultTemplate = getDataIntegrityService().runIntegrityCheck(template, parameterValues);
+					DataIntegrityCheckResultTemplate resultTemplate = getDataIntegrityService()
+							.runIntegrityCheck(template, parameterValues);
 					List<DataIntegrityCheckResultTemplate> result = new ArrayList<DataIntegrityCheckResultTemplate>();
 					result.add(resultTemplate);
 					httpSession.setAttribute("singleCheckResults", result);
-					success = checkName + " " + msa.getMessage("dataintegrity.runSingleCheck.success");
+					success = checkName
+							+ " "
+							+ msa.getMessage("dataintegrity.runSingleCheck.success");
 					view = getSuccessView();
 				} catch (Exception e) {
-					error = msa.getMessage("dataintegrity.runSingleCheck.error") + " " + checkName + ". Message: " + e.getMessage() + "<br />";
+					error = msa
+							.getMessage("dataintegrity.runSingleCheck.error")
+							+ " "
+							+ checkName
+							+ ". Message: "
+							+ e.getMessage()
+							+ "<br />";
 					Writer writer = new StringWriter();
 					PrintWriter printWriter = new PrintWriter(writer);
 					e.printStackTrace(printWriter);
@@ -108,18 +151,22 @@ public class ResultsListController extends SimpleFormController {
 				error = msa.getMessage("dataintegrity.runSingleCheck.blank");
 				view = "runSingleCheck.list";
 			}
-			
-			if (!success.equals(""))
-				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, success);
-			if (!error.equals(""))
-				httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, error);
-			if (!stack.equals(""))
-				httpSession.setAttribute(DataIntegrityConstants.DATA_INTEGRITY_ERROR_STACK_TRACE, stack);
+
+			if (StringUtils.hasText(success))
+				httpSession
+						.setAttribute(WebConstants.OPENMRS_MSG_ATTR, success);
+			if (StringUtils.hasText(error))
+				httpSession
+						.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, error);
+			if (StringUtils.hasText(stack))
+				httpSession
+						.setAttribute(
+								DataIntegrityConstants.DATA_INTEGRITY_ERROR_STACK_TRACE,
+								stack);
 		}
 		view = getSuccessView();
 		ModelAndView model = new ModelAndView(new RedirectView(view));
 		return model;
 	}
-	
-	
+
 }

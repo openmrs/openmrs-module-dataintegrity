@@ -5,9 +5,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.openmrs.api.APIException;
 import org.openmrs.util.OpenmrsUtil;
 
 public class IntegrityCheckUtil {
@@ -106,5 +112,52 @@ public class IntegrityCheckUtil {
 	public static String getWebAppUrl(HttpServletRequest request) {
 		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 		return url;
+	}
+
+	/**
+	 * cast a QueryResults object as a JSON string
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public static String serialize(QueryResults value) {
+		JSONArray newValue = new JSONArray();
+		for (Object[] oArr: value) {
+			JSONArray jArr = new JSONArray();
+			for (Object obj: oArr)
+				jArr.put(obj == null ? JSONObject.NULL : obj.toString());
+			newValue.put(jArr);
+		}
+		JSONObject results = new JSONObject();
+		results.put("results", newValue);
+		return results.toString();
+	}
+
+	/**
+	 * use the JSON automatic deserialization to do our work
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public static QueryResults deserialize(String value) {
+		JSONObject jValue = null;
+		try {
+			jValue = new JSONObject(value);
+		} catch (ParseException e) {
+			throw new APIException("", e);
+		}
+		if (!jValue.has("results"))
+			return null;
+		
+		QueryResults results = new QueryResults();
+		JSONArray newValue = jValue.getJSONArray("results");
+		for (int i=0; i<newValue.length(); i++) {
+			JSONArray jArr = newValue.getJSONArray(i);
+			List<Object> lObj = new ArrayList<Object>();
+			for (int j=0; j<jArr.length(); j++)
+				lObj.add(jArr.get(j));
+			results.add(lObj.toArray());
+		}
+		return results;
 	}
 }

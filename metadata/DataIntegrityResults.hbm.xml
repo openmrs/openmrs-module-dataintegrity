@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="org.openmrs.module.dataintegrity">
+
+	<class name="DataIntegrityCheckResultTemplate" table="dataintegrity_results">
+
+		<id name="id" type="int" column="results_id">
+			<generator class="native" />
+		</id>
+
+		<many-to-one name="integrityCheck" class="DataIntegrityCheckTemplate"
+			not-null="true" unique="true" column="integrity_check_id" />
+
+		<property name="failedRecordCount" type="int" not-null="true"
+			column="failed_record_count" />
+
+		<property name="checkPassed" type="boolean" not-null="true"
+			column="check_passed" />
+
+		<property name="failedRecords" column="failed_records"
+			type="org.openmrs.module.dataintegrity.db.hibernate.QueryResultsType"
+			 length="16777215" />
+
+		<property name="dateOccurred" type="java.util.Date" not-null="true"
+			length="19" column="date_occurred" />
+
+		<property name="duration" type="long" not-null="true" length="63"
+			column="duration" />
+
+	</class>
+
+</hibernate-mapping>

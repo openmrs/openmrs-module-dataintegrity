@@ -20,31 +20,120 @@ import org.openmrs.api.APIException;
 import org.openmrs.module.dataintegrity.db.DataIntegrityDAO;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * service for Data Integrity object manipulation and persistence
+ */
 @Transactional
 public interface DataIntegrityService {
-	
+
+	/**
+	 * sets the data integrity DAO
+	 * 
+	 * @param dao
+	 */
 	public void setDataIntegrityDAO(DataIntegrityDAO dao);
-	
+
+	/**
+	 * returns the data integrity DAO
+	 * 
+	 * @return
+	 */
 	public DataIntegrityDAO getDataIntegrityDAO();
 
-    public void saveDataIntegrityCheckTemplate(DataIntegrityCheckTemplate dataIntegrityTemplate) throws APIException;
-    
-    /**
-     * 
-     * This method returns a single data record from the database
-     * 
-     * @param templateId
-     * @return the data record
-     * @throws APIException
-     * @should not return a null object
-     */
-    public DataIntegrityCheckTemplate getDataIntegrityCheckTemplate(Integer templateId) throws APIException;
+	/**
+	 * saves a single data integrity check
+	 * 
+	 * @param dataIntegrityTemplate
+	 * @throws APIException
+	 */
+	public void saveDataIntegrityCheckTemplate(
+			DataIntegrityCheckTemplate dataIntegrityTemplate)
+			throws APIException;
 
-    public List<DataIntegrityCheckTemplate> getAllDataIntegrityCheckTemplates() throws APIException;
-    
-    public void deleteDataIntegrityCheckTemplate(DataIntegrityCheckTemplate template);
-    
-    public DataIntegrityCheckResultTemplate runIntegrityCheck(DataIntegrityCheckTemplate template, String parameterValues) throws Exception;
-    
-    public void repairDataIntegrityCheckViaScript(DataIntegrityCheckTemplate template) throws Exception;
+	/**
+	 * returns a single data integrity check
+	 * 
+	 * @param templateId
+	 * @return the data record
+	 * @throws APIException
+	 * @should not return a null object
+	 */
+	public DataIntegrityCheckTemplate getDataIntegrityCheckTemplate(
+			Integer templateId) throws APIException;
+
+	/**
+	 * returns all non-voided data integrity checks
+	 * 
+	 * @return
+	 * @throws APIException
+	 */
+	public List<DataIntegrityCheckTemplate> getAllDataIntegrityCheckTemplates()
+			throws APIException;
+
+	/**
+	 * deletes a data integrity check
+	 * 
+	 * @param template
+	 */
+	public void deleteDataIntegrityCheckTemplate(
+			DataIntegrityCheckTemplate template);
+
+	/**
+	 * saves the results of a single data integrity check
+	 * 
+	 * @param results
+	 * @throws APIException
+	 * @should not throw an error saving results
+	 */
+	public DataIntegrityCheckResultTemplate saveResults(DataIntegrityCheckResultTemplate results)
+			throws APIException;
+
+	/**
+	 * returns the results of a single data integrity check
+	 * 
+	 * @param resultsId
+	 * @return the data record
+	 * @throws APIException
+	 * @should retrieve results if a check exists
+	 * @should return null if results for a check do not exist
+	 */
+	public DataIntegrityCheckResultTemplate getResults(Integer resultsId)
+			throws APIException;
+
+	/**
+	 * deletes a set of results
+	 * 
+	 * @param template
+	 */
+	public void deleteResults(DataIntegrityCheckResultTemplate results);
+
+	/**
+	 * runs a data integrity check
+	 * 
+	 * @param template
+	 * @param parameterValues
+	 * @return
+	 * @throws Exception
+	 */
+	public DataIntegrityCheckResultTemplate runIntegrityCheck(
+			DataIntegrityCheckTemplate template, String parameterValues)
+			throws Exception;
+
+	/**
+	 * repairs data based on a given script
+	 * 
+	 * @param template
+	 * @throws Exception
+	 */
+	public void repairDataIntegrityCheckViaScript(
+			DataIntegrityCheckTemplate template) throws Exception;
+
+	/**
+	 * returns results for the given integrity check
+	 * 
+	 * @param check
+	 * @return
+	 */
+	public DataIntegrityCheckResultTemplate getResultsForCheck(
+			DataIntegrityCheckTemplate check);
 }

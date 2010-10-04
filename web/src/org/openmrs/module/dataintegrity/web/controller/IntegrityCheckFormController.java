@@ -8,13 +8,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.openmrs.PersonAttributeType;
-import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.dataintegrity.DataIntegrityService;
+import org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate;
 import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
+import org.openmrs.module.dataintegrity.DataIntegrityService;
+import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.web.WebConstants;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -34,7 +35,7 @@ public class IntegrityCheckFormController extends SimpleFormController {
     }
 	
 	@Override
-	protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
+	protected Map<String, Object> referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (request.getParameter("checkId") != null) {
 			map.put("existingCheck", getDataIntegrityService().getDataIntegrityCheckTemplate(Integer.parseInt(request.getParameter("checkId"))));
@@ -56,36 +57,42 @@ public class IntegrityCheckFormController extends SimpleFormController {
 			String fail = request.getParameter("fail");
 			String failOp = request.getParameter("failOp");
 			String repairType = request.getParameter("repairType");
-			String repair;
-			if (!repairType.equals("none")) {
-				repair = request.getParameter("repair");
-			} else {
-				repair = "";
-			}
+			String clearResults = request.getParameter("clearResults"); 
+			String repair = OpenmrsUtil.nullSafeEquals(repairType, "none") ? ""
+					: request.getParameter("repair");
 			String parameters = request.getParameter("parameters");
 			
 			DataIntegrityCheckTemplate check = new DataIntegrityCheckTemplate();
 			if (checkId != null) {
-				check.setIntegrityCheckId(Integer.valueOf(checkId));
+				check.setId(Integer.valueOf(checkId));
 			}
 			
 			String codeCopy = code;
 			if (codeCopy.toLowerCase().contains("delete") || codeCopy.toLowerCase().contains("update") || codeCopy.toLowerCase().contains("insert")) {
 				throw new Exception("Code will modify the database hence not allowed");
 			}
-			check.setIntegrityCheckName(checkName);
-			check.setIntegrityCheckCode(code);
-			check.setIntegrityCheckType(checkType);
-			check.setIntegrityCheckResultType(resultType);
-			check.setIntegrityCheckFailDirective(fail);
-			check.setIntegrityCheckFailDirectiveOperator(failOp);
-			check.setIntegrityCheckRepairType(repairType);
-			check.setIntegrityCheckRepairDirective(repair);
-			check.setIntegrityCheckParameters(parameters);
+			check.setName(checkName);
+			check.setCheckCode(code);
+			check.setCheckType(checkType);
+			check.setResultType(resultType);
+			check.setFailDirective(fail);
+			check.setFailDirectiveOperator(failOp);
+			check.setRepairType(repairType);
+			check.setRepairDirective(repair);
+			check.setRepairParameters(parameters);
 			
 			DataIntegrityService service = (DataIntegrityService)Context.getService(DataIntegrityService.class);
 			service.saveDataIntegrityCheckTemplate(check);
+
+			if (StringUtils.hasText(clearResults)) {
+				// re-get integrity check to grab latest results
+				DataIntegrityCheckResultTemplate results = service.getResultsForCheck(check);
+				if (results != null)
+					service.deleteResults(results);
+			}
+			
 			success = checkName + " " + msa.getMessage("dataintegrity.addeditCheck.saved");
+			
 			view = getSuccessView();
 			return view;
 			

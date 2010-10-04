@@ -35,9 +35,10 @@
 	<classpathentry kind="lib" path="lib-common/spring-webmvc.jar"/>
 	<classpathentry kind="lib" path="lib-common/taglibs-standard-1.1.jar"/>
 	<classpathentry kind="lib" path="lib-common/xstream-1.3.jar"/>
-	<classpathentry kind="lib" path="lib-common/openmrs-api-1.5.0.7667-dev.jar"/>
-	<classpathentry kind="lib" path="lib-common/tests-openmrs-api-1.5.0.7667-dev.jar"/>
-	<classpathentry kind="lib" path="lib-common/web-openmrs-api-1.5.0.7667-dev.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/json-rpc-1.0.jar"/>
+	<classpathentry kind="lib" path="lib-common/openmrs-api-1.5.0.8235-dev.jar"/>
+	<classpathentry kind="lib" path="lib-common/tests-openmrs-api-1.5.0.8235-dev.jar"/>
+	<classpathentry kind="lib" path="lib-common/web-openmrs-api-1.5.0.8235-dev.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

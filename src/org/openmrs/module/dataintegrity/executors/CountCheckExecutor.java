@@ -9,6 +9,7 @@ import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.IntegrityCheckUtil;
 import org.openmrs.module.dataintegrity.db.DataIntegrityDAO;
+import org.openmrs.util.OpenmrsUtil;
 
 public class CountCheckExecutor implements ICheckExecutor {
 	private DataIntegrityCheckTemplate check;
@@ -21,12 +22,13 @@ public class CountCheckExecutor implements ICheckExecutor {
 		this.dao = dao;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void executeCheck() throws Exception {
 		try {
-			int failDirective = Integer.valueOf(this.check.getIntegrityCheckFailDirective());
-			String checkCode = IntegrityCheckUtil.getModifiedCheckCode(this.check.getIntegrityCheckCode(), 
-																	   this.check.getIntegrityCheckParameters(), 
-																	   this.parameterValues);
+			int failDirective = Integer.valueOf(this.check.getFailDirective());
+			String checkCode = IntegrityCheckUtil.getModifiedCheckCode(
+					this.check.getCheckCode(),
+					this.check.getRepairParameters(), this.parameterValues);
 			SessionFactory factory = this.dao.getSessionFactory();
 			SQLQuery query = factory.getCurrentSession().createSQLQuery(checkCode);
 			List<Object[]> resultList = query.list();
@@ -54,19 +56,27 @@ public class CountCheckExecutor implements ICheckExecutor {
 						failedRecords.add(objectArray);
 					}
 				}
-				if (check.getIntegrityCheckFailDirectiveOperator().equals(DataIntegrityConstants.FAILURE_OPERATOR_LESS_THAN)) {
+				if (OpenmrsUtil.nullSafeEquals(
+						check.getFailDirectiveOperator(),
+						DataIntegrityConstants.FAILURE_OPERATOR_LESS_THAN)) {
 					if (resultList.size() < failDirective) {
 						checkPassed = false;
 					}
-				} else if (check.getIntegrityCheckFailDirectiveOperator().equals(DataIntegrityConstants.FAILURE_OPERATOR_GREATER_THAN)) {
+				} else if (OpenmrsUtil.nullSafeEquals(
+						check.getFailDirectiveOperator(),
+						DataIntegrityConstants.FAILURE_OPERATOR_GREATER_THAN)) {
 					if (resultList.size() > failDirective) {
 						checkPassed = false;
 					}
-				} else if (check.getIntegrityCheckFailDirectiveOperator().equals(DataIntegrityConstants.FAILURE_OPERATOR_EQUALS)) {
+				} else if (OpenmrsUtil.nullSafeEquals(
+						check.getFailDirectiveOperator(),
+						DataIntegrityConstants.FAILURE_OPERATOR_EQUALS)) {
 					if (resultList.size() == failDirective) {
 						checkPassed = false;
 					}
-				} else if (check.getIntegrityCheckFailDirectiveOperator().equals(DataIntegrityConstants.FAILURE_OPERATOR_NOT_EQUALS)) {
+				} else if (OpenmrsUtil.nullSafeEquals(
+						check.getFailDirectiveOperator(),
+						DataIntegrityConstants.FAILURE_OPERATOR_NOT_EQUALS)) {
 					if (resultList.size() != failDirective) {
 						checkPassed = false;
 					}

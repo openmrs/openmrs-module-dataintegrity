@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.hibernate.SessionFactory;
 import org.openmrs.api.db.DAOException;
+import org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate;
 import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
 
 public interface DataIntegrityDAO {
@@ -35,4 +36,13 @@ public interface DataIntegrityDAO {
     public SessionFactory getSessionFactory();
     
     public void repairDataIntegrityCheckViaScript(DataIntegrityCheckTemplate template) throws DAOException;
+
+	public DataIntegrityCheckResultTemplate saveResults(DataIntegrityCheckResultTemplate results);
+
+	public DataIntegrityCheckResultTemplate getResults(Integer resultsId);
+
+	public void deleteResults(DataIntegrityCheckResultTemplate results);
+
+	public DataIntegrityCheckResultTemplate getResultsForCheck(
+			DataIntegrityCheckTemplate check);
 }
