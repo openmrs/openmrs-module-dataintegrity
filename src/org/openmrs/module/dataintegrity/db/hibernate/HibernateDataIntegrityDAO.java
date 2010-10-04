@@ -21,8 +21,8 @@ import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.DAOException;
-import org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate;
-import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
+import org.openmrs.module.dataintegrity.IntegrityCheckResults;
+import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.db.DataIntegrityDAO;
 
 public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
@@ -44,70 +44,67 @@ public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
 	}
 
 	/**
-	 * @see DataIntegrityDAO#getAllDataIntegrityCheckTemplates()
+	 * @see DataIntegrityDAO#getAllIntegrityChecks()
 	 */
 	@SuppressWarnings("unchecked")
-	public List<DataIntegrityCheckTemplate> getAllDataIntegrityCheckTemplates()
-			throws DAOException {
+	public List<IntegrityCheck> getAllIntegrityChecks() throws DAOException {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
-				DataIntegrityCheckTemplate.class, "template");
-		return (List<DataIntegrityCheckTemplate>) criteria.list();
+				IntegrityCheck.class, "template");
+		return (List<IntegrityCheck>) criteria.list();
 	}
 
 	/**
-	 * @see DataIntegrityDAO#getDataIntegrityCheckTemplate(Integer)
+	 * @see DataIntegrityDAO#getIntegrityCheck(Integer)
 	 */
-	public DataIntegrityCheckTemplate getDataIntegrityCheckTemplate(
-			Integer templateId) throws DAOException {
-		return (DataIntegrityCheckTemplate) sessionFactory.getCurrentSession()
-				.get(DataIntegrityCheckTemplate.class, templateId);
-	}
-
-	/**
-	 * @see DataIntegrityDAO#saveDataIntegrityCheckTemplate(DataIntegrityCheckTemplate)
-	 */
-	public void saveDataIntegrityCheckTemplate(
-			DataIntegrityCheckTemplate dataIntegrityTemplate)
+	public IntegrityCheck getIntegrityCheck(Integer checkId)
 			throws DAOException {
-		sessionFactory.getCurrentSession().saveOrUpdate(dataIntegrityTemplate);
+		return (IntegrityCheck) sessionFactory.getCurrentSession().get(
+				IntegrityCheck.class, checkId);
 	}
 
 	/**
-	 * @see DataIntegrityDAO#deleteDataIntegrityCheckTemplate(DataIntegrityCheckTemplate)
+	 * @see DataIntegrityDAO#saveIntegrityCheck(IntegrityCheck)
 	 */
-	public void deleteDataIntegrityCheckTemplate(
-			DataIntegrityCheckTemplate template) throws DAOException {
-		sessionFactory.getCurrentSession().delete(template);
+	public void saveIntegrityCheck(IntegrityCheck integrityCheck)
+			throws DAOException {
+		sessionFactory.getCurrentSession().saveOrUpdate(integrityCheck);
+	}
+
+	/**
+	 * @see DataIntegrityDAO#deleteIntegrityCheck(IntegrityCheck)
+	 */
+	public void deleteIntegrityCheck(IntegrityCheck integrityCheck)
+			throws DAOException {
+		sessionFactory.getCurrentSession().delete(integrityCheck);
 
 	}
 
 	/**
-	 * @see DataIntegrityDAO#repairDataIntegrityCheckViaScript(DataIntegrityCheckTemplate)
+	 * @see DataIntegrityDAO#repairDataIntegrityCheckViaScript(IntegrityCheck)
 	 */
-	public void repairDataIntegrityCheckViaScript(
-			DataIntegrityCheckTemplate template) throws DAOException {
-		if (template == null)
+	public void repairDataIntegrityCheckViaScript(IntegrityCheck integrityCheck)
+			throws DAOException {
+		if (integrityCheck == null)
 			return;
 		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(
-				template.getRepairDirective());
+				integrityCheck.getRepairDirective());
 		query.executeUpdate();
 	}
 
 	/**
-	 * @see DataIntegrityDAO#saveResults(DataIntegrityCheckResultTemplate)
+	 * @see DataIntegrityDAO#saveResults(IntegrityCheckResults)
 	 */
-	public DataIntegrityCheckResultTemplate saveResults(
-			DataIntegrityCheckResultTemplate results) {
+	public IntegrityCheckResults saveResults(IntegrityCheckResults results) {
 		Criteria crit = sessionFactory
 				.getCurrentSession()
-				.createCriteria(DataIntegrityCheckResultTemplate.class)
+				.createCriteria(IntegrityCheckResults.class)
 				.add(Restrictions.eq("integrityCheck",
 						results.getIntegrityCheck()));
-		
+
 		// update the object that already exists (if it does)
 		Object found = crit.uniqueResult();
 		if (found != null) {
-			DataIntegrityCheckResultTemplate old = (DataIntegrityCheckResultTemplate) found;
+			IntegrityCheckResults old = (IntegrityCheckResults) found;
 			old.setCheckPassed(results.getCheckPassed());
 			old.setDateOccurred(results.getDateOccurred());
 			old.setFailedRecordCount(results.getFailedRecordCount());
@@ -125,34 +122,32 @@ public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
 	/**
 	 * @see DataIntegrityDAO#getResults(Integer)
 	 */
-	public DataIntegrityCheckResultTemplate getResults(Integer resultsId) {
-		return (DataIntegrityCheckResultTemplate) sessionFactory
-				.getCurrentSession().get(
-						DataIntegrityCheckResultTemplate.class, resultsId);
+	public IntegrityCheckResults getResults(Integer resultsId) {
+		return (IntegrityCheckResults) sessionFactory.getCurrentSession().get(
+				IntegrityCheckResults.class, resultsId);
 	}
 
 	/**
-	 * @see DataIntegrityDAO#deleteResults(DataIntegrityCheckResultTemplate)
+	 * @see DataIntegrityDAO#deleteResults(IntegrityCheckResults)
 	 */
-	public void deleteResults(DataIntegrityCheckResultTemplate results) {
+	public void deleteResults(IntegrityCheckResults results) {
 		sessionFactory.getCurrentSession().delete(results);
 	}
 
 	/**
-	 * @see DataIntegrityDAO#getResultsForCheck(DataIntegrityCheckTemplate)
+	 * @see DataIntegrityDAO#getResultsForIntegrityCheck(IntegrityCheck)
 	 */
-	public DataIntegrityCheckResultTemplate getResultsForCheck(
-			DataIntegrityCheckTemplate check) {
-		if (check == null)
+	public IntegrityCheckResults getResultsForIntegrityCheck(
+			IntegrityCheck integrityCheck) {
+		if (integrityCheck == null)
 			return null;
-		Criteria crit = sessionFactory
-			.getCurrentSession()
-			.createCriteria(DataIntegrityCheckResultTemplate.class)
-			.add(Restrictions.eq("integrityCheck", check));
+		Criteria crit = sessionFactory.getCurrentSession()
+				.createCriteria(IntegrityCheckResults.class)
+				.add(Restrictions.eq("integrityCheck", integrityCheck));
 		Object result = crit.uniqueResult();
 		if (result == null)
 			return null;
-		return (DataIntegrityCheckResultTemplate) result;
+		return (IntegrityCheckResults) result;
 	}
-	
+
 }

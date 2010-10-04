@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.openmrs.api.APIException;
-import org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate;
-import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
+import org.openmrs.module.dataintegrity.IntegrityCheckResults;
+import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.openmrs.module.dataintegrity.QueryResults;
@@ -38,20 +38,18 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 
 	private Map<String, ICheckExecutor> executors = null;
 
-	public List<DataIntegrityCheckTemplate> getAllDataIntegrityCheckTemplates()
-			throws APIException {
-		return this.dao.getAllDataIntegrityCheckTemplates();
+	public List<IntegrityCheck> getAllIntegrityChecks() throws APIException {
+		return this.dao.getAllIntegrityChecks();
 	}
 
-	public DataIntegrityCheckTemplate getDataIntegrityCheckTemplate(
-			Integer templateId) throws APIException {
-		return this.dao.getDataIntegrityCheckTemplate(templateId);
+	public IntegrityCheck getIntegrityCheck(Integer checkId)
+			throws APIException {
+		return this.dao.getIntegrityCheck(checkId);
 	}
 
-	public void saveDataIntegrityCheckTemplate(
-			DataIntegrityCheckTemplate dataIntegrityTemplate)
+	public void saveIntegrityCheck(IntegrityCheck integrityCheck)
 			throws APIException {
-		this.dao.saveDataIntegrityCheckTemplate(dataIntegrityTemplate);
+		this.dao.saveIntegrityCheck(integrityCheck);
 	}
 
 	public void setDataIntegrityDAO(DataIntegrityDAO dao) {
@@ -62,38 +60,39 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 		return this.dao;
 	}
 
-	public void deleteDataIntegrityCheckTemplate(
-			DataIntegrityCheckTemplate template) {
-		this.dao.deleteDataIntegrityCheckTemplate(template);
+	public void deleteIntegrityCheck(IntegrityCheck integrityCheck) {
+		this.dao.deleteIntegrityCheck(integrityCheck);
 	}
 
-	public DataIntegrityCheckResultTemplate runIntegrityCheck(
-			DataIntegrityCheckTemplate template, String parameterValues)
+	public IntegrityCheckResults runIntegrityCheck(
+			IntegrityCheck integrityCheck, String parameterValues)
 			throws Exception {
-		ICheckExecutor executor = getExecutors().get(template.getResultType());
-		executor.initializeExecutor(template, parameterValues);
+		ICheckExecutor executor = getExecutors().get(
+				integrityCheck.getResultType());
+		executor.initializeExecutor(integrityCheck, parameterValues);
 
-		DataIntegrityCheckResultTemplate resultTemplate = new DataIntegrityCheckResultTemplate(
-				template);
+		IntegrityCheckResults resultTemplate = new IntegrityCheckResults(
+				integrityCheck);
 
 		Long startTime = System.currentTimeMillis();
 		executor.executeCheck();
-        resultTemplate.setDuration(System.currentTimeMillis() - startTime);
+		resultTemplate.setDuration(System.currentTimeMillis() - startTime);
 
-		QueryResults failedRecords = new QueryResults(executor.getFailedRecords());
+		QueryResults failedRecords = new QueryResults(
+				executor.getFailedRecords());
 		resultTemplate.setFailedRecords(failedRecords);
 		resultTemplate.setCheckPassed(executor.getCheckResult());
 		resultTemplate.setFailedRecordCount(failedRecords.size());
-		
+
 		// save (or update) the results
 		this.saveResults(resultTemplate);
-		
+
 		return resultTemplate;
 	}
 
-	public void repairDataIntegrityCheckViaScript(
-			DataIntegrityCheckTemplate template) throws Exception {
-		this.dao.repairDataIntegrityCheckViaScript(template);
+	public void repairIntegrityCheckViaScript(IntegrityCheck integrityCheck)
+			throws Exception {
+		this.dao.repairDataIntegrityCheckViaScript(integrityCheck);
 	}
 
 	/**
@@ -117,9 +116,9 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 	}
 
 	/**
-	 * @see DataIntegrityService#saveResults(DataIntegrityCheckResultTemplate)
+	 * @see DataIntegrityService#saveResults(IntegrityCheckResults)
 	 */
-	public DataIntegrityCheckResultTemplate saveResults(DataIntegrityCheckResultTemplate results)
+	public IntegrityCheckResults saveResults(IntegrityCheckResults results)
 			throws APIException {
 		results.setDateOccurred(new Date());
 		return dao.saveResults(results);
@@ -128,24 +127,24 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 	/**
 	 * @see DataIntegrityService#getResults(Integer)
 	 */
-	public DataIntegrityCheckResultTemplate getResults(Integer resultsId)
+	public IntegrityCheckResults getResults(Integer resultsId)
 			throws APIException {
 		return dao.getResults(resultsId);
 	}
 
 	/**
-	 * @see DataIntegrityService#deleteResults(DataIntegrityCheckResultTemplate)
+	 * @see DataIntegrityService#deleteResults(IntegrityCheckResults)
 	 */
-	public void deleteResults(DataIntegrityCheckResultTemplate results) {
+	public void deleteResults(IntegrityCheckResults results) {
 		dao.deleteResults(results);
 	}
 
 	/**
-	 * @see DataIntegrityService#getResultsForCheck(DataIntegrityCheckTemplate)
+	 * @see DataIntegrityService#getResultsForIntegrityCheck(IntegrityCheck)
 	 */
-	public DataIntegrityCheckResultTemplate getResultsForCheck(
-			DataIntegrityCheckTemplate check) {
-		return dao.getResultsForCheck(check);
+	public IntegrityCheckResults getResultsForIntegrityCheck(
+			IntegrityCheck check) {
+		return dao.getResultsForIntegrityCheck(check);
 	}
-	
+
 }

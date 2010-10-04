@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
+import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.openmrs.web.WebConstants;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -27,7 +27,7 @@ public class DeleteIntegrityCheckFormController extends SimpleFormController{
     }
 	
 	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-		List<DataIntegrityCheckTemplate> list = new ArrayList<DataIntegrityCheckTemplate>();
+		List<IntegrityCheck> list = new ArrayList<IntegrityCheck>();
 		return list;
 	}
 	
@@ -35,7 +35,7 @@ public class DeleteIntegrityCheckFormController extends SimpleFormController{
 	protected Map<String, Object> referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (Context.isAuthenticated()) {
-			map.put("existingChecks", getDataIntegrityService().getAllDataIntegrityCheckTemplates());
+			map.put("existingChecks", getDataIntegrityService().getAllIntegrityChecks());
 		}
         return map;
 	}
@@ -61,8 +61,8 @@ public class DeleteIntegrityCheckFormController extends SimpleFormController{
 				String notDeleted = msa.getMessage("dataintegrity.deleteCheck.notdelete");
 				for (String checkId : checkList) {
 					try {
-						DataIntegrityCheckTemplate template = service.getDataIntegrityCheckTemplate(Integer.valueOf(checkId));
-						service.deleteDataIntegrityCheckTemplate(template);
+						IntegrityCheck template = service.getIntegrityCheck(Integer.valueOf(checkId));
+						service.deleteIntegrityCheck(template);
 						
 						if (!success.equals(""))
 							success += "<br/>";

@@ -15,8 +15,8 @@ import javax.servlet.http.HttpSession;
 
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate;
-import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
+import org.openmrs.module.dataintegrity.IntegrityCheckResults;
+import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.openmrs.web.WebConstants;
@@ -45,7 +45,7 @@ public class ResultsListController extends SimpleFormController {
 			Object command, Errors errors) throws Exception {
 
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<DataIntegrityCheckResultTemplate> results = null;
+		List<IntegrityCheckResults> results = null;
 		HttpSession session = request.getSession();
 
 		// check for specifically requested results
@@ -55,13 +55,13 @@ public class ResultsListController extends SimpleFormController {
 			try {
 				checkNo = Integer.parseInt(checkId);
 			} catch (NumberFormatException e) {
-				throw new APIException("cannot find DataIntegrityCheckTemplate #" + checkId);
+				throw new APIException("cannot find IntegrityCheck #" + checkId);
 			}
 			DataIntegrityService ds = (DataIntegrityService) Context.getService(DataIntegrityService.class);
-			DataIntegrityCheckTemplate check = ds.getDataIntegrityCheckTemplate(checkNo);
-			DataIntegrityCheckResultTemplate res = check.getLatestResults();
+			IntegrityCheck check = ds.getIntegrityCheck(checkNo);
+			IntegrityCheckResults res = check.getLatestResults();
 			if (res != null) {
-				results = new ArrayList<DataIntegrityCheckResultTemplate>();
+				results = new ArrayList<IntegrityCheckResults>();
 				results.add(res);
 				map.put("checkResults", results);
 				map.put("single", true);
@@ -69,13 +69,13 @@ public class ResultsListController extends SimpleFormController {
 		} else {
 			// try the old way ...
 			if (session.getAttribute("singleCheckResults") != null) {
-				results = (List<DataIntegrityCheckResultTemplate>) session
+				results = (List<IntegrityCheckResults>) session
 						.getAttribute("singleCheckResults");
 				map.put("checkResults", results);
 				map.put("single", true);
 				session.removeAttribute("singleCheckResults");
 			} else if (session.getAttribute("multipleCheckResults") != null) {
-				results = (List<DataIntegrityCheckResultTemplate>) session
+				results = (List<IntegrityCheckResults>) session
 						.getAttribute("multipleCheckResults");
 				session.removeAttribute("multipleCheckResults");
 				map.put("single", false);
@@ -85,7 +85,7 @@ public class ResultsListController extends SimpleFormController {
 		if (results != null) {
 			Map<Integer, List<Object[]>> failedRecordMap = new HashMap<Integer, List<Object[]>>();
 			for (int i = 0; i < results.size(); i++) {
-				DataIntegrityCheckResultTemplate resultTemplate = results
+				IntegrityCheckResults resultTemplate = results
 						.get(i);
 				failedRecordMap.put(resultTemplate.getIntegrityCheck().getId(),
 						resultTemplate.getFailedRecords());
@@ -116,17 +116,17 @@ public class ResultsListController extends SimpleFormController {
 			if (checkId != null) {
 				try {
 					int id = Integer.valueOf(checkId);
-					DataIntegrityCheckTemplate template = getDataIntegrityService()
-							.getDataIntegrityCheckTemplate(id);
+					IntegrityCheck template = getDataIntegrityService()
+							.getIntegrityCheck(id);
 					checkName = template.getName();
 					String parameterValues = null;
 					if (StringUtils.hasText(template.getRepairParameters())) {
 						parameterValues = request.getParameter("checkParameter"
 								+ checkId);
 					}
-					DataIntegrityCheckResultTemplate resultTemplate = getDataIntegrityService()
+					IntegrityCheckResults resultTemplate = getDataIntegrityService()
 							.runIntegrityCheck(template, parameterValues);
-					List<DataIntegrityCheckResultTemplate> result = new ArrayList<DataIntegrityCheckResultTemplate>();
+					List<IntegrityCheckResults> result = new ArrayList<IntegrityCheckResults>();
 					result.add(resultTemplate);
 					httpSession.setAttribute("singleCheckResults", result);
 					success = checkName

@@ -2,7 +2,7 @@ package org.openmrs.module.dataintegrity.executors;
 
 import java.util.List;
 
-import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
+import org.openmrs.module.dataintegrity.IntegrityCheck;
 
 public interface ICheckExecutor {
 	/**
@@ -12,7 +12,7 @@ public interface ICheckExecutor {
 	 * @param check: The Integrity Check to be executed
 	 * @param parameterValues: Parameter values for the parameter fields
 	 */
-	public void initializeExecutor(DataIntegrityCheckTemplate check, String parameterValues);
+	public void initializeExecutor(IntegrityCheck check, String parameterValues);
 	
 	/**
 	 * 

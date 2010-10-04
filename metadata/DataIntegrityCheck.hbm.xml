@@ -5,7 +5,7 @@
 
 <hibernate-mapping package="org.openmrs.module.dataintegrity">
 
-	<class name="DataIntegrityCheckTemplate" table="dataintegrity_integrity_checks">
+	<class name="IntegrityCheck" table="dataintegrity_integrity_checks">
 
 		<id name="id" type="int" column="dataintegrity_integrity_check_id">
 			<generator class="native" />
@@ -38,7 +38,7 @@
 		<property name="repairParameters" type="java.lang.String"
 			not-null="false" length="500" column="check_parameters" />
 
-		<one-to-one name="latestResults" class="DataIntegrityCheckResultTemplate"
+		<one-to-one name="latestResults" class="IntegrityCheckResults"
 			property-ref="integrityCheck" />
 
 	</class>

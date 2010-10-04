@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
+import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.openmrs.module.dataintegrity.DataIntegrityXmlFileParser;
 import org.openmrs.module.dataintegrity.IDataIntegrityCheckUpload;
@@ -49,7 +49,7 @@ public class TransferCheckListController extends SimpleFormController {
 	protected Map<String, Object> referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (Context.isAuthenticated()) {
-			map.put("existingChecks", getDataIntegrityService().getAllDataIntegrityCheckTemplates());
+			map.put("existingChecks", getDataIntegrityService().getAllIntegrityChecks());
 		}
         return map; //return all existing integrity checks
 	}
@@ -78,7 +78,7 @@ public class TransferCheckListController extends SimpleFormController {
 							List<IDataIntegrityCheckUpload> checksToUpload = fileParser.getChecksToAdd();
 							for (int i=0; i<checksToUpload.size(); i++) {
 								IDataIntegrityCheckUpload check = checksToUpload.get(i);
-								DataIntegrityCheckTemplate template = new DataIntegrityCheckTemplate();
+								IntegrityCheck template = new IntegrityCheck();
 								template.setCheckType(check.getCheckType());
 								template.setCheckCode(check.getCheckCode());
 								template.setFailDirective(check.getCheckFailDirective());
@@ -88,7 +88,7 @@ public class TransferCheckListController extends SimpleFormController {
 								template.setResultType(check.getCheckResultType());
 								template.setRepairType(check.getCheckRepairType());
 								template.setRepairParameters(check.getCheckParameters());
-								getDataIntegrityService().saveDataIntegrityCheckTemplate(template);
+								getDataIntegrityService().saveIntegrityCheck(template);
 								success += check.getCheckName() + " " + msa.getMessage("dataintegrity.upload.success") + "<br />";
 							}
 						}
@@ -122,7 +122,7 @@ public class TransferCheckListController extends SimpleFormController {
 				StringBuffer exportString = new StringBuffer();
 				exportString.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<checks>\r\n");
 				for (String checkId : checkList) {
-					DataIntegrityCheckTemplate template = service.getDataIntegrityCheckTemplate(Integer.valueOf(checkId));
+					IntegrityCheck template = service.getIntegrityCheck(Integer.valueOf(checkId));
 					exportString.append("\t<check type=\"" + template.getCheckType() + "\">\r\n");
 					exportString.append("\t\t<name>" + template.getName() + "</name>\r\n");
 					exportString.append("\t\t<code>" + template.getCheckCode() + "</code>\r\n");

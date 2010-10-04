@@ -18,31 +18,35 @@ import java.util.List;
 
 import org.hibernate.SessionFactory;
 import org.openmrs.api.db.DAOException;
-import org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate;
-import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
+import org.openmrs.module.dataintegrity.IntegrityCheckResults;
+import org.openmrs.module.dataintegrity.IntegrityCheck;
 
 public interface DataIntegrityDAO {
 
 	public void setSessionFactory(SessionFactory sessionFactory);
 
-    public void saveDataIntegrityCheckTemplate(DataIntegrityCheckTemplate dataIntegrityTemplate) throws DAOException;
+	public void saveIntegrityCheck(IntegrityCheck integrityCheck)
+			throws DAOException;
 
-    public DataIntegrityCheckTemplate getDataIntegrityCheckTemplate(Integer templateId) throws DAOException;
+	public IntegrityCheck getIntegrityCheck(Integer checkId)
+			throws DAOException;
 
-    public List<DataIntegrityCheckTemplate> getAllDataIntegrityCheckTemplates() throws DAOException;
-    
-    public void deleteDataIntegrityCheckTemplate(DataIntegrityCheckTemplate template) throws DAOException;
-    
-    public SessionFactory getSessionFactory();
-    
-    public void repairDataIntegrityCheckViaScript(DataIntegrityCheckTemplate template) throws DAOException;
+	public List<IntegrityCheck> getAllIntegrityChecks() throws DAOException;
 
-	public DataIntegrityCheckResultTemplate saveResults(DataIntegrityCheckResultTemplate results);
+	public void deleteIntegrityCheck(IntegrityCheck integrityCheck)
+			throws DAOException;
 
-	public DataIntegrityCheckResultTemplate getResults(Integer resultsId);
+	public SessionFactory getSessionFactory();
 
-	public void deleteResults(DataIntegrityCheckResultTemplate results);
+	public void repairDataIntegrityCheckViaScript(IntegrityCheck template)
+			throws DAOException;
 
-	public DataIntegrityCheckResultTemplate getResultsForCheck(
-			DataIntegrityCheckTemplate check);
+	public IntegrityCheckResults saveResults(IntegrityCheckResults results);
+
+	public IntegrityCheckResults getResults(Integer resultsId);
+
+	public void deleteResults(IntegrityCheckResults results);
+
+	public IntegrityCheckResults getResultsForIntegrityCheck(
+			IntegrityCheck integrityCheck);
 }

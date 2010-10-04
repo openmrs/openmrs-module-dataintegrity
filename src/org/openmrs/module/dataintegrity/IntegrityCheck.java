@@ -19,7 +19,7 @@ package org.openmrs.module.dataintegrity;
  * 
  * @TODO describe this better
  */
-public class DataIntegrityCheckTemplate {
+public class IntegrityCheck {
 	private int id;
 	private String name;
 	private String checkType;
@@ -30,7 +30,7 @@ public class DataIntegrityCheckTemplate {
 	private String repairType;
 	private String repairDirective;
 	private String repairParameters;
-	private DataIntegrityCheckResultTemplate latestResults;
+	private IntegrityCheckResults latestResults;
 
 	/**
 	 * @return the id
@@ -185,7 +185,7 @@ public class DataIntegrityCheckTemplate {
 	/**
 	 * @return the latestResults
 	 */
-	public DataIntegrityCheckResultTemplate getLatestResults() {
+	public IntegrityCheckResults getLatestResults() {
 		return latestResults;
 	}
 
@@ -193,7 +193,7 @@ public class DataIntegrityCheckTemplate {
 	 * @param latestResults
 	 *            the latestResults to set
 	 */
-	public void setLatestResults(DataIntegrityCheckResultTemplate latestResults) {
+	public void setLatestResults(IntegrityCheckResults latestResults) {
 		if (latestResults != null)
 			latestResults.setIntegrityCheck(this);
 		this.latestResults = latestResults;

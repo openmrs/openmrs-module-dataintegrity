@@ -7,7 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
+import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
@@ -17,9 +17,9 @@ public class DataIntegrityChecksListController extends SimpleFormController{
     }
 	
 	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-        List<DataIntegrityCheckTemplate> checks = new ArrayList<DataIntegrityCheckTemplate>();
+        List<IntegrityCheck> checks = new ArrayList<IntegrityCheck>();
         if (Context.isAuthenticated()) {
-        	checks = getDataIntegrityService().getAllDataIntegrityCheckTemplates(); 
+        	checks = getDataIntegrityService().getAllIntegrityChecks(); 
         }
         return checks;
     }

@@ -23,7 +23,7 @@ public class DisplayTemplateFormController extends SimpleFormController {
 	@Override
 	protected Map<String, Object> referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
-        map.put("integrityTemplates", getDataIntegrityService().getAllDataIntegrityCheckTemplates());
+        map.put("integrityTemplates", getDataIntegrityService().getAllIntegrityChecks());
         return map;
 	}
 }

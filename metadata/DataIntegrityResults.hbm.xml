@@ -5,13 +5,13 @@
 
 <hibernate-mapping package="org.openmrs.module.dataintegrity">
 
-	<class name="DataIntegrityCheckResultTemplate" table="dataintegrity_results">
+	<class name="IntegrityCheckResults" table="dataintegrity_results">
 
 		<id name="id" type="int" column="results_id">
 			<generator class="native" />
 		</id>
 
-		<many-to-one name="integrityCheck" class="DataIntegrityCheckTemplate"
+		<many-to-one name="integrityCheck" class="IntegrityCheck"
 			not-null="true" unique="true" column="integrity_check_id" />
 
 		<property name="failedRecordCount" type="int" not-null="true"

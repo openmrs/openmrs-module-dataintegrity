@@ -23,8 +23,8 @@ public class DataIntegrityXmlParser {
 		}
 	}
 	
-	public List<DataIntegrityCheckTemplate> getChecksToUpload() {
-		List<DataIntegrityCheckTemplate> checksToUpload = new ArrayList<DataIntegrityCheckTemplate>();
+	public List<IntegrityCheck> getChecksToUpload() {
+		List<IntegrityCheck> checksToUpload = new ArrayList<IntegrityCheck>();
 		
 		
 		return checksToUpload;

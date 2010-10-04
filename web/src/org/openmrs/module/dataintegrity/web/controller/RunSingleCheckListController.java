@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate;
-import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
+import org.openmrs.module.dataintegrity.IntegrityCheckResults;
+import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.openmrs.web.WebConstants;
@@ -29,9 +29,9 @@ public class RunSingleCheckListController extends SimpleFormController {
     }
 	
 	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-        List<DataIntegrityCheckTemplate> checks = new ArrayList<DataIntegrityCheckTemplate>();
+        List<IntegrityCheck> checks = new ArrayList<IntegrityCheck>();
         if (Context.isAuthenticated()) {
-        	checks = getDataIntegrityService().getAllDataIntegrityCheckTemplates(); 
+        	checks = getDataIntegrityService().getAllIntegrityChecks(); 
         }
         return checks;
     }
@@ -57,14 +57,14 @@ public class RunSingleCheckListController extends SimpleFormController {
 			if (checkId != null) {
 				try {
 					int id = Integer.valueOf(checkId);
-					DataIntegrityCheckTemplate template = getDataIntegrityService().getDataIntegrityCheckTemplate(id);
+					IntegrityCheck template = getDataIntegrityService().getIntegrityCheck(id);
 					checkName = template.getName();
 					String parameterValues = null;
 					if (!template.getRepairParameters().equals("")) {
 						parameterValues = request.getParameter("checkParameter" + checkId);
 					}
-					DataIntegrityCheckResultTemplate resultTemplate = getDataIntegrityService().runIntegrityCheck(template, parameterValues);
-					List<DataIntegrityCheckResultTemplate> result = new ArrayList<DataIntegrityCheckResultTemplate>();
+					IntegrityCheckResults resultTemplate = getDataIntegrityService().runIntegrityCheck(template, parameterValues);
+					List<IntegrityCheckResults> result = new ArrayList<IntegrityCheckResults>();
 					result.add(resultTemplate);
 					httpSession.setAttribute("singleCheckResults", result);
 					success = checkName + " " + msa.getMessage("dataintegrity.runSingleCheck.success");

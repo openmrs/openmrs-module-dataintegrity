@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.dataintegrity.DataIntegrityCheckResultTemplate;
-import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
+import org.openmrs.module.dataintegrity.IntegrityCheckResults;
+import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.openmrs.web.WebConstants;
@@ -29,9 +29,9 @@ public class RunMultipleChecksListController extends SimpleFormController {
     }
 	
 	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-        List<DataIntegrityCheckTemplate> checks = new ArrayList<DataIntegrityCheckTemplate>();
+        List<IntegrityCheck> checks = new ArrayList<IntegrityCheck>();
         if (Context.isAuthenticated()) {
-        	checks = getDataIntegrityService().getAllDataIntegrityCheckTemplates(); 
+        	checks = getDataIntegrityService().getAllIntegrityChecks(); 
         }
         return checks;
     }
@@ -59,17 +59,17 @@ public class RunMultipleChecksListController extends SimpleFormController {
 			if (checkList != null) {
 				int successCount = 0;
 				int errorCount = 0;
-				List<DataIntegrityCheckResultTemplate> results = new ArrayList<DataIntegrityCheckResultTemplate>();
+				List<IntegrityCheckResults> results = new ArrayList<IntegrityCheckResults>();
 				StringBuffer buffer = new StringBuffer();
 				for (String checkId : checkList) {
 					try {
 						int id = Integer.valueOf(checkId);
-						DataIntegrityCheckTemplate template = service.getDataIntegrityCheckTemplate(id);
+						IntegrityCheck template = service.getIntegrityCheck(id);
 						String parameterValues = null;
 						if (!template.getRepairParameters().equals("")) {
 							parameterValues = request.getParameter("checkParameter" + checkId);
 						}
-						DataIntegrityCheckResultTemplate resultTemplate = service.runIntegrityCheck(template, parameterValues);
+						IntegrityCheckResults resultTemplate = service.runIntegrityCheck(template, parameterValues);
 						results.add(resultTemplate);
 						successCount++;
 					} catch (Exception e) {

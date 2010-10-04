@@ -43,23 +43,22 @@ public interface DataIntegrityService {
 	/**
 	 * saves a single data integrity check
 	 * 
-	 * @param dataIntegrityTemplate
+	 * @param integrityCheck
 	 * @throws APIException
 	 */
-	public void saveDataIntegrityCheckTemplate(
-			DataIntegrityCheckTemplate dataIntegrityTemplate)
+	public void saveIntegrityCheck(IntegrityCheck integrityCheck)
 			throws APIException;
 
 	/**
 	 * returns a single data integrity check
 	 * 
-	 * @param templateId
+	 * @param checkId
 	 * @return the data record
 	 * @throws APIException
 	 * @should not return a null object
 	 */
-	public DataIntegrityCheckTemplate getDataIntegrityCheckTemplate(
-			Integer templateId) throws APIException;
+	public IntegrityCheck getIntegrityCheck(Integer checkId)
+			throws APIException;
 
 	/**
 	 * returns all non-voided data integrity checks
@@ -67,16 +66,14 @@ public interface DataIntegrityService {
 	 * @return
 	 * @throws APIException
 	 */
-	public List<DataIntegrityCheckTemplate> getAllDataIntegrityCheckTemplates()
-			throws APIException;
+	public List<IntegrityCheck> getAllIntegrityChecks() throws APIException;
 
 	/**
 	 * deletes a data integrity check
 	 * 
-	 * @param template
+	 * @param integrityCheck
 	 */
-	public void deleteDataIntegrityCheckTemplate(
-			DataIntegrityCheckTemplate template);
+	public void deleteIntegrityCheck(IntegrityCheck integrityCheck);
 
 	/**
 	 * saves the results of a single data integrity check
@@ -85,7 +82,7 @@ public interface DataIntegrityService {
 	 * @throws APIException
 	 * @should not throw an error saving results
 	 */
-	public DataIntegrityCheckResultTemplate saveResults(DataIntegrityCheckResultTemplate results)
+	public IntegrityCheckResults saveResults(IntegrityCheckResults results)
 			throws APIException;
 
 	/**
@@ -97,7 +94,7 @@ public interface DataIntegrityService {
 	 * @should retrieve results if a check exists
 	 * @should return null if results for a check do not exist
 	 */
-	public DataIntegrityCheckResultTemplate getResults(Integer resultsId)
+	public IntegrityCheckResults getResults(Integer resultsId)
 			throws APIException;
 
 	/**
@@ -105,35 +102,35 @@ public interface DataIntegrityService {
 	 * 
 	 * @param template
 	 */
-	public void deleteResults(DataIntegrityCheckResultTemplate results);
+	public void deleteResults(IntegrityCheckResults results);
 
 	/**
 	 * runs a data integrity check
 	 * 
-	 * @param template
+	 * @param integrityCheck
 	 * @param parameterValues
 	 * @return
 	 * @throws Exception
 	 */
-	public DataIntegrityCheckResultTemplate runIntegrityCheck(
-			DataIntegrityCheckTemplate template, String parameterValues)
+	public IntegrityCheckResults runIntegrityCheck(
+			IntegrityCheck integrityCheck, String parameterValues)
 			throws Exception;
 
 	/**
 	 * repairs data based on a given script
 	 * 
-	 * @param template
+	 * @param integrityCheck
 	 * @throws Exception
 	 */
-	public void repairDataIntegrityCheckViaScript(
-			DataIntegrityCheckTemplate template) throws Exception;
+	public void repairIntegrityCheckViaScript(
+			IntegrityCheck integrityCheck) throws Exception;
 
 	/**
 	 * returns results for the given integrity check
 	 * 
-	 * @param check
+	 * @param integrityCheck
 	 * @return
 	 */
-	public DataIntegrityCheckResultTemplate getResultsForCheck(
-			DataIntegrityCheckTemplate check);
+	public IntegrityCheckResults getResultsForIntegrityCheck(
+			IntegrityCheck integrityCheck);
 }

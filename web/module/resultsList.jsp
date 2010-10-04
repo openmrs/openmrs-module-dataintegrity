@@ -31,8 +31,7 @@
 		return true;
 	}
 
-	function openFailedRecordsPopUp(buttonId)
-	{
+	function openFailedRecordsPopUp(buttonId) {
 		var url = document.location.href;
 		var components = url.split('/');
 		var last = components[components.length - 1];
@@ -115,7 +114,7 @@
 	</tr>
 	<tr>
 		<td colspan="3">
-			<a href="repairCheck.list?checkId=${results.id}" target="_blank"><spring:message code="dataintegrity.repair.failedRecords"/></a>
+			<a href="repairCheck.list?checkId=${results.integrityCheck.id}" target="_blank"><spring:message code="dataintegrity.repair.failedRecords"/></a>
 		</td>
 	</tr>
 	</c:if>

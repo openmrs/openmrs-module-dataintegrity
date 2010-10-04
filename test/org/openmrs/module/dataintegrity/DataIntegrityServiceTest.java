@@ -30,8 +30,8 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest {
 	public void shouldGetOneDataIntegrityTemplate() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context
 				.getService(DataIntegrityService.class);
-		DataIntegrityCheckTemplate template = service
-				.getDataIntegrityCheckTemplate(19);
+		IntegrityCheck template = service
+				.getIntegrityCheck(19);
 		Assert.notNull(template);
 	}
 
@@ -39,8 +39,8 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest {
 	public void shouldGetAllDataIntegrityTemplates() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context
 				.getService(DataIntegrityService.class);
-		List<DataIntegrityCheckTemplate> templates = service
-				.getAllDataIntegrityCheckTemplates();
+		List<IntegrityCheck> templates = service
+				.getAllIntegrityChecks();
 		System.out.println("Templates received: " + templates);
 		Assert.notNull(templates);
 	}
@@ -49,10 +49,10 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest {
 	public void shouldSaveNewDataIntegrityTemplate() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context
 				.getService(DataIntegrityService.class);
-		List<DataIntegrityCheckTemplate> templates = service
-				.getAllDataIntegrityCheckTemplates();
+		List<IntegrityCheck> templates = service
+				.getAllIntegrityChecks();
 		int templateCountBeforeAdding = templates.size();
-		DataIntegrityCheckTemplate temp = new DataIntegrityCheckTemplate();
+		IntegrityCheck temp = new IntegrityCheck();
 		temp.setCheckCode("temp code");
 		temp.setFailDirective("temp fail directive");
 		temp.setFailDirectiveOperator("temp fail op");
@@ -62,9 +62,9 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest {
 		temp.setRepairType("temp repair type");
 		temp.setResultType("temp result type");
 		temp.setCheckType("temp check type");
-		service.saveDataIntegrityCheckTemplate(temp);
+		service.saveIntegrityCheck(temp);
 		int templateCountAfterAdding = service
-				.getAllDataIntegrityCheckTemplates().size();
+				.getAllIntegrityChecks().size();
 		Assert.isTrue(templateCountBeforeAdding == (templateCountAfterAdding - 1));
 	}
 
@@ -72,14 +72,14 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest {
 	public void shouldDeleteIntegrityTemplates() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context
 				.getService(DataIntegrityService.class);
-		List<DataIntegrityCheckTemplate> templates = service
-				.getAllDataIntegrityCheckTemplates();
+		List<IntegrityCheck> templates = service
+				.getAllIntegrityChecks();
 		int templateCountBeforeAdding = templates.size();
-		DataIntegrityCheckTemplate temp = service
-				.getDataIntegrityCheckTemplate(19);
-		service.deleteDataIntegrityCheckTemplate(temp);
+		IntegrityCheck temp = service
+				.getIntegrityCheck(19);
+		service.deleteIntegrityCheck(temp);
 		int templateCountAfterAdding = service
-				.getAllDataIntegrityCheckTemplates().size();
+				.getAllIntegrityChecks().size();
 		Assert.isTrue(templateCountBeforeAdding == (templateCountAfterAdding + 1));
 	}
 
@@ -87,9 +87,9 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest {
 	public void shouldExecuteIntegrityCheck() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context
 				.getService(DataIntegrityService.class);
-		DataIntegrityCheckTemplate template = service
-				.getDataIntegrityCheckTemplate(19);
-		DataIntegrityCheckResultTemplate result = service.runIntegrityCheck(
+		IntegrityCheck template = service
+				.getIntegrityCheck(19);
+		IntegrityCheckResults result = service.runIntegrityCheck(
 				template, "1");
 		Assert.notNull(result);
 		List<Object[]> records = result.getFailedRecords();
@@ -103,8 +103,8 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest {
 	public void shouldUploadDataIntegrityCheck() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context
 				.getService(DataIntegrityService.class);
-		List<DataIntegrityCheckTemplate> templates = service
-				.getAllDataIntegrityCheckTemplates();
+		List<IntegrityCheck> templates = service
+				.getAllIntegrityChecks();
 		int templateCountBeforeAdding = templates.size();
 
 		File file = new File(
@@ -113,7 +113,7 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest {
 		List<IDataIntegrityCheckUpload> checks = parser.getChecksToAdd();
 		for (int i = 0; i < checks.size(); i++) {
 			IDataIntegrityCheckUpload check = checks.get(i);
-			DataIntegrityCheckTemplate template = new DataIntegrityCheckTemplate();
+			IntegrityCheck template = new IntegrityCheck();
 			template.setCheckType(check.getCheckType());
 			template.setCheckCode(check.getCheckCode());
 			template.setFailDirective(check
@@ -126,11 +126,11 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest {
 			template.setResultType(check.getCheckResultType());
 			template.setRepairType(check.getCheckRepairType());
 			template.setRepairParameters(check.getCheckParameters());
-			service.saveDataIntegrityCheckTemplate(template);
+			service.saveIntegrityCheck(template);
 		}
 
 		int templateCountAfterAdding = service
-				.getAllDataIntegrityCheckTemplates().size();
+				.getAllIntegrityChecks().size();
 		Assert.isTrue(templateCountAfterAdding > templateCountBeforeAdding);
 	}
 
@@ -159,7 +159,7 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see {@link DataIntegrityService#saveResults(DataIntegrityCheckResultTemplate)}
+	 * @see {@link DataIntegrityService#saveResults(IntegrityCheckResults)}
 	 * 
 	 */
 	@Test

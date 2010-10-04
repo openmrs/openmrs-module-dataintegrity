@@ -19,9 +19,9 @@ import java.util.Date;
 /**
  * @TODO put description here :-/
  */
-public class DataIntegrityCheckResultTemplate {
+public class IntegrityCheckResults {
 	private Integer id = null;
-	private DataIntegrityCheckTemplate integrityCheck = null;
+	private IntegrityCheck integrityCheck = null;
 	private Integer failedRecordCount = null;
 	private Boolean checkPassed = null;
 	private QueryResults failedRecords = null;
@@ -31,7 +31,7 @@ public class DataIntegrityCheckResultTemplate {
 	/**
 	 * default constructor
 	 */
-	public DataIntegrityCheckResultTemplate() {
+	public IntegrityCheckResults() {
 		// pass
 	}
 
@@ -39,7 +39,7 @@ public class DataIntegrityCheckResultTemplate {
 	 * convenience constructor to connect results with the associated integrity
 	 * check template
 	 */
-	public DataIntegrityCheckResultTemplate(DataIntegrityCheckTemplate template) {
+	public IntegrityCheckResults(IntegrityCheck template) {
 		this.setIntegrityCheck(template);
 	}
 
@@ -61,7 +61,7 @@ public class DataIntegrityCheckResultTemplate {
 	/**
 	 * @return the integrityCheck
 	 */
-	public DataIntegrityCheckTemplate getIntegrityCheck() {
+	public IntegrityCheck getIntegrityCheck() {
 		return integrityCheck;
 	}
 
@@ -69,7 +69,7 @@ public class DataIntegrityCheckResultTemplate {
 	 * @param integrityCheck
 	 *            the integrityCheck to set
 	 */
-	public void setIntegrityCheck(DataIntegrityCheckTemplate integrityCheck) {
+	public void setIntegrityCheck(IntegrityCheck integrityCheck) {
 		this.integrityCheck = integrityCheck;
 	}
 
@@ -155,7 +155,7 @@ public class DataIntegrityCheckResultTemplate {
 	}
 
 	/**
-	 * @deprecated see {@link DataIntegrityCheckTemplate#getRepairParameters()}
+	 * @deprecated see {@link IntegrityCheck#getRepairParameters()}
 	 */
 	public String getParameters() {
 		if (this.getIntegrityCheck() != null)
@@ -164,7 +164,7 @@ public class DataIntegrityCheckResultTemplate {
 	}
 
 	/**
-	 * @deprecated see {@link DataIntegrityCheckTemplate#getFailDirective()}
+	 * @deprecated see {@link IntegrityCheck#getFailDirective()}
 	 */
 	public String getFailDirective() {
 		if (this.getIntegrityCheck() != null)
@@ -173,7 +173,7 @@ public class DataIntegrityCheckResultTemplate {
 	}
 
 	/**
-	 * @deprecated see {@link DataIntegrityCheckTemplate#getName()}
+	 * @deprecated see {@link IntegrityCheck#getName()}
 	 */
 	public String getCheckName() {
 		if (this.getIntegrityCheck() != null)
@@ -184,7 +184,7 @@ public class DataIntegrityCheckResultTemplate {
 	/**
 	 * @return the fail operator
 	 * @deprecated see
-	 *             {@link DataIntegrityCheckTemplate#getIntegrityCheckFailDirectiveOperator()}
+	 *             {@link IntegrityCheck#getIntegrityCheckFailDirectiveOperator()}
 	 */
 	@Deprecated
 	public String getFailOperator() {

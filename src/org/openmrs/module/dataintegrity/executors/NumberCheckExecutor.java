@@ -5,14 +5,14 @@ import java.util.List;
 
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
-import org.openmrs.module.dataintegrity.DataIntegrityCheckTemplate;
+import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.IntegrityCheckUtil;
 import org.openmrs.module.dataintegrity.db.DataIntegrityDAO;
 import org.openmrs.util.OpenmrsUtil;
 
 public class NumberCheckExecutor implements ICheckExecutor {
-	private DataIntegrityCheckTemplate check;
+	private IntegrityCheck check;
 	private DataIntegrityDAO dao;
 	private String parameterValues;
 	private List<Double[]> failedRecords;
@@ -21,7 +21,7 @@ public class NumberCheckExecutor implements ICheckExecutor {
 		this.dao = dao;
 	}
 	
-	public void initializeExecutor(DataIntegrityCheckTemplate check, String parameterValues) {
+	public void initializeExecutor(IntegrityCheck check, String parameterValues) {
 		this.check = check;
 		this.parameterValues = parameterValues;
 		this.failedRecords = new ArrayList<Double[]>();
