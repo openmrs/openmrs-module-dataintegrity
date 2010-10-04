@@ -49,7 +49,7 @@
 	
 	<!-- Hibernate Mapping -->
 	<mappingFiles>
-        DataIntegrityTemplate.hbm.xml
+        DataIntegrityCheck.hbm.xml
 		DataIntegrityResults.hbm.xml
     </mappingFiles>
     <!-- /Hibernate Mapping -->
