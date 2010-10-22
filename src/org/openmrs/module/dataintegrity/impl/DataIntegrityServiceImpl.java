@@ -47,9 +47,9 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 		return this.dao.getIntegrityCheck(checkId);
 	}
 
-	public void saveIntegrityCheck(IntegrityCheck integrityCheck)
+	public IntegrityCheck saveIntegrityCheck(IntegrityCheck integrityCheck)
 			throws APIException {
-		this.dao.saveIntegrityCheck(integrityCheck);
+		return this.dao.saveIntegrityCheck(integrityCheck);
 	}
 
 	public void setDataIntegrityDAO(DataIntegrityDAO dao) {
@@ -67,8 +67,17 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 	public IntegrityCheckResults runIntegrityCheck(
 			IntegrityCheck integrityCheck, String parameterValues)
 			throws Exception {
+		if (integrityCheck == null)
+			return null;
+
 		ICheckExecutor executor = getExecutors().get(
 				integrityCheck.getResultType());
+		if (executor == null)
+			throw new APIException(
+					"An executor was expected for integrity check type '"
+							+ integrityCheck.getResultType()
+							+ "' but none was found.");
+		
 		executor.initializeExecutor(integrityCheck, parameterValues);
 
 		IntegrityCheckResults resultTemplate = new IntegrityCheckResults(

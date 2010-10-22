@@ -65,9 +65,10 @@ public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
 	/**
 	 * @see DataIntegrityDAO#saveIntegrityCheck(IntegrityCheck)
 	 */
-	public void saveIntegrityCheck(IntegrityCheck integrityCheck)
+	public IntegrityCheck saveIntegrityCheck(IntegrityCheck integrityCheck)
 			throws DAOException {
 		sessionFactory.getCurrentSession().saveOrUpdate(integrityCheck);
+		return integrityCheck;
 	}
 
 	/**

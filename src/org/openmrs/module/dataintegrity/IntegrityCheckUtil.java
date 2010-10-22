@@ -99,7 +99,7 @@ public class IntegrityCheckUtil {
 	}
 	
 	public static String getModifiedCheckCode(String checkCode, String parameterList, String parameterValuesList) {
-		String[] parameters = parameterList.split(";");
+		String[] parameters = (parameterList == null) ? new String[] {} : parameterList.split(";");
 		if (parameterValuesList != null) {
 			String[] parameterValuesArray = parameterValuesList.split(";");
 			for (int i=0; i<parameters.length; i++) {

@@ -46,7 +46,7 @@ public interface DataIntegrityService {
 	 * @param integrityCheck
 	 * @throws APIException
 	 */
-	public void saveIntegrityCheck(IntegrityCheck integrityCheck)
+	public IntegrityCheck saveIntegrityCheck(IntegrityCheck integrityCheck)
 			throws APIException;
 
 	/**
@@ -111,6 +111,7 @@ public interface DataIntegrityService {
 	 * @param parameterValues
 	 * @return
 	 * @throws Exception
+	 * @should return results with linked integrity check
 	 */
 	public IntegrityCheckResults runIntegrityCheck(
 			IntegrityCheck integrityCheck, String parameterValues)

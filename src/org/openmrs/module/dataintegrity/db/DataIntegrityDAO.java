@@ -25,7 +25,7 @@ public interface DataIntegrityDAO {
 
 	public void setSessionFactory(SessionFactory sessionFactory);
 
-	public void saveIntegrityCheck(IntegrityCheck integrityCheck)
+	public IntegrityCheck saveIntegrityCheck(IntegrityCheck integrityCheck)
 			throws DAOException;
 
 	public IntegrityCheck getIntegrityCheck(Integer checkId)

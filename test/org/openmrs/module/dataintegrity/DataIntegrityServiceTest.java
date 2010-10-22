@@ -45,24 +45,25 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest {
 		Assert.notNull(templates);
 	}
 
-	// @Test
+	@Test
 	public void shouldSaveNewDataIntegrityTemplate() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context
 				.getService(DataIntegrityService.class);
-		List<IntegrityCheck> templates = service
-				.getAllIntegrityChecks();
+		List<IntegrityCheck> templates = service.getAllIntegrityChecks();
 		int templateCountBeforeAdding = templates.size();
-		IntegrityCheck temp = new IntegrityCheck();
-		temp.setCheckCode("temp code");
-		temp.setFailDirective("temp fail directive");
-		temp.setFailDirectiveOperator("temp fail op");
-		temp.setName("temp name");
-		temp.setRepairParameters("temp params");
-		temp.setRepairDirective("temp repair directive");
-		temp.setRepairType("temp repair type");
-		temp.setResultType("temp result type");
-		temp.setCheckType("temp check type");
-		service.saveIntegrityCheck(temp);
+		IntegrityCheck integrityCheck = new IntegrityCheck();
+		integrityCheck.setCheckCode("select 1");
+		integrityCheck.setFailDirective("0");
+		integrityCheck
+				.setFailDirectiveOperator(DataIntegrityConstants.FAILURE_OPERATOR_GREATER_THAN);
+		integrityCheck.setName("sample integrity check");
+		integrityCheck.setRepairParameters(null);
+		integrityCheck.setRepairDirective(null);
+		integrityCheck.setRepairType(DataIntegrityConstants.REPAIR_TYPE_NONE);
+		integrityCheck.setResultType(DataIntegrityConstants.RESULT_TYPE_COUNT);
+		integrityCheck.setCheckType(DataIntegrityConstants.CHECK_TYPE_SQL);
+		integrityCheck = service.saveIntegrityCheck(integrityCheck);
+		service.saveIntegrityCheck(integrityCheck);
 		int templateCountAfterAdding = service
 				.getAllIntegrityChecks().size();
 		Assert.isTrue(templateCountBeforeAdding == (templateCountAfterAdding - 1));
@@ -83,12 +84,11 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest {
 		Assert.isTrue(templateCountBeforeAdding == (templateCountAfterAdding + 1));
 	}
 
-	@Test
+	// @Test
 	public void shouldExecuteIntegrityCheck() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context
 				.getService(DataIntegrityService.class);
-		IntegrityCheck template = service
-				.getIntegrityCheck(19);
+		IntegrityCheck template = service.getIntegrityCheck(19);
 		IntegrityCheckResults result = service.runIntegrityCheck(
 				template, "1");
 		Assert.notNull(result);
@@ -135,39 +135,30 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see {@link DataIntegrityService#getResults(Integer)}
-	 * 
+	 * @see {@link DataIntegrityService#runIntegrityCheck(IntegrityCheck,String)}
 	 */
 	@Test
-	@Verifies(value = "should retrieve results if a check exists", method = "getResults(Integer)")
-	public void getResults_shouldRetrieveResultsIfACheckExists()
+	@Verifies(value = "should return results with linked integrity check", method = "runIntegrityCheck(IntegrityCheck,String)")
+	public void runIntegrityCheck_shouldReturnResultsWithLinkedIntegrityCheck()
 			throws Exception {
-		//TODO auto-generated
-		throw new Exception("Not yet implemented");
-	}
+		DataIntegrityService service = (DataIntegrityService) Context.getService(DataIntegrityService.class);
 
-	/**
-	 * @see {@link DataIntegrityService#getResults(Integer)}
-	 * 
-	 */
-	@Test
-	@Verifies(value = "should return null if results for a check do not exist", method = "getResults(Integer)")
-	public void getResults_shouldReturnNullIfResultsForACheckDoNotExist()
-			throws Exception {
-		//TODO auto-generated
-		throw new Exception("Not yet implemented");
-	}
+		IntegrityCheck integrityCheck = new IntegrityCheck();
+		integrityCheck.setCheckCode("select 1");
+		integrityCheck.setFailDirective("0");
+		integrityCheck
+				.setFailDirectiveOperator(DataIntegrityConstants.FAILURE_OPERATOR_GREATER_THAN);
+		integrityCheck.setName("sample integrity check");
+		integrityCheck.setRepairParameters(null);
+		integrityCheck.setRepairDirective(null);
+		integrityCheck.setRepairType(DataIntegrityConstants.REPAIR_TYPE_NONE);
+		integrityCheck.setResultType(DataIntegrityConstants.RESULT_TYPE_COUNT);
+		integrityCheck.setCheckType(DataIntegrityConstants.CHECK_TYPE_SQL);
+		integrityCheck = service.saveIntegrityCheck(integrityCheck);
 
-	/**
-	 * @see {@link DataIntegrityService#saveResults(IntegrityCheckResults)}
-	 * 
-	 */
-	@Test
-	@Verifies(value = "should not throw an error saving results", method = "saveResults(DataIntegrityCheckResultTemplate)")
-	public void saveResults_shouldNotThrowAnErrorSavingResults()
-			throws Exception {
-		//TODO auto-generated
-		throw new Exception("Not yet implemented");
+		IntegrityCheckResults results = service.runIntegrityCheck(integrityCheck, null);
+		
+		Assert.isTrue(results.getIntegrityCheck() != null);
 	}
 
 }
