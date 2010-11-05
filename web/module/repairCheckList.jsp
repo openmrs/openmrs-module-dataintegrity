@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/template/include.jsp" %>
-<openmrs:require privilege="Run Integrity Checks" otherwise="/login.htm" redirect="/admin/index.htm" />
+<openmrs:require privilege="Run Integrity Check Repairs" otherwise="/login.htm" redirect="/module/dataintegrity/repairCheck.list" />
 <%@page import="org.openmrs.module.dataintegrity.DataIntegrityConstants"%>
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <%@ include file="localHeader.jsp" %>

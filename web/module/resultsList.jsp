@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/template/include.jsp" %>
-<openmrs:require privilege="Run Integrity Checks" otherwise="/login.htm" redirect="/admin/index.htm" />
+<openmrs:require privilege="View Integrity Checks" otherwise="/login.htm" redirect="/module/dataintegrity/results.list" />
 <%@page import="org.openmrs.module.dataintegrity.DataIntegrityConstants"%>
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <%@ include file="localHeader.jsp" %>
@@ -106,38 +106,34 @@
 		</tr>
 	</c:if>
 	<c:if test="${results.failedRecordCount > 0}">
+	<openmrs:hasPrivilege privilege="View Integrity Check Results">
 	<tr>
 		<td colspan="3">
 			<input type="hidden" value="${results.integrityCheck.id}" id="<%="checkIdHidden" + checkCount%>"/>
 			<a onclick="openFailedRecordsPopUp(this.id);" onmouseover="this.style.cursor='pointer'" id="<%=checkCount%>"><spring:message code="dataintegrity.results.failedRecords"/></a>
 		</td>
 	</tr>
+	</openmrs:hasPrivilege>
+	<openmrs:hasPrivilege privilege="Run Integrity Check Repairs">
 	<tr>
 		<td colspan="3">
 			<a href="repairCheck.list?checkId=${results.integrityCheck.id}" target="_blank"><spring:message code="dataintegrity.repair.failedRecords"/></a>
 		</td>
 	</tr>
+	</openmrs:hasPrivilege>
 	</c:if>
+	<openmrs:hasPrivilege privilege="Run Integrity Checks">
 	<tr>
 		<td colspan="3">
-			<c:if test="${single == false}">
-				<form method="post" target="_blank" onsubmit="return checkParameters(this.id);" id="<%=checkCount%>">
-					<input type="hidden" value="${results.integrityCheck.id}" name="checkId"/>
-					<input type="hidden" value="${results.integrityCheck.repairParameters}" id="<%="paramHidden" + checkCount%>"/>
-					<input type="hidden" value="" id="<%="paramValueHidden" + checkCount%>" name="checkParameter${results.integrityCheck.id}"/>
-					<input type="submit" value="<spring:message code="dataintegrity.results.runAgain"/>"/>
-				</form>
-			</c:if>
-			<c:if test="${single == true}">
-				<form method="post" onsubmit="return checkParameters(this.id);" id="<%=checkCount%>">
-					<input type="hidden" value="${results.integrityCheck.id}" name="checkId"/>
-					<input type="hidden" value="${results.integrityCheck.repairParameters}" id="<%="paramHidden" + checkCount%>"/>
-					<input type="hidden" value="" id="<%="paramValueHidden" + checkCount%>" name="checkParameter${results.integrityCheck.id}"/>
-					<input type="submit" value="<spring:message code="dataintegrity.results.runAgain"/>"/>
-				</form>
-			</c:if>
-		</td>
+			<form method="post" target="<c:out value="${single == true ? '' : '_blank'}"/>" onsubmit="return checkParameters(this.id);" id="<%=checkCount%>">
+				<input type="hidden" value="${results.integrityCheck.id}" name="checkId"/>
+				<input type="hidden" value="${results.integrityCheck.repairParameters}" id="<%="paramHidden" + checkCount%>"/>
+				<input type="hidden" value="" id="<%="paramValueHidden" + checkCount%>" name="checkParameter${results.integrityCheck.id}"/>
+				<input type="submit" value="<spring:message code="dataintegrity.results.runAgain"/>"/>
+			</form>
+		</td> 	
 	</tr>
+	</openmrs:hasPrivilege>
 </table>
 <br />
 <%checkCount++; %>

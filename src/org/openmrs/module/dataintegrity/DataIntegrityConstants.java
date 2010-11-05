@@ -18,5 +18,9 @@ public class DataIntegrityConstants {
 	public static String FAILURE_OPERATOR_NOT_CONTAINS = "not contains";
 	public static String DATA_INTEGRITY_ERROR_STACK_TRACE = "stacktrace";
 	public static String DATA_INTEGRITY_ERROR = "error";
-	
+	public static String PRIV_MANAGE_INTEGRITY_CHECKS = "Manage Integrity Checks";
+	public static String PRIV_RUN_INTEGRITY_CHECKS = "Run Integrity Checks";
+	public static String PRIV_VIEW_INTEGRITY_CHECKS = "View Integrity Checks";
+	public static String PRIV_VIEW_INTEGRITY_CHECK_RESULTS = "View Integrity Check Results";
+	public static String PRIV_RUN_INTEGRITY_CHECK_REPAIRS = "Run Integrity Check Repairs";
 }

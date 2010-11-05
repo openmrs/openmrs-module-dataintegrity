@@ -11,25 +11,37 @@ import org.w3c.dom.Document;
 
 public class DataIntegrityXmlParser {
 	private Document doc;
-	
+
+	/**
+	 * @return the doc
+	 */
+	public Document getDoc() {
+		return doc;
+	}
+
+	/**
+	 * @param doc the doc to set
+	 */
+	public void setDoc(Document doc) {
+		this.doc = doc;
+	}
+
 	public DataIntegrityXmlParser(File xmlFile) {
 		try {
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilderFactory factory = DocumentBuilderFactory
+					.newInstance();
 			factory.setNamespaceAware(true);
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			this.doc = builder.parse(xmlFile);
+			this.setDoc(builder.parse(xmlFile));
 		} catch (Exception ex) {
-			
+
 		}
 	}
-	
+
 	public List<IntegrityCheck> getChecksToUpload() {
 		List<IntegrityCheck> checksToUpload = new ArrayList<IntegrityCheck>();
-		
-		
+
 		return checksToUpload;
 	}
-	
-	
 
 }

@@ -20,9 +20,8 @@
 		<xmlproperty file="metadata/config.xml" >
 			<xmlcatalog refid="common-dtds"/>
 		</xmlproperty>
+		<property name="compile.arguments" value="-target 1.5" />
 		
-		<xmlproperty file="metadata/config.xml" />
-
 		<filterset id="variables.to.replace">
 			<filter token="MODULE_ID" value="${module.id}" />
 			<filter token="MODULE_NAME" value="${module.name}" />
@@ -56,12 +55,14 @@
 		
 		<!--  Compile module java files -->
 		<javac destdir="build" classpathref="classpath" debug="true" debuglevel="lines,source,vars">
+			<compilerarg line="${compile.arguments}" />
 			<src path="src/" />
 			<include name="**/*.java" />
 		</javac>
 		
 		<!--  Compile module web java files -->
 		<javac destdir="build" classpathref="classpath" debug="true" debuglevel="lines,source,vars">
+			<compilerarg line="${compile.arguments}" />
 			<compilerarg line="-g" />
 			<src path="web/src/" />
 			<include name="**/*.java" />
@@ -84,11 +85,6 @@
 			<filterset refid="variables.to.replace" />
 		</copy>
 		
-		<!-- Copy the /web/resources folder separately so that image files are not corrupted --> 
-		<copy todir="build/web/module/">
-			<fileset dir="web/module/" includes="resources/**/*" />
-		</copy>
-		
 		<!-- Copy lib folder -->
 		<!-- (lib should only contain this module's required -->
 		<!-- libraries that OpenMRS doesn't contain already) -->
@@ -98,7 +94,10 @@
 		
 		<!-- Create distributable jar file -->
 		<jar destfile="dist/${module.id}-${module.version}.omod">
-			<fileset dir="build" includes="**/*" />
+			<fileset dir="build">
+				<include name="**/*" />
+				<exclude name="**/*Test*" />
+			</fileset>
 		</jar>
 	</target>
 	

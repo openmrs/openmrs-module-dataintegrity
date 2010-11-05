@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.Extension;
+import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.web.extension.AdministrationSectionExt;
 
 public class AdminList extends AdministrationSectionExt {
@@ -32,21 +33,24 @@ public class AdminList extends AdministrationSectionExt {
 	}
 	
 	public String getRequiredPrivilege() {
-		return "Manage Integrity Checks";
+		return DataIntegrityConstants.PRIV_VIEW_INTEGRITY_CHECKS;
 	}
 	
 	public Map<String, String> getLinks() {
 		
 		Map<String, String> map = new HashMap<String, String>();
 		
-		if (Context.hasPrivilege("Run Data Integrity Checks")) {
+		if (Context.hasPrivilege(DataIntegrityConstants.PRIV_VIEW_INTEGRITY_CHECKS)) {
+			map.put("module/dataintegrity/dataIntegrityChecks.list", "dataintegrity.manage.link");
+		}
+		if (Context.hasPrivilege(DataIntegrityConstants.PRIV_MANAGE_INTEGRITY_CHECKS)) {
+			map.put("module/dataintegrity/transferCheck.list", "dataintegrity.upload.link");
+			map.put("module/dataintegrity/setIntegrityActionServer.htm", "dataintegrity.actionServer.link");
+		}
+		if (Context.hasPrivilege(DataIntegrityConstants.PRIV_RUN_INTEGRITY_CHECKS)) {
 			map.put("module/dataintegrity/runSingleCheck.list", "dataintegrity.runSingleCheck.link");
 			map.put("module/dataintegrity/runMultipleChecks.list", "dataintegrity.runMultipleChecks.link");
-		} 
-		if (Context.hasPrivilege("Manage Integrity Checks")) {
-			map.put("module/dataintegrity/dataIntegrityChecks.list", "dataintegrity.manage.link");
-			map.put("module/dataintegrity/transferCheck.list", "dataintegrity.upload.link");
-		} 
+		}
 		return map;
 	}
 }

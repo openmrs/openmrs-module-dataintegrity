@@ -21,9 +21,9 @@
 	</extension>
 	<!-- /Extensions -->
 	
-	<!-- Priviledges -->
+	<!-- Privileges -->
 	<privilege>
-        <name>Run Data Integrity Checks</name>
+        <name>Run Integrity Checks</name>
         <description>Ability to run data integrity checks</description>
     </privilege>
     <privilege>
@@ -31,14 +31,28 @@
         <description>Ability to manage data integrity checks</description>
     </privilege>
     <privilege>
-        <name>Add/Edit Integrity Checks</name>
-        <description>Ability to add or edit integrity checks</description>
+        <name>View Integrity Checks</name>
+        <description>Ability to view integrity checks</description>
     </privilege>
     <privilege>
-        <name>Delete Integrity Checks</name>
-        <description>Ability to delete data integrity checks</description>
+        <name>View Integrity Check Results</name>
+        <description>Ability to view integrity check results</description>
     </privilege>
-	<!-- /Priviledges -->
+    <privilege>
+        <name>Run Integrity Check Repairs</name>
+        <description>Ability to run integrity check repairs</description>
+    </privilege>
+	<!-- /Privileges -->
+	
+	<!-- Required Global Properties -->
+	<globalProperty>
+		<property>dataintegrity.actionServerUrl</property> <!-- Must start with `moduleId.` -->
+		<defaultValue></defaultValue>
+		<description>
+			Url for the production server to be used for correction.
+		</description>
+	</globalProperty>
+	<!-- /Required Global Properties -->
 	
 	<!-- Internationalization -->
 	<messages>
@@ -56,6 +70,7 @@
     
     <!-- Servlets -->
 	<!-- Accessed through the url /pageContext()/moduleServlet/<moduleId>/<servlet-name> -->
+	<!-- commented out ... let's worry about this later
 	<servlet>
 		<servlet-name>template</servlet-name>
 		<servlet-class>@MODULE_PACKAGE@.web.servlet.TemplateServlet</servlet-class>
@@ -64,5 +79,6 @@
 		<servlet-name>results</servlet-name>
 		<servlet-class>@MODULE_PACKAGE@.web.servlet.ResultsServlet</servlet-class>
 	</servlet>
+	 -->
 	<!-- Servlets -->
 </module>
