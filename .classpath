@@ -34,7 +34,7 @@
 	<classpathentry kind="lib" path="lib-common/simple-xml-1.6.1-mod.jar"/>
 	<classpathentry kind="lib" path="lib-common/slf4j-api-1.5.6.jar"/>
 	<classpathentry kind="lib" path="lib-common/slf4j-log4j12-1.5.6.jar"/>
-	<classpathentry kind="lib" path="lib-common/spring-2.5.6.jar" sourcepath="/home/jkeiper/.m2/repository/org/springframework/spring/2.5.6/spring-2.5.6-sources.jar"/>
+	<classpathentry kind="lib" path="lib-common/spring-2.5.6.jar"/>
 	<classpathentry kind="lib" path="lib-common/spring-mock.jar"/>
 	<classpathentry kind="lib" path="lib-common/spring-test.jar"/>
 	<classpathentry kind="lib" path="lib-common/spring-webmvc.jar"/>
