@@ -24,9 +24,12 @@ public class IntegrityCheck {
 	private String name;
 	private String checkType;
 	private String checkCode;
+	private String checkParameters;
 	private String resultType;
 	private String failDirective;
 	private String failDirectiveOperator;
+	private String repairCodeType;
+	private String repairCode;
 	private String repairType;
 	private String repairDirective;
 	private String repairParameters;
@@ -93,6 +96,20 @@ public class IntegrityCheck {
 	}
 
 	/**
+	 * @return the checkParameters
+	 */
+	public String getCheckParameters() {
+		return checkParameters;
+	}
+
+	/**
+	 * @param checkParameters the checkParameters to set
+	 */
+	public void setCheckParameters(String checkParameters) {
+		this.checkParameters = checkParameters;
+	}
+
+	/**
 	 * @return the resultType
 	 */
 	public String getResultType() {
@@ -150,6 +167,34 @@ public class IntegrityCheck {
 	 */
 	public void setRepairType(String repairType) {
 		this.repairType = repairType;
+	}
+
+	/**
+	 * @return the repairCodeType
+	 */
+	public String getRepairCodeType() {
+		return repairCodeType;
+	}
+
+	/**
+	 * @param repairCodeType the repairCodeType to set
+	 */
+	public void setRepairCodeType(String repairCodeType) {
+		this.repairCodeType = repairCodeType;
+	}
+
+	/**
+	 * @return the repairCode
+	 */
+	public String getRepairCode() {
+		return repairCode;
+	}
+
+	/**
+	 * @param repairCode the repairCode to set
+	 */
+	public void setRepairCode(String repairCode) {
+		this.repairCode = repairCode;
 	}
 
 	/**

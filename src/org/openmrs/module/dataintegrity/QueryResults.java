@@ -7,6 +7,8 @@ public class QueryResults extends ArrayList<Object[]> {
 
 	private static final long serialVersionUID = 1L;
 
+	private List<String> columns;
+
 	/**
 	 * default constructor
 	 */
@@ -21,6 +23,7 @@ public class QueryResults extends ArrayList<Object[]> {
 	 */
 	public QueryResults(QueryResults res) {
 		super();
+		this.setColumns(res.getColumns());
 		this.addAll(res);
 	}
 
@@ -34,6 +37,50 @@ public class QueryResults extends ArrayList<Object[]> {
 		this.addAll(res);
 	}
 
+	/**
+	 * convenience constructor for creating the results with a list of columns
+	 * 
+	 * @param columns
+	 * @param records
+	 */
+	public QueryResults(List<String> columns, List<Object[]> records) {
+		super();
+		this.setColumns(columns);
+		this.addAll(records);
+	}
+
+	/**
+	 * @return the columns
+	 */
+	public List<String> getColumns() {
+		if (columns == null)
+			columns = new ArrayList<String>();
+		return columns;
+	}
+
+	/**
+	 * @param columns the columns to set
+	 */
+	public void setColumns(List<String> columns) {
+		this.columns = columns;
+	}
+
+	/**
+	 * public access to column count; determined from either the column list or
+	 * the data array
+	 * 
+	 * @return number of columns
+	 */
+	public int getColumnCount() {
+		// first try the column list; could still be empty
+		int count = columns == null ? 0 : columns.size();
+		if (count > 0)
+			return count;
+		
+		// next try the first element of the data
+		return this.size() > 0 ? this.get(0).length : 0;
+	}
+	
 	/**
 	 * required for hibernate class
 	 * 

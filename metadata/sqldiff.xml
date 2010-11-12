@@ -69,4 +69,17 @@
 			ALTER TABLE `dataintegrity_results` ADD COLUMN `duration` BIGINT NOT NULL;
 		</sql>
 	</diff>
+	<diff>
+		<version>2.5.3</version>
+		<author>Jeremy Keiper</author>
+		<date>November 5th 2010</date>
+		<description>
+			Added repair code columns to integrity check table
+		</description>
+		<sql>
+			ALTER TABLE `dataintegrity_integrity_checks` ADD COLUMN `repair_code_type` varchar(45) NOT NULL;
+			ALTER TABLE `dataintegrity_integrity_checks` ADD COLUMN `repair_code` varchar(1000) default NULL;
+			ALTER TABLE `dataintegrity_integrity_checks` ADD COLUMN `repair_parameters` varchar(500) default NULL;
+		</sql>
+	</diff>
 </sqldiff>

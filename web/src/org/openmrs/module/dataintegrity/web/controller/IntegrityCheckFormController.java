@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.IntegrityCheckResults;
 import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
@@ -37,9 +38,11 @@ public class IntegrityCheckFormController extends SimpleFormController {
 	@Override
 	protected Map<String, Object> referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
-		if (request.getParameter("checkId") != null) {
-			map.put("existingCheck", getDataIntegrityService().getIntegrityCheck(Integer.parseInt(request.getParameter("checkId"))));
-		}
+		if (request.getParameter("checkId") != null)
+			map.put("integrityCheck", getDataIntegrityService().getIntegrityCheck(Integer.parseInt(request.getParameter("checkId"))));
+		else
+			map.put("integrityCheck", new IntegrityCheck());
+		
         return map;
 	}
 	
@@ -51,35 +54,44 @@ public class IntegrityCheckFormController extends SimpleFormController {
 		try {
 			String checkId = request.getParameter("checkId");
 			checkName = request.getParameter("name");
-			String code = request.getParameter("code");
+			String checkCode = request.getParameter("checkCode");
 			String checkType = request.getParameter("checkType");
+			String checkParameters = request.getParameter("checkParameters");
 			String resultType = request.getParameter("resultType");
 			String fail = request.getParameter("fail");
 			String failOp = request.getParameter("failOp");
 			String repairType = request.getParameter("repairType");
+			String repairCodeType = request.getParameter("repairCodeType");
+			String repairCode = OpenmrsUtil.nullSafeEquals(repairCodeType,
+					DataIntegrityConstants.NONE) ? null : request
+					.getParameter("repairCode");
 			String clearResults = request.getParameter("clearResults"); 
-			String repair = OpenmrsUtil.nullSafeEquals(repairType, "none") ? ""
-					: request.getParameter("repair");
-			String parameters = request.getParameter("parameters");
+			String repairDirective = OpenmrsUtil.nullSafeEquals(repairType,
+					DataIntegrityConstants.NONE) ? "" : request
+					.getParameter("repair");
+			String repairParameters = request.getParameter("repairParameters");
 			
 			IntegrityCheck check = new IntegrityCheck();
 			if (checkId != null) {
 				check.setId(Integer.valueOf(checkId));
 			}
 			
-			String codeCopy = code;
+			String codeCopy = checkCode;
 			if (codeCopy.toLowerCase().contains("delete") || codeCopy.toLowerCase().contains("update") || codeCopy.toLowerCase().contains("insert")) {
 				throw new Exception("Code will modify the database hence not allowed");
 			}
 			check.setName(checkName);
-			check.setCheckCode(code);
+			check.setCheckCode(checkCode);
 			check.setCheckType(checkType);
+			check.setCheckParameters(checkParameters);
 			check.setResultType(resultType);
 			check.setFailDirective(fail);
 			check.setFailDirectiveOperator(failOp);
 			check.setRepairType(repairType);
-			check.setRepairDirective(repair);
-			check.setRepairParameters(parameters);
+			check.setRepairCodeType(repairCodeType);
+			check.setRepairCode(repairCode);
+			check.setRepairDirective(repairDirective);
+			check.setRepairParameters(repairParameters);
 			
 			DataIntegrityService service = (DataIntegrityService)Context.getService(DataIntegrityService.class);
 			service.saveIntegrityCheck(check);

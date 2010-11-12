@@ -20,7 +20,7 @@
 		<property name="checkPassed" type="boolean" not-null="true"
 			column="check_passed" />
 
-		<property name="failedRecords" column="failed_records"
+		<property name="failedRecords" column="failed_records" lazy="true"
 			type="org.openmrs.module.dataintegrity.db.hibernate.QueryResultsType"
 			 length="16777215" />
 

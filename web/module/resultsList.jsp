@@ -136,7 +136,7 @@
 	</openmrs:hasPrivilege>
 </table>
 <br />
-<%checkCount++; %>
+<% checkCount++; %>
 </c:forEach>
 </c:if>
 

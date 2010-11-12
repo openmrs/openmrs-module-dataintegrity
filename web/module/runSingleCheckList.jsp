@@ -66,21 +66,21 @@
 			<td>
 				<select name="checkId" id="checkIdSelect" onchange="visibleDataRow();">
 					<option value="">--<spring:message code="dataintegrity.runSingleCheck.pick"/>--</option>
-					<c:forEach items="${runSingleCheckList}" var="checkList">
-						<option value="${checkList.integrityCheckId}">${checkList.integrityCheckName}</option>
+					<c:forEach items="${runSingleCheckList}" var="check">
+						<option value="${check.id}">${check.name}</option>
 					</c:forEach>
 				</select>
 			</td>
 		</tr>
 		<%int checkCount = 1; %>
-		<c:forEach items="${runSingleCheckList}" var="checkList">
+		<c:forEach items="${runSingleCheckList}" var="check">
 			<tr id="<%="checkRow" + checkCount%>" style="display: none;">
 				<td colspan="2"> 
 					<spring:message code="dataintegrity.runSingleCheck.parameters"/>
-					<label id="<%="checkParameterTxt" + checkCount%>">${checkList.integrityCheckParameters}</label>
+					<label id="<%="checkParameterTxt" + checkCount%>">${check.checkParameters}</label>
 					<br />
 					<spring:message code="dataintegrity.runSingleCheck.parameterValues"/>
-					<input type="text" value="" name="checkParameter${checkList.integrityCheckId}" id="<%="checkParameterValueTxt" + checkCount%>"/>
+					<input type="text" value="" name="checkParameter${check.id}" id="<%="checkParameterValueTxt" + checkCount%>"/>
 				</td>
 			</tr>
 			<%checkCount++; %>

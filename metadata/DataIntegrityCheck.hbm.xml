@@ -20,6 +20,9 @@
 		<property name="checkType" type="java.lang.String" not-null="true"
 			length="45" column="check_type" />
 	
+		<property name="checkParameters" type="java.lang.String"
+			not-null="false" length="500" column="check_parameters" />
+
 		<property name="resultType" type="java.lang.String" not-null="true"
 			length="45" column="check_result_type" />
 	
@@ -32,11 +35,17 @@
 		<property name="repairType" type="java.lang.String" not-null="false"
 			length="45" column="check_repair_type" />
 	
+		<property name="repairCodeType" type="java.lang.String" not-null="true"
+			length="45" column="repair_code_type" />
+	
+		<property name="repairCode" type="java.lang.String" not-null="false"
+			length="1000" column="repair_code" />
+
 		<property name="repairDirective" type="java.lang.String"
 			not-null="false" length="1000" column="check_repair" />
 	
 		<property name="repairParameters" type="java.lang.String"
-			not-null="false" length="500" column="check_parameters" />
+			not-null="false" length="500" column="repair_parameters" />
 
 		<one-to-one name="latestResults" class="IntegrityCheckResults"
 			property-ref="integrityCheck" />

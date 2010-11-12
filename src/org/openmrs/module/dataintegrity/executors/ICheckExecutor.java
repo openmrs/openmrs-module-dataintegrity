@@ -1,8 +1,7 @@
 package org.openmrs.module.dataintegrity.executors;
 
-import java.util.List;
-
 import org.openmrs.module.dataintegrity.IntegrityCheck;
+import org.openmrs.module.dataintegrity.QueryResults;
 
 public interface ICheckExecutor {
 	/**
@@ -29,7 +28,7 @@ public interface ICheckExecutor {
 	 * @param <T>: The type of the returned failed records List
 	 * @return: The list of failed records
 	 */
-	public <T> List<T[]> getFailedRecords();
+	public QueryResults getFailedRecords();
 	
 	/**
 	 * 

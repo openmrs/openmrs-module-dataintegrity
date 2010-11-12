@@ -1,45 +1,59 @@
 package org.openmrs.module.dataintegrity.executors;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.hibernate.SQLQuery;
-import org.hibernate.SessionFactory;
-import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.DataIntegrityConstants;
+import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.IntegrityCheckUtil;
+import org.openmrs.module.dataintegrity.QueryResults;
 import org.openmrs.module.dataintegrity.db.DataIntegrityDAO;
 import org.openmrs.util.OpenmrsUtil;
 
+/**
+ * This executor is designed for checking boolean values in one or more columns;
+ * any value equal to the given failure directive (0 or 1) will cause the check
+ * to fail
+ */
 public class BooleanCheckExecutor implements ICheckExecutor {
 	private IntegrityCheck check;
 	private DataIntegrityDAO dao;
 	private String parameterValues;
-	private List<Object[]> failedRecords;
+	private QueryResults failedRecords;
 	
+	/**
+	 * basic constructor to set private DAO
+	 * 
+	 * @param dao
+	 */
 	public BooleanCheckExecutor(DataIntegrityDAO dao) {
 		this.dao = dao;
 	}
 	
-	@SuppressWarnings("unchecked")
+	/**
+	 * @see ICheckExecutor#initializeExecutor(IntegrityCheck, String)
+	 */
+	public void initializeExecutor(IntegrityCheck check,
+			String parameterValues) {
+		this.check = check;
+		this.parameterValues = parameterValues;
+		this.failedRecords = new QueryResults();
+	}
+	
+	/**
+	 * @see ICheckExecutor#executeCheck()
+	 */
 	public void executeCheck() throws Exception {
 		try {
 			boolean failDirective = Boolean.valueOf(this.check.getFailDirective());
 			String checkCode = IntegrityCheckUtil.getModifiedCheckCode(
 					this.check.getCheckCode(),
 					this.check.getRepairParameters(), this.parameterValues);
-			SessionFactory factory = this.dao.getSessionFactory();
-			SQLQuery query = factory.getCurrentSession().createSQLQuery(checkCode);
-			List<Object[]> resultList = query.list();
-			
+
+			QueryResults resultList = dao.getQueryResults(checkCode);
+
 			if (resultList.size() > 0) {
-				int columnCount;
-				try {
-					Object[] records = resultList.get(0);
-					columnCount = records.length;
-				} catch (Exception e) {
-					columnCount = 1;
-				}
+				
+				// get the column count
+				int columnCount = resultList.getColumnCount();
+				
 				if (OpenmrsUtil.nullSafeEquals(
 						check.getFailDirectiveOperator(),
 						DataIntegrityConstants.FAILURE_OPERATOR_EQUALS)) {
@@ -79,7 +93,7 @@ public class BooleanCheckExecutor implements ICheckExecutor {
 
 	}
 
-	public List<Object[]> getFailedRecords() {
+	public QueryResults getFailedRecords() {
 		return this.failedRecords;
 	}
 	
@@ -88,10 +102,5 @@ public class BooleanCheckExecutor implements ICheckExecutor {
 		return checkPassed;
 	}
 
-	public void initializeExecutor(IntegrityCheck check,
-			String parameterValues) {
-		this.check = check;
-		this.parameterValues = parameterValues;
-		this.failedRecords = new ArrayList<Object[]>();
-	}
+
 }

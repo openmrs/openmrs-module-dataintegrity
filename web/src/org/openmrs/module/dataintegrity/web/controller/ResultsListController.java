@@ -15,10 +15,11 @@ import javax.servlet.http.HttpSession;
 
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.dataintegrity.IntegrityCheckResults;
-import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
+import org.openmrs.module.dataintegrity.IntegrityCheck;
+import org.openmrs.module.dataintegrity.IntegrityCheckResults;
+import org.openmrs.module.dataintegrity.QueryResults;
 import org.openmrs.web.WebConstants;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.util.StringUtils;
@@ -83,7 +84,7 @@ public class ResultsListController extends SimpleFormController {
 			}
 		}
 		if (results != null) {
-			Map<Integer, List<Object[]>> failedRecordMap = new HashMap<Integer, List<Object[]>>();
+			Map<Integer, QueryResults> failedRecordMap = new HashMap<Integer, QueryResults>();
 			for (int i = 0; i < results.size(); i++) {
 				IntegrityCheckResults resultTemplate = results
 						.get(i);

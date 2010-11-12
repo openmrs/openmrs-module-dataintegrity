@@ -121,6 +121,15 @@ public class IntegrityCheckUtil {
 	 * @return
 	 */
 	public static String serialize(QueryResults value) {
+		JSONObject results = new JSONObject();
+
+		// columns
+		JSONArray cols = new JSONArray();
+		for (String column: value.getColumns())
+			cols.put(column == null ? JSONObject.NULL : column);
+		results.put("columns", cols);
+
+		// data
 		JSONArray newValue = new JSONArray();
 		for (Object[] oArr: value) {
 			JSONArray jArr = new JSONArray();
@@ -128,8 +137,8 @@ public class IntegrityCheckUtil {
 				jArr.put(obj == null ? JSONObject.NULL : obj.toString());
 			newValue.put(jArr);
 		}
-		JSONObject results = new JSONObject();
 		results.put("results", newValue);
+
 		return results.toString();
 	}
 
@@ -150,6 +159,17 @@ public class IntegrityCheckUtil {
 			return null;
 		
 		QueryResults results = new QueryResults();
+
+		// columns
+		if (jValue.has("columns")) {
+			List<String> newCols = new ArrayList<String>();
+			JSONArray cols = jValue.getJSONArray("columns");
+			for (int i=0; i<cols.length(); i++)
+				newCols.add(cols.getString(i));
+			results.setColumns(newCols);
+		}
+		
+		// data
 		JSONArray newValue = jValue.getJSONArray("results");
 		for (int i=0; i<newValue.length(); i++) {
 			JSONArray jArr = newValue.getJSONArray(i);

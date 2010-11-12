@@ -9,6 +9,19 @@
 <h2><spring:message code="dataintegrity.addeditCheck"/></h2>
 
 <script type="text/javascript">
+	function enableRepairCode() {
+		var selectElement = document.getElementById("repairCodeTypeSelect");
+		var row = document.getElementById("repairCodeRow");
+		var row2 = document.getElementById("repairCodeParameters");
+		if (selectElement.selectedIndex == 1) {
+			row.style.display = 'none';
+			row2.style.display = 'none';
+		} else {
+			row.style.display = '';
+			row2.style.display = '';
+		}
+	}
+
 	function enableRepairDirective() {
 		var selectElement = document.getElementById("repairTypeSelect");
 		var row = document.getElementById("repairRow");
@@ -102,191 +115,158 @@
 </script>
 <div class="error" id="errorDiv" style="display: none"><spring:message code="dataintegrity.checksList.blank"/></div>
 <form method="post" onsubmit="return inputValidator()">
-	<c:if test="${empty existingCheck}">
-		<table>
-			<tr>
-				<td valign="top"><spring:message code="dataintegrity.checksList.columns.checkType"/></td>
-				<td colspan="2">
-					<select name="checkType" id="typeSelect" style="width: 130px">
-						<option value="sql">SQL</option>
-						<!-- Other check types to be implemented later
-						<option value="groovy">Groovy</option>
-						<option value="java">Java</option>
-						-->
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td><spring:message code="dataintegrity.checksList.columns.name"/></td>
-				<td><input type="text" name="name" value="" size="52" maxlength="100" id="nameTxt"/></td>
-				<td valign="top"><div style="color: red">*</div></td>
-			</tr>
-			<tr>
-				<td valign="top"><spring:message code="dataintegrity.checksList.columns.code"/></td>
-				<td><textarea rows="5" cols="50" name="code" id="codeTxt"></textarea></td>
-				<td valign="top"><div style="color: red">*</div></td>
-			</tr>
-			<tr>
-				<td valign="top"><spring:message code="dataintegrity.checksList.columns.resultType"/></td>
-				<td colspan="2">
-					<select name="resultType" id="resultTypeSelect" style="width: 130px" onchange="changeSelectContents()">
-						<option value="count">Count</option>
-						<option value="number">Number</option>
-						<option value="boolean">Boolean</option>
-						<option value="string">String</option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td valign="top"><spring:message code="dataintegrity.checksList.columns.failOp"/></td>
-				<td colspan="2">
-					<select name="failOp" id="failOpSelect" style="width: 130px">
-						<option value="less than">Less Than</option>
-						<option value="greater than">Greater Than</option>
-						<option value="equals">Equals</option>
-						<option value="not equals">Not Equals</option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td><spring:message code="dataintegrity.checksList.columns.fail"/></td>
-				<td><input type="text" name="fail" value="" size="52" maxlength="100" id="failTxt"/></td>
-				<td valign="top"><div style="color: red">*</div></td>
-			</tr>
-			<tr>
-				<td valign="top"><spring:message code="dataintegrity.checksList.columns.repairType"/></td>
-				<td colspan="2">
-					<select name="repairType" id="repairTypeSelect" style="width: 130px" onchange="enableRepairDirective()">
-						<option value="link">Link</option>
-						<option value="script">Script</option>
-						<option value="instructions">Instructions</option>
-						<option value="none">None</option>
-					</select>
-				</td>
-			</tr>
-			<tr id="repairRow">
-				<td valign="top"><spring:message code="dataintegrity.checksList.columns.repair"/></td>
-				<td><textarea rows="5" cols="50" name="repair" id="repairTxt"></textarea></td>
-				<td valign="top"><div style="color: red">*</div></td>
-			</tr>
-			<tr>
-				<td><spring:message code="dataintegrity.checksList.columns.parameters"/></td>
-				<td colspan="2"><input type="text" name="parameters" value="" size="52" maxlength="500"/></td>
-			</tr>
-			<tr>
-				<td colspan="3">
-					<input type="submit" value="<spring:message code="dataintegrity.addeditCheck.save"/>"/>
-				</td>
-			</tr>
-		</table>
-	</c:if>
-	<c:if test="${not empty existingCheck}">
-		<table>
-			<tr>
-				<td valign="top"><spring:message code="dataintegrity.checksList.columns.checkType"/></td>
-				<td colspan="2">
-					<select name="checkType" id="typeSelect" style="width: 130px">
-						<option value="sql" <c:if test="${existingCheck.integrityCheckType == 'sql'}">selected</c:if>>SQL</option>
-						<!-- Other check types to be implemented later
-						<option value="groovy">Groovy</option>
-						<option value="java">Java</option>
-						-->
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td><spring:message code="dataintegrity.checksList.columns.name"/></td>
-				<td><input type="text" name="name" value="${existingCheck.integrityCheckName}" size="52" maxlength="100" id="nameTxt"/></td>
-				<td valign="top"><div style="color: red">*</div></td>
-			</tr>
-			<tr>
-				<td valign="top"><spring:message code="dataintegrity.checksList.columns.code"/></td>
-				<td><textarea rows="5" cols="50" name="code" id="codeTxt">${existingCheck.integrityCheckCode}</textarea></td>
-				<td valign="top"><div style="color: red">*</div></td>
-			</tr>
-			<tr>
-				<td valign="top"><spring:message code="dataintegrity.checksList.columns.resultType"/></td>
-				<td colspan="2">
-					<select name="resultType" id="resultTypeSelect" style="width: 130px" onchange="changeSelectContents()">
-						<option value="count" <c:if test="${existingCheck.integrityCheckResultType == 'count'}">selected</c:if>>Count</option>
-						<option value="number" <c:if test="${existingCheck.integrityCheckResultType == 'number'}">selected</c:if>>Number</option>
-						<option value="boolean" <c:if test="${existingCheck.integrityCheckResultType == 'boolean'}">selected</c:if>>Boolean</option>
-						<option value="string" <c:if test="${existingCheck.integrityCheckResultType == 'string'}">selected</c:if>>String</option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td valign="top"><spring:message code="dataintegrity.checksList.columns.failOp"/></td>
-				<td colspan="2">
-					<c:if test="${existingCheck.integrityCheckResultType == 'count' || existingCheck.integrityCheckResultType == 'number'}">
-					<select name="failOp" id="failOpSelect" style="width: 130px">
-						<option value="less than" <c:if test="${existingCheck.integrityCheckFailDirectiveOperator == 'less than'}">selected</c:if>>Less Than</option>
-						<option value="greater than" <c:if test="${existingCheck.integrityCheckFailDirectiveOperator == 'greater than'}">selected</c:if>>Greater Than</option>
-						<option value="equals" <c:if test="${existingCheck.integrityCheckFailDirectiveOperator == 'equals'}">selected</c:if>>Equals</option>
-						<option value="not equals" <c:if test="${existingCheck.integrityCheckFailDirectiveOperator == 'not equals'}">selected</c:if>>Not Equals</option>
-					</select>
-					</c:if>
-					<c:if test="${existingCheck.integrityCheckResultType == 'boolean'}">
-					<select name="failOp" id="failOpSelect" style="width: 130px">
-						<option value="equals" <c:if test="${existingCheck.integrityCheckFailDirectiveOperator == 'equals'}">selected</c:if>>Equals</option>
-					</select>
-					</c:if>
-					<c:if test="${existingCheck.integrityCheckResultType == 'string'}">
-					<select name="failOp" id="failOpSelect" style="width: 130px">
-						<option value="equals" <c:if test="${existingCheck.integrityCheckFailDirectiveOperator == 'equals'}">selected</c:if>>Equals</option>
-						<option value="not equals" <c:if test="${existingCheck.integrityCheckFailDirectiveOperator == 'not equals'}">selected</c:if>>Not Equals</option>
-						<option value="contains" <c:if test="${existingCheck.integrityCheckFailDirectiveOperator == 'contains'}">selected</c:if>>Contains</option>
-						<option value="not contains" <c:if test="${existingCheck.integrityCheckFailDirectiveOperator == 'not contains'}">selected</c:if>>Not Contains</option>
-					</select>
-					</c:if>
-				</td>
-			</tr>
-			<tr>
-				<td><spring:message code="dataintegrity.checksList.columns.fail"/></td>
-				<td><input type="text" name="fail" value="${existingCheck.integrityCheckFailDirective}" size="52" maxlength="100" id="failTxt"/></td>
-				<td valign="top"><div style="color: red">*</div></td>
-			</tr>
-			<tr>
-				<td valign="top"><spring:message code="dataintegrity.checksList.columns.repairType"/></td>
-				<td colspan="2">
-					<select name="repairType" id="repairTypeSelect" style="width: 130px" onchange="enableRepairDirective()">
-						<option value="link" <c:if test="${existingCheck.integrityCheckRepairType == 'link'}">selected</c:if>>Link</option>
-						<option value="script" <c:if test="${existingCheck.integrityCheckRepairType == 'script'}">selected</c:if>>Script</option>
-						<option value="instructions" <c:if test="${existingCheck.integrityCheckRepairType == 'instructions'}">selected</c:if>>Instructions</option>
-						<option value="none" <c:if test="${existingCheck.integrityCheckRepairType == 'none'}">selected</c:if>>None</option>
-					</select>
-				</td>
-			</tr>
-			<c:if test="${existingCheck.integrityCheckRepairType == 'none'}">
-			<tr id="repairRow" style="display: none;">
-				<td valign="top"><spring:message code="dataintegrity.checksList.columns.repair"/></td>
-				<td><textarea rows="5" cols="50" name="repair" id="repairTxt">${existingCheck.integrityCheckRepairDirective}</textarea></td>
-				<td valign="top"><div style="color: red;">*</div></td>
-			</tr>
-			</c:if>
-			<c:if test="${existingCheck.integrityCheckRepairType != 'none'}">
-			<tr id="repairRow">
-				<td valign="top"><spring:message code="dataintegrity.checksList.columns.repair"/></td>
-				<td><textarea rows="5" cols="50" name="repair" id="repairTxt">${existingCheck.integrityCheckRepairDirective}</textarea></td>
-				<td valign="top"><div style="color: red">*</div></td>
-			</tr>
-			</c:if>
-			<tr>
-				<td><spring:message code="dataintegrity.checksList.columns.parameters"/></td>
-				<td colspan="2"><input type="text" name="parameters" value="${existingCheck.integrityCheckParameters}" size="52" maxlength="500"/></td>
-			</tr>
-			<tr>
-				<td><spring:message code="dataintegrity.addeditCheck.clearResults"/></td>
-				<td colspan="2"><input type="checkbox" name="clearResults" /></td>
-			</tr>
-			<tr>
-				<td colspan="3">
-					<input type="hidden" name="checkId" value="${existingCheck.integrityCheckId}" />
-					<input type="submit" value="<spring:message code="dataintegrity.addeditCheck.save"/>"/>
-				</td>
-			</tr>
-		</table>
-	</c:if>
+	<table>
+		<tr>
+			<td><spring:message code="dataintegrity.checksList.columns.name"/></td>
+			<td><input type="text" name="name" value="${integrityCheck.name}" size="52" maxlength="100" id="nameTxt"/></td>
+			<td valign="top"><div style="color: red">*</div></td>
+		</tr>
+		<tr>
+			<td valign="top"><spring:message code="dataintegrity.checksList.columns.checkType"/></td>
+			<td colspan="2">
+				<select name="checkType" id="typeSelect" style="width: 130px">
+					<option value="sql" <c:if test="${integrityCheck.integrityCheckType == 'sql'}">selected</c:if>>SQL</option>
+					<!-- Other check types to be implemented later
+					<option value="groovy">Groovy</option>
+					<option value="java">Java</option>
+					-->
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top"><spring:message code="dataintegrity.checksList.columns.code"/></td>
+			<td><textarea rows="5" cols="50" name="checkCode" id="codeTxt">${integrityCheck.checkCode}</textarea></td>
+			<td valign="top"><div style="color: red">*</div></td>
+		</tr>
+		<tr>
+			<td><spring:message code="dataintegrity.checksList.columns.checkParameters"/></td>
+			<td colspan="2"><input type="text" name="checkParameters" value="${integrityCheck.checkParameters}" size="52" maxlength="500"/></td>
+		</tr>
+		<tr>
+			<td colspan="3"><hr /></td>
+		</tr>
+		<tr>
+			<td valign="top"><spring:message code="dataintegrity.checksList.columns.resultType"/></td>
+			<td colspan="2">
+				<select name="resultType" id="resultTypeSelect" style="width: 130px" onchange="changeSelectContents()">
+					<option value="count" <c:if test="${integrityCheck.resultType == 'count'}">selected</c:if>>Count</option>
+					<option value="number" <c:if test="${integrityCheck.resultType == 'number'}">selected</c:if>>Number</option>
+					<option value="boolean" <c:if test="${integrityCheck.resultType == 'boolean'}">selected</c:if>>Boolean</option>
+					<option value="string" <c:if test="${integrityCheck.resultType == 'string'}">selected</c:if>>String</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top"><spring:message code="dataintegrity.checksList.columns.failOp"/></td>
+			<td colspan="2">
+				<c:if test="${integrityCheck.resultType == 'count' || integrityCheck.resultType == 'number'}">
+				<select name="failOp" id="failOpSelect" style="width: 130px">
+					<option value="less than" <c:if test="${integrityCheck.failDirectiveOperator == 'less than'}">selected</c:if>>Less Than</option>
+					<option value="greater than" <c:if test="${integrityCheck.failDirectiveOperator == 'greater than'}">selected</c:if>>Greater Than</option>
+					<option value="equals" <c:if test="${integrityCheck.failDirectiveOperator == 'equals'}">selected</c:if>>Equals</option>
+					<option value="not equals" <c:if test="${integrityCheck.failDirectiveOperator == 'not equals'}">selected</c:if>>Not Equals</option>
+				</select>
+				</c:if>
+				<c:if test="${integrityCheck.resultType == 'boolean'}">
+				<select name="failOp" id="failOpSelect" style="width: 130px">
+					<option value="equals" <c:if test="${integrityCheck.failDirectiveOperator == 'equals'}">selected</c:if>>Equals</option>
+				</select>
+				</c:if>
+				<c:if test="${integrityCheck.resultType == 'string'}">
+				<select name="failOp" id="failOpSelect" style="width: 130px">
+					<option value="equals" <c:if test="${integrityCheck.failDirectiveOperator == 'equals'}">selected</c:if>>Equals</option>
+					<option value="not equals" <c:if test="${integrityCheck.failDirectiveOperator == 'not equals'}">selected</c:if>>Not Equals</option>
+					<option value="contains" <c:if test="${integrityCheck.failDirectiveOperator == 'contains'}">selected</c:if>>Contains</option>
+					<option value="not contains" <c:if test="${integrityCheck.failDirectiveOperator == 'not contains'}">selected</c:if>>Not Contains</option>
+				</select>
+				</c:if>
+			</td>
+		</tr>
+		<tr>
+			<td><spring:message code="dataintegrity.checksList.columns.fail"/></td>
+			<td><input type="text" name="fail" value="${integrityCheck.failDirective}" size="52" maxlength="100" id="failTxt"/></td>
+			<td valign="top"><div style="color: red">*</div></td>
+		</tr>
+		<tr>
+			<td colspan="3"><hr /></td>
+		</tr>
+		<tr>
+			<td valign="top"><spring:message code="dataintegrity.addeditCheck.repair.code.type"/></td>
+			<td colspan="2">
+				<select name="repairCodeType" id="repairCodeTypeSelect" style="width: 130px" onchange="enableRepairCode()">
+					<option value="sql" <c:if test="${integrityCheck.repairCodeType == 'sql'}">selected</c:if>>SQL</option>
+					<option value="none" <c:if test="${integrityCheck.repairCodeType == 'none'}">selected</c:if>>Use Check Code</option>
+					<!-- Other check types to be implemented later
+					<option value="groovy">Groovy</option>
+					<option value="java">Java</option>
+					-->
+				</select>
+			</td>
+		</tr>
+		<c:if test="${integrityCheck.repairCodeType == 'none'}">
+		<tr id="repairCodeRow" style="display: none;">
+			<td valign="top"><spring:message code="dataintegrity.addeditCheck.repair.code"/></td>
+			<td><textarea rows="5" cols="50" name="repairCode" id="repairCode">${integrityCheck.repairCode}</textarea></td>
+			<td valign="top"><div style="color: red">*</div></td>
+		</tr>
+		<tr id="repairCodeParameters" style="display: none;">
+			<td><spring:message code="dataintegrity.checksList.columns.parameters"/></td>
+			<td colspan="2"><input type="text" name="repairParameters" value="${integrityCheck.repairParameters}" size="52" maxlength="500"/></td>
+		</tr>
+		</c:if>
+		<c:if test="${integrityCheck.repairCodeType != 'none'}">
+		<tr id="repairCodeRow">
+			<td valign="top"><spring:message code="dataintegrity.addeditCheck.repair.code"/></td>
+			<td><textarea rows="5" cols="50" name="repairCode" id="repairCode">${integrityCheck.repairCode}</textarea></td>
+			<td valign="top"><div style="color: red">*</div></td>
+		</tr>
+		<tr id="repairCodeParameters">
+			<td><spring:message code="dataintegrity.checksList.columns.parameters"/></td>
+			<td colspan="2"><input type="text" name="repairParameters" value="${integrityCheck.repairParameters}" size="52" maxlength="500"/></td>
+		</tr>
+		</c:if>
+		<tr>
+			<td valign="top"><spring:message code="dataintegrity.checksList.columns.repairType"/></td>
+			<td colspan="2">
+				<select name="repairType" id="repairTypeSelect" style="width: 130px" onchange="enableRepairDirective()">
+					<option value="link" <c:if test="${integrityCheck.repairType == 'link'}">selected</c:if>>Link</option>
+					<option value="script" <c:if test="${integrityCheck.repairType == 'script'}">selected</c:if>>Script</option>
+					<option value="instructions" <c:if test="${integrityCheck.repairType == 'instructions'}">selected</c:if>>Instructions</option>
+					<option value="none" <c:if test="${integrityCheck.repairType == 'none'}">selected</c:if>>None</option>
+				</select>
+			</td>
+		</tr>
+		<c:if test="${integrityCheck.repairType == 'none'}">
+		<tr id="repairRow" style="display: none;">
+			<td valign="top"><spring:message code="dataintegrity.checksList.columns.repair"/></td>
+			<td><textarea rows="5" cols="50" name="repair" id="repairTxt">${integrityCheck.repairDirective}</textarea></td>
+			<td valign="top"><div style="color: red;">*</div></td>
+		</tr>
+		</c:if>
+		<c:if test="${integrityCheck.repairType != 'none'}">
+		<tr>
+			<td colspan="3"><hr /></td>
+		</tr>
+		<tr id="repairRow">
+			<td valign="top"><spring:message code="dataintegrity.checksList.columns.repair"/></td>
+			<td><textarea rows="5" cols="50" name="repair" id="repairTxt">${integrityCheck.repairDirective}</textarea></td>
+			<td valign="top"><div style="color: red">*</div></td>
+		</tr>
+		</c:if>
+		<tr>
+			<td colspan="3"><hr /></td>
+		</tr>
+		<tr>
+			<td><spring:message code="dataintegrity.addeditCheck.clearResults"/></td>
+			<td colspan="2"><input type="checkbox" name="clearResults" /></td>
+		</tr>
+		<tr>
+			<td colspan="3">
+				<input type="hidden" name="checkId" value="${integrityCheck.id}" />
+				<input type="submit" value="<spring:message code="dataintegrity.addeditCheck.save"/>"/>
+			</td>
+		</tr>
+	</table>
 </form>
 <br/>
 

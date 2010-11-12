@@ -61,16 +61,21 @@
 			<th align="left"> <spring:message code="dataintegrity.checksList.columns.name"/> </th>
 		</tr>
 		<%int checkCount = 0; %>
-		<c:forEach items="${runMultipleChecksList}" var="integrityChecksObj">
+		<c:forEach items="${runMultipleChecksList}" var="check">
 			<tr>
-				<td valign="top"><input type="checkbox" name="integrityCheckId" value="${integrityChecksObj.integrityCheckId}"></td>
-				<td align="left">${integrityChecksObj.integrityCheckName}</td>
-				<c:if test="${integrityChecksObj.integrityCheckParameters != ''}">
-					<td align="left"><spring:message code="dataintegrity.runSingleCheck.parameters"/></td>
-					<td align="left"><label id="<%="checkParameterTxt" + checkCount%>">${integrityChecksObj.integrityCheckParameters}</label></td>
-					<td align="left"><spring:message code="dataintegrity.runSingleCheck.parameterValues"/></td>
-					<td align="left"><input type="text" value="" name="checkParameter${integrityChecksObj.integrityCheckId}" id="<%="checkParameterValueTxt" + checkCount%>"/></td>
-				</c:if>
+				<td valign="top"><input type="checkbox" name="integrityCheckId" value="${check.id}"></td>
+				<td align="left">${check.name}
+					<c:if test="${check.checkParameters == null || check.checkParameters != ''}">
+						<blockquote>
+							<spring:message code="dataintegrity.runSingleCheck.parameters"/>
+							<label id="<%="checkParameterTxt" + checkCount%>">${check.checkParameters}</label>
+							<br />
+							<br />
+							<spring:message code="dataintegrity.runSingleCheck.parameterValues"/>
+							<input type="text" value="" name="checkParameter${check.id}" id="<%="checkParameterValueTxt" + checkCount%>"/>
+						</blockquote>
+					</c:if>
+				</td>
 			</tr>
 			<%checkCount++; %>
 			</c:forEach>

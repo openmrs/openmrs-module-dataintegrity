@@ -14,6 +14,10 @@
 
 package org.openmrs.module.dataintegrity.db.hibernate;
 
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -21,23 +25,28 @@ import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.DAOException;
-import org.openmrs.module.dataintegrity.IntegrityCheckResults;
+import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.IntegrityCheck;
+import org.openmrs.module.dataintegrity.IntegrityCheckResults;
+import org.openmrs.module.dataintegrity.QueryResults;
 import org.openmrs.module.dataintegrity.db.DataIntegrityDAO;
 
 public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
 
+	/**
+	 * the session factory to use in this DAO
+	 */
 	private SessionFactory sessionFactory;
 
 	/**
-	 * sets the session factory
+	 * @see DataIntegrityDAO#setSessionFactory(SessionFactory)
 	 */
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 
 	/**
-	 * returns the session factory
+	 * @see DataIntegrityDAO#getSessionFactory()
 	 */
 	public SessionFactory getSessionFactory() {
 		return this.sessionFactory;
@@ -149,6 +158,52 @@ public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
 		if (result == null)
 			return null;
 		return (IntegrityCheckResults) result;
+	}
+
+	/**
+	 * @see DataIntegrityDAO#getQueryResults(String)
+	 */
+	public QueryResults getQueryResults(String sql) throws DAOException {
+		ResultSet rs = null;
+		List<String> columns = new ArrayList<String>();
+		QueryResults results = new QueryResults();
+
+		try {
+			rs = sessionFactory.getCurrentSession().connection()
+					.createStatement().executeQuery(sql);
+
+			// get the columns
+			ResultSetMetaData md = rs.getMetaData();
+			int columnCount = md.getColumnCount();
+			for (int i=1; i <= columnCount; i++)
+				columns.add(md.getColumnLabel(i));
+			
+			// get the failed records
+			while (rs.next() && results.size() <= DataIntegrityConstants.MAX_RECORDS) {
+				// TODO create batch execution to handle large amounts of data instead of capping at MAX_RECORDS
+				Object[] objectArray = new Object[columnCount];
+				for (int i=0; i < columnCount; i++)
+					objectArray[i] = rs.getObject(i+1);
+				results.add(objectArray);
+			}
+		} catch (SQLException e) {
+			throw new DAOException("SQL error while executing query '" + sql + "'", e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+			} catch (SQLException e) {
+				throw new DAOException("could not close RecordSet while executing query '" + sql + "'", e);
+			}
+		}
+
+		// return the results
+		if (results.isEmpty() && columns.isEmpty())
+			return null;
+		
+		// add the columns
+		results.setColumns(columns);
+		return results;
 	}
 
 }
