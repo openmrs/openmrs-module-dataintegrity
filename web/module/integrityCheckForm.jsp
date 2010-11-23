@@ -159,27 +159,25 @@
 		<tr>
 			<td valign="top"><spring:message code="dataintegrity.checksList.columns.failOp"/></td>
 			<td colspan="2">
-				<c:if test="${integrityCheck.resultType == 'count' || integrityCheck.resultType == 'number'}">
 				<select name="failOp" id="failOpSelect" style="width: 130px">
-					<option value="less than" <c:if test="${integrityCheck.failDirectiveOperator == 'less than'}">selected</c:if>>Less Than</option>
-					<option value="greater than" <c:if test="${integrityCheck.failDirectiveOperator == 'greater than'}">selected</c:if>>Greater Than</option>
-					<option value="equals" <c:if test="${integrityCheck.failDirectiveOperator == 'equals'}">selected</c:if>>Equals</option>
-					<option value="not equals" <c:if test="${integrityCheck.failDirectiveOperator == 'not equals'}">selected</c:if>>Not Equals</option>
+			    <c:choose>
+					<c:when test="${integrityCheck.resultType == 'boolean'}">
+						<option value="equals" <c:if test="${integrityCheck.failDirectiveOperator == 'equals'}">selected</c:if>>Equals</option>
+					</c:when>
+					<c:when test="${integrityCheck.resultType == 'string'}">
+						<option value="equals" <c:if test="${integrityCheck.failDirectiveOperator == 'equals'}">selected</c:if>>Equals</option>
+						<option value="not equals" <c:if test="${integrityCheck.failDirectiveOperator == 'not equals'}">selected</c:if>>Not Equals</option>
+						<option value="contains" <c:if test="${integrityCheck.failDirectiveOperator == 'contains'}">selected</c:if>>Contains</option>
+						<option value="not contains" <c:if test="${integrityCheck.failDirectiveOperator == 'not contains'}">selected</c:if>>Not Contains</option>
+					</c:when>
+					<c:otherwise>
+						<option value="less than" <c:if test="${integrityCheck.failDirectiveOperator == 'less than'}">selected</c:if>>Less Than</option>
+						<option value="greater than" <c:if test="${integrityCheck.failDirectiveOperator == 'greater than'}">selected</c:if>>Greater Than</option>
+						<option value="equals" <c:if test="${integrityCheck.failDirectiveOperator == 'equals'}">selected</c:if>>Equals</option>
+						<option value="not equals" <c:if test="${integrityCheck.failDirectiveOperator == 'not equals'}">selected</c:if>>Not Equals</option>
+					</c:otherwise>
+				</c:choose>
 				</select>
-				</c:if>
-				<c:if test="${integrityCheck.resultType == 'boolean'}">
-				<select name="failOp" id="failOpSelect" style="width: 130px">
-					<option value="equals" <c:if test="${integrityCheck.failDirectiveOperator == 'equals'}">selected</c:if>>Equals</option>
-				</select>
-				</c:if>
-				<c:if test="${integrityCheck.resultType == 'string'}">
-				<select name="failOp" id="failOpSelect" style="width: 130px">
-					<option value="equals" <c:if test="${integrityCheck.failDirectiveOperator == 'equals'}">selected</c:if>>Equals</option>
-					<option value="not equals" <c:if test="${integrityCheck.failDirectiveOperator == 'not equals'}">selected</c:if>>Not Equals</option>
-					<option value="contains" <c:if test="${integrityCheck.failDirectiveOperator == 'contains'}">selected</c:if>>Contains</option>
-					<option value="not contains" <c:if test="${integrityCheck.failDirectiveOperator == 'not contains'}">selected</c:if>>Not Contains</option>
-				</select>
-				</c:if>
 			</td>
 		</tr>
 		<tr>
@@ -226,6 +224,9 @@
 		</tr>
 		</c:if>
 		<tr>
+			<td colspan="3"><hr /></td>
+		</tr>
+		<tr>
 			<td valign="top"><spring:message code="dataintegrity.checksList.columns.repairType"/></td>
 			<td colspan="2">
 				<select name="repairType" id="repairTypeSelect" style="width: 130px" onchange="enableRepairDirective()">
@@ -244,9 +245,6 @@
 		</tr>
 		</c:if>
 		<c:if test="${integrityCheck.repairType != 'none'}">
-		<tr>
-			<td colspan="3"><hr /></td>
-		</tr>
 		<tr id="repairRow">
 			<td valign="top"><spring:message code="dataintegrity.checksList.columns.repair"/></td>
 			<td><textarea rows="5" cols="50" name="repair" id="repairTxt">${integrityCheck.repairDirective}</textarea></td>
