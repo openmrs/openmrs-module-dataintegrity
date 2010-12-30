@@ -81,7 +81,7 @@
 		
 		<!-- Copy module web data -->
 		<copy todir="build/web/module/">
-			<fileset dir="web/module/" includes="**/*" excludes="resources/**/*" />
+			<fileset dir="web/module/" includes="**/*" />
 			<filterset refid="variables.to.replace" />
 		</copy>
 		

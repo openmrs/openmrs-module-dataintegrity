@@ -32,5 +32,10 @@
 				<spring:message code="dataintegrity.actionServer.link"/>
 			</a>
 		</li>
+		<li <c:if test='<%= request.getRequestURI().contains("integritySchedule") %>'>class="active"</c:if>>
+            <a href="${pageContext.request.contextPath}/module/dataintegrity/integritySchedule.list">
+                <spring:message code="dataintegrity.schedule.link"/>
+            </a>
+        </li>
 	</openmrs:hasPrivilege>
 </ul>

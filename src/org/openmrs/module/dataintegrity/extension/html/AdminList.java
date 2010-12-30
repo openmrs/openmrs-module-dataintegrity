@@ -14,7 +14,7 @@
 
 package org.openmrs.module.dataintegrity.extension.html;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.openmrs.api.context.Context;
@@ -38,7 +38,7 @@ public class AdminList extends AdministrationSectionExt {
 	
 	public Map<String, String> getLinks() {
 		
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String> map = new LinkedHashMap<String, String>();
 		
 		if (Context.hasPrivilege(DataIntegrityConstants.PRIV_VIEW_INTEGRITY_CHECKS)) {
 			map.put("module/dataintegrity/dataIntegrityChecks.list", "dataintegrity.manage.link");
@@ -50,6 +50,7 @@ public class AdminList extends AdministrationSectionExt {
 		if (Context.hasPrivilege(DataIntegrityConstants.PRIV_RUN_INTEGRITY_CHECKS)) {
 			map.put("module/dataintegrity/runSingleCheck.list", "dataintegrity.runSingleCheck.link");
 			map.put("module/dataintegrity/runMultipleChecks.list", "dataintegrity.runMultipleChecks.link");
+			map.put("module/dataintegrity/integritySchedule.list", "dataintegrity.schedule.link");
 		}
 		return map;
 	}
