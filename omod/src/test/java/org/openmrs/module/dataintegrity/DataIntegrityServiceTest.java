@@ -3,7 +3,6 @@ package org.openmrs.module.dataintegrity;
 import java.io.File;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
