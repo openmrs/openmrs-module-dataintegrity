@@ -1,0 +1,40 @@
+/** common stylesheet used throughout the Data Integrity Module **/
+
+fieldset {
+	border: 1px solid #ccc;
+	margin-bottom: 1em;
+	padding: 0 1em 1em;
+}
+
+fieldset legend {
+	background: #eee;
+	border: 1px solid #ccc;
+	padding: 0.25em 0.5em;
+}
+
+label.above {
+	display: block;
+	font-weight: bold;
+	margin: 1em 0 0.15em;
+	padding-left: 0.2em;
+}
+
+label.error {
+	border: 1px dashed black;
+	display: block;
+	margin: 0.25em 0.2em;
+	padding: 0.25em;
+}
+
+div.help {
+	color: #888;
+	font-style: italic;
+	margin: 0.15em 0;
+	padding-left: 0.2em;
+}
+
+textarea {
+	/* to match input style */
+	border: 1px solid cadetBlue;
+}
+

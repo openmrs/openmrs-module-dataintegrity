@@ -11,30 +11,6 @@ import org.springframework.util.Assert;
 
 public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest {
 
-//	@Before
-//	public void runBeforeEachTest() throws Exception {
-//		authenticate();
-//	}
-
-	// @Test
-	public void shouldGetOneDataIntegrityTemplate() throws Exception {
-		DataIntegrityService service = (DataIntegrityService) Context
-				.getService(DataIntegrityService.class);
-		IntegrityCheck template = service
-				.getIntegrityCheck(19);
-		Assert.notNull(template);
-	}
-
-	// @Test
-	public void shouldGetAllDataIntegrityTemplates() throws Exception {
-		DataIntegrityService service = (DataIntegrityService) Context
-				.getService(DataIntegrityService.class);
-		List<IntegrityCheck> templates = service
-				.getAllIntegrityChecks();
-		System.out.println("Templates received: " + templates);
-		Assert.notNull(templates);
-	}
-
 	@Test
 	public void shouldSaveNewDataIntegrityTemplate() throws Exception {
 		DataIntegrityService service = (DataIntegrityService) Context

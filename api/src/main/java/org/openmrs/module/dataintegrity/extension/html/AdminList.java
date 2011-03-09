@@ -43,14 +43,14 @@ public class AdminList extends AdministrationSectionExt {
 		if (Context.hasPrivilege(DataIntegrityConstants.PRIV_VIEW_INTEGRITY_CHECKS)) {
 			map.put("module/dataintegrity/dataIntegrityChecks.list", "dataintegrity.manage.link");
 		}
-		if (Context.hasPrivilege(DataIntegrityConstants.PRIV_MANAGE_INTEGRITY_CHECKS)) {
-			map.put("module/dataintegrity/transferCheck.list", "dataintegrity.upload.link");
-			map.put("module/dataintegrity/setIntegrityActionServer.htm", "dataintegrity.actionServer.link");
-		}
 		if (Context.hasPrivilege(DataIntegrityConstants.PRIV_RUN_INTEGRITY_CHECKS)) {
 			map.put("module/dataintegrity/runSingleCheck.list", "dataintegrity.runSingleCheck.link");
 			map.put("module/dataintegrity/runMultipleChecks.list", "dataintegrity.runMultipleChecks.link");
 			map.put("module/dataintegrity/integritySchedule.list", "dataintegrity.schedule.link");
+		}
+		if (Context.hasPrivilege(DataIntegrityConstants.PRIV_MANAGE_INTEGRITY_CHECKS)) {
+			map.put("module/dataintegrity/transferCheck.list", "dataintegrity.upload.link");
+			map.put("module/dataintegrity/settings.htm", "dataintegrity.settings.link");
 		}
 		return map;
 	}

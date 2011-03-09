@@ -27,15 +27,15 @@
 				<spring:message code="dataintegrity.upload.link"/>
 			</a>
 		</li>
-		<li <c:if test='<%= request.getRequestURI().contains("setIntegrityActionServer") %>'>class="active"</c:if>>
-			<a href="${pageContext.request.contextPath}/module/dataintegrity/setIntegrityActionServer.htm">
-				<spring:message code="dataintegrity.actionServer.link"/>
-			</a>
-		</li>
 		<li <c:if test='<%= request.getRequestURI().contains("integritySchedule") %>'>class="active"</c:if>>
             <a href="${pageContext.request.contextPath}/module/dataintegrity/integritySchedule.list">
                 <spring:message code="dataintegrity.schedule.link"/>
             </a>
         </li>
+		<li <c:if test='<%= request.getRequestURI().contains("settings") %>'>class="active"</c:if>>
+			<a href="${pageContext.request.contextPath}/module/dataintegrity/settings.htm">
+				<spring:message code="dataintegrity.settings.link"/>
+			</a>
+		</li>
 	</openmrs:hasPrivilege>
 </ul>

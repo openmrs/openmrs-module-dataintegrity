@@ -1,29 +1,26 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 
-<openmrs:require privilege="Manage Integrity Checks" otherwise="/login.htm" redirect="/module/dataintegrity/IntegritySchedule.form" />
+<openmrs:require privilege="Manage Integrity Checks" otherwise="/login.htm" redirect="/module/dataintegrity/integritySchedule.form" />
 
 <%@ include file="/WEB-INF/template/header.jsp"%>
 <%@ include file="localHeader.jsp"%>
 
+<!-- import jquery for openmrs 1.6.x -->
+<openmrs:htmlInclude file="/scripts/jquery/jquery-1.3.2.min.js" />
+<openmrs:htmlInclude file="/scripts/jquery-ui/js/jquery-ui-1.7.2.custom.min.js" />
+<openmrs:htmlInclude file="/scripts/jquery-ui/css/redmond/jquery-ui-1.7.2.custom.css" />
+ 
+<script type="text/javascript">
+        var $j = jQuery.noConflict();
+</script>
+<!-- end 1.6.x required prep -->
+
 <openmrs:htmlInclude file="/scripts/calendar/calendar.js" />
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/jquery-ui-timepicker-addon.min.js" />
-
-<h2><spring:message code="dataintegrity.schedule.title" /></h2>
-
-<br />
+<openmrs:htmlInclude file="/moduleResources/dataintegrity/jquery.validate.min.js" />
+<openmrs:htmlInclude file="/moduleResources/dataintegrity/common.css" />
 
 <script type="text/javascript">
-window.onload = blockListDisplay;
-
-function blockListDisplay() {
-	var selected = "${integrityCheckId}";
-	if(selected != "") {
-		var listSelected = selected.split(",");
-		for(var i=0;i<listSelected.length-1;i++){
-			document.getElementById(listSelected[i]-1).checked = true;
-		}
-	}
-}
 
 function checkAll(field) {
 	for (i = 0; i < field.length; i++) {
@@ -37,76 +34,6 @@ function uncheckAll(field) {
 	}
 }
 
-function trim(myString) {
-	return myString.replace(/^ +/,'').replace(/ +$/,'');
-}
-
-function validate() {
-	
-	var count = 0;
-	var check = document.getElementsByName("integrityCheckIdChk");
-	var startTime = document.getElementById("startTime").value;
-	var repeatInterval = trim(document.getElementById("repeatInterval").value);
-	var reg1 = /[0-1][0-9]\/[0-3][0-9]\/[0-9]{4} [0-2][0-9]:[0-6][0-9]:[0-6][0-9]/;
-	var reg2 = /^[1-9][0-9]*/;
-	if(repeatInterval != ""){
-		var interval = reg2.exec(repeatInterval);
-		document.getElementById("intervalError1").style.display = "none";
-	}else if(repeatInterval == ""){
-		interval = repeatInterval; 
-		document.getElementById("intervalError1").style.display = "";
-		++count;
-	}
-	var selected = false;
-	for(var i=0;i<check.length;i++){
-		if(check[i].checked==true){
-			selected = true;
-		}
-	}
-	
-	if(trim(document.getElementById("name").value)==""){
-		document.getElementById("nameError").style.display = "";
-		++count;
-	}else{
-		document.getElementById("nameError").style.display = "none";
-	}
-
-	if(trim(document.getElementById("description").value)==""){
-		document.getElementById("descriptionError").style.display = "";
-		++count;
-	}else{
-		document.getElementById("descriptionError").style.display = "none";
-	}
-
-	if(!selected){
-		document.getElementById("blockListError").style.display = "";
-		++count;
-	}else{
-		document.getElementById("blockListError").style.display = "none";
-	}
-	
-	if(!(reg1.test(startTime))){
-		document.getElementById("startTimeError").style.display = "";
-		++count;
-	}else{
-		document.getElementById("startTimeError").style.display = "none";
-	}
-
-	if(interval==null||interval!=repeatInterval){
-		document.getElementById("intervalError2").style.display = "";
-		++count;
-	}else{
-		document.getElementById("intervalError2").style.display = "none";
-	}
-
-	if(count>0){
-		return false;
-	}else{
-		return true;
-	}
-	 
-}
-
 $j(document).ready(function(){
 	// configure a date time picker for the start time field
 	$j("#startTime").datetimepicker({ 
@@ -117,100 +44,143 @@ $j(document).ready(function(){
 		minuteGrid: 10, 
 		secondGrid: 10 
 	});
+	
+	// create form validator
+	$j("#scheduleForm").validate({
+		rules: {
+			txtname: "required",
+			txtdescription: "required",
+			checkIdsChk: {
+				required: true
+			},
+			startTime: {
+				required: true,
+				date: true
+			},
+			repeatInterval: {
+				required: true,
+				digits: true,
+				min: 1
+			}
+		},
+		messages: {
+			txtname: '<spring:message code="dataintegrity.schedule.nameerror" javaScriptEscape="true"/>',
+			txtdescription: '<spring:message code="dataintegrity.schedule.descriptionerror" javaScriptEscape="true"/>',
+			checkIdsChk: '<spring:message code="dataintegrity.schedule.blocklisterror" javaScriptEscape="true"/>',
+			startTime: '<spring:message code="dataintegrity.schedule.starttimeerror" javaScriptEscape="true"/>',
+			repeatInterval: {
+				required: '<spring:message code="dataintegrity.schedule.intervalerror1" javaScriptEscape="true"/>',
+				digits: '<spring:message code="dataintegrity.schedule.intervalerror2" javaScriptEscape="true"/>',
+				min: '<spring:message code="dataintegrity.schedule.intervalerror2" javaScriptEscape="true"/>'
+			}
+		},
+		errorPlacement: function(error, element) {
+			if (element.attr("name") == "repeatInterval")
+				error.insertAfter("#repeatIntervalUnits");
+			else if (element.attr("name") == "checkIdsChk")
+				error.insertBefore("#checkIdsChkError");
+			else
+				error.insertAfter(element);
+		}
+	});
+
+	// the following code only works in 1.7.x+ ... so don't expect anything after it to work on 1.6.x
+	$j(".button").button();
 });
 
 </script>
 
-<b class="boxHeader"><spring:message
-	code="dataintegrity.schedule.new" /></b>
+<h2>
+	<c:if test="${taskId == null}"><spring:message code="dataintegrity.schedule.new"/></c:if>
+	<c:if test="${taskId != null}"><spring:message code="dataintegrity.schedule.edit"/></c:if>
+</h2>
+
+<br />
+
+<b class="boxHeader">
+	<spring:message code="dataintegrity.schedule.edit.header"/>
+</b>
 <div class="box">
-	<form method="post" name="multipleCheckForm">
-		<input type="hidden" name="taskId" value="" />
-		<table cellspacing="2">
-			<tr>
-				<th colspan="2"><spring:message
-					code="dataintegrity.schedule.parameter" /></th>
-			</tr>
-			<tr>
-				<td><spring:message code="dataintegrity.schedule.name" />:</td>
-				<td><input type="text" name="name" size="30" id="name"
-					value="${name}" />&nbsp;
-				<div class="error" id="nameError" style="display: none"><spring:message
-					code="dataintegrity.schedule.nameerror" /></div>
-				</td>
-			</tr>
-			<tr>
-				<td><spring:message code="general.description" />:</td>
-				<td><textarea name="description" id="description" rows="3"
-					cols="60">${description}</textarea>&nbsp;
-				<div class="error" id="descriptionError" style="display: none"><spring:message
-					code="dataintegrity.schedule.descriptionerror" /></div>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2">
+	<form method="post" id="scheduleForm" name="scheduleForm" style="padding: 0.5em 1em;">
+		<input type="hidden" name="taskId" value=""/>
+		<fieldset>
+			<legend><spring:message code="dataintegrity.schedule.parameter"/></legend>
+			<div>
+				<label class="above" for="txtname"><spring:message code="dataintegrity.schedule.name" /> *</label>
+				<input type="text" name="txtname" size="30" id="txtname" value="${txtname}"/>
+			</div>
+			<div>
+				<label class="above" for="txtdescription"><spring:message code="general.description" /> *</label>
+				<textarea name="txtdescription" id="txtdescription" rows="3"
+						cols="60">${txtdescription}</textarea>
+			</div>
+		</fieldset>
+		<fieldset>
+			<legend><spring:message code="dataintegrity.schedule.details"/></legend>
+			<div>
+				<label id="checkIdsChkError" class="above" for="txtdescription"><spring:message code="dataintegrity.schedule.blocking" /> *</label>
+				
+				<!-- hack for 1.6.x since openmrs:Collectioncontains() is not available -->
+				<c:set var="selectedIds" value="?"/>
+				<c:forEach items="${checkIds}" var="testId">
+					<c:set var="selectedIds" value="${selectedIds}${testId}?"/>
+				</c:forEach>
+				<!-- /hack -->
+				
+				<c:forEach items="${integrityCheckList}" var="integrityCheck">
 					<div>
-						<b><spring:message code="dataintegrity.schedule.blocking" /></b>
-						<div class="error" id="blockListError" style="display: none">
-							<spring:message code="dataintegrity.schedule.blocklisterror" />
-						</div>
+						<c:set var="checkId" value="${integrityCheck.id}"/>
+						<!-- hack for 1.6.x -->
+						<c:set var="testId" value="?${checkId}?"/>
+						<!-- 1.7.x+ use: openmrs:collectionContains(checkIds, checkId) -->
+						<!-- /hack -->
+						<c:choose>
+							<c:when test="${fn:contains(selectedIds, testId)}">
+								<input type="checkbox" id="check${checkId}" name="checkIdsChk" value="${checkId}" checked>
+							</c:when>
+							<c:otherwise>
+								<input type="checkbox" id="check${checkId}" name="checkIdsChk" value="${checkId}">
+							</c:otherwise>
+						</c:choose>
+						<label for="check${checkId}">${integrityCheck.name}</label>
 					</div>
-					<ol>
-						<%int checkCount = 0; %>
-						<c:forEach items="${runMultipleChecksList}"
-							var="integrityChecksObj">
-							<input type="checkbox" id="<%=checkCount%>"
-									name="integrityCheckIdChk"
-									value="${integrityChecksObj.integrityCheckId}">
-							<label for="<%= checkCount %>">${integrityChecksObj.integrityCheckName}</label>
-							<% checkCount++; %>
-						</c:forEach>
-					</ol>
-					<div>
-						<a href="#" onclick="checkAll(document.multipleCheckForm.integrityCheckIdChk)"><spring:message
-							code="dataintegrity.runMultipleChecks.selectAll" /></a> |
-						<a href="#"	onclick="uncheckAll(document.multipleCheckForm.integrityCheckIdChk)"><spring:message
-							code="dataintegrity.runMultipleChecks.selectNone" /></a>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td><spring:message
-					code="Scheduler.scheduleForm.startTimePattern" />:</td>
-				<td><input type="text" id="startTimePattern"
-					name="startTimePattern" size="25" value="${startTimePattern}"
-					disabled /></td>
-			</tr>
-			<tr>
-				<td><spring:message code="dataintegrity.schedule.date" />:</td>
-				<td><input type="text" id="startTime" name="startTime" size="25"
-					value="${startTime}" /> &nbsp;
-				<div class="error" id="startTimeError" style="display: none"><spring:message
-					code="dataintegrity.schedule.starttimeerror" /></div>
-				</td>
-			</tr>
-			<tr>
-				<td><spring:message code="dataintegrity.schedule.repeatinterval" /></td>
-				<td><input type="text" id="repeatInterval" name="repeatInterval"
-					size="10" value="${repeatInterval}" /> &nbsp;<select
-					name="repeatIntervalUnits">
+				</c:forEach>
+				<br />
+				<div>
+					<a href="#" onclick="checkAll(document.scheduleForm.checkIdsChk)"><spring:message
+						code="dataintegrity.runMultipleChecks.selectAll" /></a> |
+					<a href="#"	onclick="uncheckAll(document.scheduleForm.checkIdsChk)"><spring:message
+						code="dataintegrity.runMultipleChecks.selectNone" /></a>
+				</div>
+		</fieldset>
+		<fieldset>
+			<legend><spring:message code="dataintegrity.schedule.timing"/></legend>
+			<div>
+				<label class="above" for="startTimePattern"><spring:message code="Scheduler.scheduleForm.startTimePattern"/></label>
+				<input type="text" id="startTimePattern" name="startTimePattern" size="25" value="${startTimePattern}" disabled />
+			</div>
+			<div>
+				<label class="above" for="startTime"><spring:message code="dataintegrity.schedule.date"/> *</label>
+				<input type="text" id="startTime" name="startTime" size="25" value="${startTime}"/>
+			</div>
+			<div>
+				<label class="above" for="repeatInterval"><spring:message code="dataintegrity.schedule.repeatinterval"/> *</label>
+				<input type="text" id="repeatInterval" name="repeatInterval" size="10" value="${repeatInterval}" />
+				<select id="repeatIntervalUnits" name="repeatIntervalUnits">
+					<option value="seconds"
+						<c:if test="${repeatIntervalUnits=='seconds'}">selected</c:if>>seconds</option>
+					<option value="minutes"
+						<c:if test="${repeatIntervalUnits=='minutes'}">selected</c:if>>minutes</option>
+					<option value="hours"
+						<c:if test="${repeatIntervalUnits=='hours'}">selected</c:if>>hours</option>
 					<option value="days"
 						<c:if test="${repeatIntervalUnits=='days'}">selected</c:if>>days</option>
 					<option value="weeks"
 						<c:if test="${repeatIntervalUnits=='weeks'}">selected</c:if>>weeks</option>
-				</select>&nbsp;
-				<div class="error" id="intervalError1" style="display: none"><spring:message
-					code="dataintegrity.schedule.intervalerror1" /></div>
-				<div class="error" id="intervalError2" style="display: none"><spring:message
-					code="dataintegrity.schedule.intervalerror2" /></div>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2"><input type="submit"
-					value="<spring:message code="general.save"/>"
-					onclick="return validate();" /></td>
-			</tr>
-		</table>
+				</select>
+			</div>
+		</fieldset>
+		<input class="button" type="submit" value="<spring:message code="general.save"/>"/>
 	</form>
 </div>
 

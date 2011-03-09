@@ -17,6 +17,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.scheduler.SchedulerService;
 import org.openmrs.scheduler.TaskDefinition;
 import org.openmrs.web.WebConstants;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -25,12 +26,13 @@ import org.springframework.web.servlet.view.RedirectView;
 /**
  * Provide mapping for Scheduled Integrity checks
  */
-
 public class IntegrityScheduleListController extends SimpleFormController {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	
-	private static final String extention = "dataintegrity";
+	private static final String prefix = "dataintegrity";
+	private static final String emailPrefix = "dataintegrityEmail";
+	private static final String schedulePrefix = "dataintegritySchedule";
 	
 	public static String DEFAULT_DATE_PATTERN = "MM/dd/yyyy HH:mm:ss";
 	
@@ -44,7 +46,6 @@ public class IntegrityScheduleListController extends SimpleFormController {
 	@Override
 	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command,
 	                                BindException errors) throws Exception {
-		
 		String view = getFormView();
 		HttpSession httpSession = request.getSession();
 		
@@ -82,10 +83,11 @@ public class IntegrityScheduleListController extends SimpleFormController {
 		}
 		view = getSuccessView();
 		
-		if (!success.toString().equals("")) {
+		if (StringUtils.hasText(success.toString())) {
 			httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, success.toString());
 		}
-		if (!error.toString().equals("")) {
+		
+		if (StringUtils.hasText(error.toString())) {
 			httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, error.toString());
 		}
 		
@@ -94,15 +96,13 @@ public class IntegrityScheduleListController extends SimpleFormController {
 	
 	@Override
 	protected Map<String, Object> referenceData(HttpServletRequest req) throws Exception {
-		
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Map<String, Object>> schedules = new ArrayList<Map<String, Object>>();
-		Map<TaskDefinition, String> intervals = new HashMap<TaskDefinition, String>();
 		
 		Collection<TaskDefinition> rTasks = Context.getSchedulerService().getRegisteredTasks();
 		List<TaskDefinition> tasks = new ArrayList<TaskDefinition>();
 		for (TaskDefinition td : rTasks) {
-			if (td.getName().contains(extention)) {
+			if (td.getName().startsWith(prefix)) {
 				tasks.add(td);
 			}
 		}
@@ -112,18 +112,14 @@ public class IntegrityScheduleListController extends SimpleFormController {
 			int index = task.getName().indexOf("_");
 			schedule.put("name", task.getName().substring(index + 1));
 			schedule.put("task", task);
-			schedules.add(schedule);
 			
-			Long intervalTime = task.getRepeatInterval();
+			if (task.getName().startsWith(emailPrefix))
+				schedule.put("type", "email");
+			else if (task.getName().startsWith(schedulePrefix))
+				schedule.put("type", "schedule");
 			
-			if ((intervalTime % (7 * 24 * 3600)) == 0) {
-				intervals.put(task, (intervalTime / (7 * 24 * 3600)) + " weeks");
-			} else {
-				intervals.put(task, (intervalTime / (24 * 3600)) + " days");
-			}
+			schedules.add(schedule);			
 		}
-		
-		map.put("intervals", intervals);
 		map.put("allTasks", schedules);
 		
 		return map;

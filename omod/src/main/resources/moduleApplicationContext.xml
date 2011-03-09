@@ -20,6 +20,7 @@
                 <prop key="module/dataintegrity/repairCheck.list">repairCheckList</prop>
                 <prop key="module/dataintegrity/integritySchedule.list">integrityScheduleList</prop>
                 <prop key="module/dataintegrity/integritySchedule.form">integrityScheduleForm</prop>
+                <prop key="module/dataintegrity/integrityScheduleEmail.form">integrityScheduleEmailForm</prop>
             </props>
 		</property>
 	</bean>
@@ -115,9 +116,14 @@
         <property name="successView"><value>integritySchedule.list</value></property>
     </bean>
     
-    <bean id="integrityScheduleForm" class="org.openmrs.module.dataintegrity.web.controller.IntegrityScheduleCreateFormController">
-        <property name="commandName"><value>runMultipleChecksList</value></property>
+    <bean id="integrityScheduleForm" class="org.openmrs.module.dataintegrity.web.controller.IntegrityScheduleFormController">
+        <property name="commandName"><value>integrityCheckList</value></property>
         <property name="formView"><value>/module/dataintegrity/integrityScheduleForm</value></property>
+        <property name="successView"><value>integritySchedule.list</value></property>
+    </bean>
+    
+    <bean id="integrityScheduleEmailForm" class="org.openmrs.module.dataintegrity.web.controller.IntegrityScheduleEmailFormController">
+        <property name="formView"><value>/module/dataintegrity/integrityScheduleEmailForm</value></property>
         <property name="successView"><value>integritySchedule.list</value></property>
     </bean>
 </beans>

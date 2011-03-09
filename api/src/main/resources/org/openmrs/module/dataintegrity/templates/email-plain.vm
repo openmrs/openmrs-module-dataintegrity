@@ -1,0 +1,16 @@
+Data Integrity Checks Summary
+
+#if(${results.isEmpty()})
+No integrity check results exist at this time.
+#else
+#foreach ($result in $results) 
+#set ($check = $result.getIntegrityCheck())
+
+${check.getName()} - #if(${result.isCheckPassed()})PASSED#{else}FAILED#end
+
+Failed count: ${result.getFailedRecordCount()}
+Date: ${result.getDateOccurred()}
+#end
+#end
+
+Sent from OpenMRS

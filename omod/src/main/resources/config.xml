@@ -23,35 +23,137 @@
 	
 	<!-- Privileges -->
 	<privilege>
-        <name>@MODULE_NAME@</name>
-        <description>Ability to run data integrity checks</description>
-    </privilege>
-    <privilege>
-        <name>@MODULE_NAME@</name>
-        <description>Ability to manage data integrity checks</description>
-    </privilege>
-    <privilege>
-        <name>@MODULE_NAME@</name>
-        <description>Ability to view integrity checks</description>
-    </privilege>
-    <privilege>
-        <name>@MODULE_NAME@</name>
-        <description>Ability to view integrity check results</description>
-    </privilege>
-    <privilege>
-        <name>@MODULE_NAME@</name>
-        <description>Ability to run integrity check repairs</description>
-    </privilege>
+		<name>Run Integrity Checks</name>
+		<description>Ability to run data integrity checks</description>
+	</privilege>
+	<privilege>
+		<name>Manage Integrity Checks</name>
+		<description>Ability to manage data integrity checks</description>
+	</privilege>
+	<privilege>
+		<name>View Integrity Checks</name>
+		<description>Ability to view integrity checks</description>
+	</privilege>
+	<privilege>
+		<name>View Integrity Check Results</name>
+		<description>Ability to view integrity check results</description>
+	</privilege>
+	<privilege>
+		<name>Run Integrity Check Repairs</name>
+		<description>Ability to run integrity check repairs</description>
+	</privilege>
 	<!-- /Privileges -->
 	
 	<!-- Required Global Properties -->
+
 	<globalProperty>
 		<property>dataintegrity.actionServerUrl</property> <!-- Must start with `moduleId.` -->
 		<defaultValue></defaultValue>
 		<description>
-			Url for the production server to be used for correction.
+			URL for the production server to be used for correction. The Data
+			Integrity Repair Server URL should have the format
+			"http[s]://localhost:8080/openmrs". Remember, if left empty it uses
+			this server's URL.
 		</description>
 	</globalProperty>
+	
+	<globalProperty>
+		<property>dataintegrity.mail.scheduleTaskName</property>
+		<defaultValue>Data Integrity Summary Email</defaultValue>
+		<description>
+			This name is used in setting the Data Integrity Email Schedule name
+			that will be available in the scheduler.
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>dataintegrity.mail.host</property>
+		<defaultValue>localhost</defaultValue>
+		<description>
+			Email server hostname for Data Integrity summary reports
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>dataintegrity.mail.port</property>
+		<defaultValue>25</defaultValue>
+		<description>
+			Email server port for Data Integrity summary reports
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>dataintegrity.mail.protocol</property>
+		<defaultValue>smtp</defaultValue>
+		<description>
+			Email server protocol for Data Integrity summary reports (smtp or smtps for SSL)
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>dataintegrity.mail.auth</property>
+		<defaultValue>false</defaultValue>
+		<description>
+			Email server authentication requirement for Data Integrity summary reports (true or false)
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>dataintegrity.mail.user</property>
+		<defaultValue></defaultValue>
+		<description>
+			Email server username for Data Integrity summary reports
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>dataintegrity.mail.password</property>
+		<defaultValue></defaultValue>
+		<description>
+			Email server password for Data Integrity summary reports (is not encrypted)
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>dataintegrity.mail.tls</property>
+		<defaultValue>false</defaultValue>
+		<description>
+			Email server TLS requirement for Data Integrity summary reports (true or false)
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>dataintegrity.mail.format</property>
+		<defaultValue>html</defaultValue>
+		<description>
+			Email format for Data Integrity summary reports (plain or html)
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>dataintegrity.mail.from</property>
+		<defaultValue></defaultValue>
+		<description>
+			Sending email address for Data Integrity summary reports
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>dataintegrity.mail.subject</property>
+		<defaultValue>Summary for Data Integrity Checks</defaultValue>
+		<description>
+			Summary e-mails sent by the Data Integrity module will use this subject.
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>dataintegrity.mail.serverpath</property>
+		<defaultValue>http://localhost:8080/openmrs</defaultValue>
+		<description>
+			URL of this instance for Data Integrity summary reports (for links to Data Integrity Checks)
+		</description>
+	</globalProperty>
+	
 	<!-- /Required Global Properties -->
 	
 	<!-- Internationalization -->
