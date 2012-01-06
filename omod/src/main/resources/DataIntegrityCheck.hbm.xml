@@ -1,54 +1,60 @@
-<?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
-
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.openmrs.module.dataintegrity">
-
-	<class name="IntegrityCheck" table="dataintegrity_integrity_checks">
-
-		<id name="id" type="int" column="dataintegrity_integrity_check_id">
-			<generator class="native" />
+	<class name="IntegrityCheck" table="dataintegrity_check">
+		<id column="check_id" name="id" type="int">
+			<generator class="native"/>
 		</id>
-	
-		<property name="name" type="java.lang.String" not-null="true"
-			length="100" column="check_name" />
-	
-		<property name="checkCode" type="java.lang.String" not-null="true"
-			length="1000" column="check_code" />
-	
-		<property name="checkType" type="java.lang.String" not-null="true"
-			length="45" column="check_type" />
-	
-		<property name="checkParameters" type="java.lang.String"
-			not-null="false" length="500" column="check_parameters" />
+		<discriminator column="check_id" insert="false"/>
 
-		<property name="resultType" type="java.lang.String" not-null="true"
-			length="45" column="check_result_type" />
-	
-		<property name="failDirective" type="java.lang.String"
-			not-null="true" length="45" column="check_fail" />
-	
-		<property name="failDirectiveOperator" type="java.lang.String"
-			not-null="true" length="45" column="check_fail_operator" />
-	
-		<property name="repairType" type="java.lang.String" not-null="false"
-			length="45" column="check_repair_type" />
-	
-		<property name="repairCodeType" type="java.lang.String" not-null="true"
-			length="45" column="repair_code_type" />
-	
-		<property name="repairCode" type="java.lang.String" not-null="false"
-			length="1000" column="repair_code" />
+		<property column="check_name" length="100" name="name" not-null="true" type="java.lang.String"/>
+		<property column="description" length="255" name="description" type="java.lang.String"/>
+		<property column="check_language" length="45" name="checkLanguage" not-null="true" type="java.lang.String"/>
+		<property column="check_code" length="1000" name="checkCode" not-null="true" type="java.lang.String"/>
+		<property column="failure_type" length="45" name="failureType" not-null="true" type="java.lang.String"/>
+		<property column="failure_threshold" length="45" name="failureThreshold" not-null="true" type="java.lang.String"/>
+		<property column="failure_operator" length="45" name="failureOperator" not-null="true" type="java.lang.String"/>
+		<property column="total_language" length="45" name="totalLanguage" type="java.lang.String"/>
+		<property column="total_code" length="1000" name="totalCode" type="java.lang.String"/>
+		<property column="results_language" length="45" name="resultsLanguage" type="java.lang.String"/>
+		<property column="results_code" length="1000" name="resultsCode" type="java.lang.String"/>
 
-		<property name="repairDirective" type="java.lang.String"
-			not-null="false" length="1000" column="check_repair" />
-	
-		<property name="repairParameters" type="java.lang.String"
-			not-null="false" length="500" column="repair_parameters" />
+	    <!-- associated data -->
+		<set name="resultsColumns" lazy="true" cascade="all-delete-orphan"
+			table="dataintegrity_column" inverse="true" sort="unsorted" 
+			order-by="column_id asc">
+			<key column="integrity_check_id" not-null="true"/>
+			<one-to-many class="IntegrityCheckColumn"/>
+		</set>
+		<set name="integrityCheckRuns" lazy="true" cascade="all-delete-orphan" 
+			table="dataintegrity_runs" inverse="true" sort="unsorted"
+			order-by="date_created desc">
+			<key column="integrity_check_id" not-null="true"/>
+			<one-to-many class="IntegrityCheckRun"/>
+		</set>
+		<set name="integrityCheckResults" lazy="true" cascade="all-delete-orphan"
+			table="dataintegrity_result" inverse="true" sort="unsorted"
+			order-by="date_created asc">
+			<key column="integrity_check_id" not-null="true"/>
+			<one-to-many class="IntegrityCheckResult"/>
+		</set>
 
-		<one-to-one name="latestResults" class="IntegrityCheckResults"
-			property-ref="integrityCheck" />
-
+		<!-- BaseOpenmrsData properties -->
+		<!-- not implemented yet
+		<property name="uuid" type="java.lang.String" length="38" unique="true"/>
+		<many-to-one name="creator" class="org.openmrs.User" />
+		<property name="dateCreated" type="java.util.Date"
+			column="date_created" not-null="true" length="19" />
+		<many-to-one name="changedBy" class="org.openmrs.User" column="changed_by" />
+		<property name="dateChanged" type="java.util.Date"
+			column="date_changed" length="19" />
+		<property name="voided" type="java.lang.Boolean" length="1"
+			not-null="true" />
+		<many-to-one name="voidedBy" class="org.openmrs.User" column="voided_by" />
+		<property name="dateVoided" type="java.util.Date"
+			column="date_voided" length="19" />
+		<property name="voidReason" type="java.lang.String"
+			column="void_reason" length="255" />
+		-->
 	</class>
 </hibernate-mapping>

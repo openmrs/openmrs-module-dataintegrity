@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Set;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +19,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.openmrs.module.dataintegrity.IntegrityCheck;
+import org.openmrs.module.dataintegrity.IntegrityCheckResult;
 import org.openmrs.module.dataintegrity.IntegrityCheckResults;
 import org.openmrs.module.dataintegrity.QueryResults;
 import org.openmrs.web.WebConstants;
@@ -60,10 +62,10 @@ public class ResultsListController extends SimpleFormController {
 			}
 			DataIntegrityService ds = (DataIntegrityService) Context.getService(DataIntegrityService.class);
 			IntegrityCheck check = ds.getIntegrityCheck(checkNo);
-			IntegrityCheckResults res = check.getLatestResults();
+			Set<IntegrityCheckResult> res = check.getIntegrityCheckResults();
 			if (res != null) {
 				results = new ArrayList<IntegrityCheckResults>();
-				results.add(res);
+				// results.add(res);
 				map.put("checkResults", results);
 				map.put("single", true);
 			}
@@ -120,15 +122,9 @@ public class ResultsListController extends SimpleFormController {
 					IntegrityCheck template = getDataIntegrityService()
 							.getIntegrityCheck(id);
 					checkName = template.getName();
-					String parameterValues = null;
-					if (StringUtils.hasText(template.getRepairParameters())) {
-						parameterValues = request.getParameter("checkParameter"
-								+ checkId);
-					}
-					IntegrityCheckResults resultTemplate = getDataIntegrityService()
-							.runIntegrityCheck(template, parameterValues);
+					getDataIntegrityService().runIntegrityCheck(template);
 					List<IntegrityCheckResults> result = new ArrayList<IntegrityCheckResults>();
-					result.add(resultTemplate);
+					// result.add(resultTemplate);
 					httpSession.setAttribute("singleCheckResults", result);
 					success = checkName
 							+ " "

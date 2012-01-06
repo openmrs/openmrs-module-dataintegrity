@@ -8,9 +8,6 @@
     <bean id="dataIntegrityUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
     	<property name="mappings">
             <props>
-                <prop key="module/dataintegrity/dataIntegrityChecks.list">dataIntegrityChecksList</prop>
-                <prop key="module/dataintegrity/integrityCheck.form">integrityCheckForm</prop>
-                <prop key="module/dataintegrity/deleteIntegrityCheck.form">deleteIntegrityCheckForm</prop>
                 <prop key="module/dataintegrity/runSingleCheck.list">runSingleCheckList</prop>
                 <prop key="module/dataintegrity/runMultipleChecks.list">runMultipleChecksList</prop>
                 <prop key="module/dataintegrity/results.list">resultsList</prop>
@@ -37,7 +34,7 @@
 								<bean class="org.openmrs.module.dataintegrity.db.hibernate.HibernateDataIntegrityDAO">
 									<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
 								</bean>
-							</property>	
+							</property>
 						</bean>
 					</property>
 					<property name="preInterceptors">
@@ -50,24 +47,6 @@
 			</list>
 		</property>
 	</bean>
-	
-    <bean id="dataIntegrityChecksList" class="org.openmrs.module.dataintegrity.web.controller.DataIntegrityChecksListController">
-        <property name="commandName"><value>dataIntegrityChecksList</value></property>
-        <property name="formView"><value>/module/dataintegrity/dataIntegrityChecksList</value></property>
-        <property name="successView"><value>dataIntegrityChecks.list</value></property>
-    </bean>
-    
-    <bean id="integrityCheckForm" class="org.openmrs.module.dataintegrity.web.controller.IntegrityCheckFormController">
-        <property name="commandName"><value>integrityCheckForm</value></property>
-        <property name="formView"><value>/module/dataintegrity/integrityCheckForm</value></property>
-        <property name="successView"><value>dataIntegrityChecks.list</value></property>
-    </bean>
-    
-    <bean id="deleteIntegrityCheckForm" class="org.openmrs.module.dataintegrity.web.controller.DeleteIntegrityCheckFormController">
-        <property name="commandName"><value>deleteIntegrityCheckForm</value></property>
-        <property name="formView"><value>/module/dataintegrity/deleteIntegrityCheckForm</value></property>
-        <property name="successView"><value>dataIntegrityChecks.list</value></property>
-    </bean>
     
     <bean id="runSingleCheckList" class="org.openmrs.module.dataintegrity.web.controller.RunSingleCheckListController">
         <property name="commandName"><value>runSingleCheckList</value></property>

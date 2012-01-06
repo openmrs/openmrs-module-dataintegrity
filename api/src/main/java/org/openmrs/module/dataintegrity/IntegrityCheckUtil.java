@@ -142,6 +142,19 @@ public class IntegrityCheckUtil {
 		return results.toString();
 	}
 
+	public static String serializeResult(QueryResult value) {
+		JSONObject results = new JSONObject();
+
+		// data
+		JSONArray newValue = new JSONArray();
+		for (Object obj: value)
+			newValue.put(obj == null ? JSONObject.NULL : obj.toString());
+
+		results.put("data", newValue);
+
+		return results.toString();
+	}
+
 	/**
 	 * use the JSON automatic deserialization to do our work
 	 * 
@@ -179,5 +192,30 @@ public class IntegrityCheckUtil {
 			results.add(lObj.toArray());
 		}
 		return results;
+	}
+
+	/**
+	 * use the JSON automatic deserialization to do our work
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public static QueryResult deserializeResult(String value) {
+		JSONObject jValue = null;
+		try {
+			jValue = new JSONObject(value);
+		} catch (ParseException e) {
+			throw new APIException("", e);
+		}
+		if (!jValue.has("data"))
+			return null;
+		
+		// data
+		JSONArray jArr = jValue.getJSONArray("data");
+		List<Object> lObj = new ArrayList<Object>();
+		for (int j=0; j<jArr.length(); j++)
+			lObj.add(jArr.get(j));
+		
+		return new QueryResult(lObj);
 	}
 }

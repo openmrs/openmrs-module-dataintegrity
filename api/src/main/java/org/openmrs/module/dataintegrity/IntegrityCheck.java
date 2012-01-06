@@ -11,400 +11,224 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-
 package org.openmrs.module.dataintegrity;
+
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import org.openmrs.BaseOpenmrsData;
+import org.openmrs.util.OpenmrsUtil;
 
 /**
  * a data integrity check template
  * 
  * @TODO describe this better
  */
-public class IntegrityCheck {
-	private int id;
+public class IntegrityCheck extends BaseOpenmrsData {
+
+	private Integer integrityCheckId;
 	private String name;
-	private String checkType;
+	private String description;
+	private String checkLanguage;
 	private String checkCode;
-	private String checkParameters;
-	private String resultType;
-	private String failDirective;
-	private String failDirectiveOperator;
-	private String repairCodeType;
-	private String repairCode;
-	private String repairType;
-	private String repairDirective;
-	private String repairParameters;
-	private IntegrityCheckResults latestResults;
+	private String failureType;
+	private String failureThreshold;
+	private String failureOperator;
+	private String totalLanguage;
+	private String totalCode;
+	private String resultsLanguage;
+	private String resultsCode;
+	private String resultsUniqueIdentifier;
+	private Set<IntegrityCheckColumn> resultsColumns;
+	private Set<IntegrityCheckRun> integrityCheckRuns;
+	private Set<IntegrityCheckResult> integrityCheckResults;
 
-	/**
-	 * @return the id
-	 */
-	public int getId() {
-		return id;
+	@Override
+	public Integer getId() {
+		return this.getIntegrityCheckId();
 	}
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(int id) {
-		this.id = id;
+	@Override
+	public void setId(Integer id) {
+		this.setIntegrityCheckId(id);
 	}
 
-	/**
-	 * @return the name
-	 */
+	public Integer getIntegrityCheckId() {
+		return this.integrityCheckId;
+	}
+
+	public void setIntegrityCheckId(Integer id) {
+		this.integrityCheckId = id;
+	}
+
 	public String getName() {
 		return name;
 	}
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	/**
-	 * @return the checkType
-	 */
-	public String getCheckType() {
-		return checkType;
+	public String getDescription() {
+		return description;
 	}
 
-	/**
-	 * @param checkType
-	 *            the checkType to set
-	 */
-	public void setCheckType(String checkType) {
-		this.checkType = checkType;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	/**
-	 * @return the checkCode
-	 */
+	public String getCheckLanguage() {
+		return checkLanguage;
+	}
+
+	public void setCheckLanguage(String checkLanguage) {
+		this.checkLanguage = checkLanguage;
+	}
+
 	public String getCheckCode() {
 		return checkCode;
 	}
 
-	/**
-	 * @param checkCode
-	 *            the checkCode to set
-	 */
 	public void setCheckCode(String checkCode) {
 		this.checkCode = checkCode;
 	}
 
-	/**
-	 * @return the checkParameters
-	 */
-	public String getCheckParameters() {
-		return checkParameters;
+	public String getTotalCode() {
+		return totalCode;
+	}
+
+	public void setTotalCode(String totalCode) {
+		this.totalCode = totalCode;
+	}
+
+	public String getTotalLanguage() {
+		return totalLanguage;
+	}
+
+	public void setTotalLanguage(String totalLanguage) {
+		this.totalLanguage = totalLanguage;
+	}
+
+	public String getFailureType() {
+		return failureType;
+	}
+
+	public void setFailureType(String failureType) {
+		this.failureType = failureType;
+	}
+
+	public String getFailureThreshold() {
+		return failureThreshold;
+	}
+
+	public void setFailureThreshold(String failureThreshold) {
+		this.failureThreshold = failureThreshold;
+	}
+
+	public String getFailureOperator() {
+		return failureOperator;
+	}
+
+	public void setFailureOperator(String failureOperator) {
+		this.failureOperator = failureOperator;
+	}
+
+	public String getResultsCode() {
+		return resultsCode;
+	}
+
+	public void setResultsCode(String resultsCode) {
+		this.resultsCode = resultsCode;
+	}
+
+	public String getResultsLanguage() {
+		return resultsLanguage;
+	}
+
+	public void setResultsLanguage(String resultsLanguage) {
+		this.resultsLanguage = resultsLanguage;
+	}
+
+	public String getResultsUniqueIdentifier() {
+		return resultsUniqueIdentifier;
+	}
+
+	public void setResultsUniqueIdentifier(String resultsUniqueIdentifier) {
+		this.resultsUniqueIdentifier = resultsUniqueIdentifier;
+	}
+
+	public void addResultsColumn(IntegrityCheckColumn col) {
+		col.setIntegrityCheck(this);
+		this.getResultsColumns().add(col);
+	}
+
+	public Set<IntegrityCheckColumn> getResultsColumns() {
+		if (resultsColumns == null) {
+			resultsColumns = new LinkedHashSet<IntegrityCheckColumn>();
+		}
+		return resultsColumns;
+	}
+
+	public void setResultsColumns(Set<IntegrityCheckColumn> resultsColumns) {
+		this.resultsColumns = resultsColumns;
+	}
+
+	public Set<IntegrityCheckRun> getIntegrityCheckRuns() {
+		if (integrityCheckRuns == null) {
+			integrityCheckRuns = new LinkedHashSet<IntegrityCheckRun>();
+		}
+		return integrityCheckRuns;
+	}
+
+	public void setIntegrityCheckRuns(Set<IntegrityCheckRun> integrityCheckRuns) {
+		this.integrityCheckRuns = integrityCheckRuns;
+	}
+
+	public void addRun(IntegrityCheckRun run) {
+		run.setIntegrityCheck(this);
+		this.getIntegrityCheckRuns().add(run);
+	}
+
+	public Set<IntegrityCheckResult> getIntegrityCheckResults() {
+		if (integrityCheckResults == null) {
+			integrityCheckResults = new LinkedHashSet<IntegrityCheckResult>();
+		}
+		return integrityCheckResults;
+	}
+
+	public void setIntegrityCheckResults(Set<IntegrityCheckResult> integrityCheckResults) {
+		this.integrityCheckResults = integrityCheckResults;
 	}
 
 	/**
-	 * @param checkParameters the checkParameters to set
+	 * add or replace a result based on whether another with the same id exists
+	 * 
+	 * @param result the result to be added or replaced
 	 */
-	public void setCheckParameters(String checkParameters) {
-		this.checkParameters = checkParameters;
+	public void addOrReplaceResult(IntegrityCheckResult result) {
+		if (result == null) {
+			return;
+		}
+
+		boolean found = false;
+		boolean shouldBeIgnored = false;
+		IntegrityCheckResult toBeDeleted = null;
+
+		if (result.getIntegrityCheckResultId() != null) {
+			Iterator<IntegrityCheckResult> iter = this.getIntegrityCheckResults().iterator();
+			while (!found && iter.hasNext()) {
+				toBeDeleted = iter.next();
+				if (OpenmrsUtil.nullSafeEquals(toBeDeleted.getIntegrityCheckResultId(), result.getIntegrityCheckResultId())) {
+					found = true;
+				}
+			}
+			if (found) {
+				if (DataIntegrityConstants.RESULT_STATUS_IGNORED.equals(toBeDeleted.getStatus()))
+					result.setStatus(DataIntegrityConstants.RESULT_STATUS_IGNORED);
+				this.getIntegrityCheckResults().remove(toBeDeleted);
+			}
+		}
+
+		this.getIntegrityCheckResults().add(result);
 	}
-
-	/**
-	 * @return the resultType
-	 */
-	public String getResultType() {
-		return resultType;
-	}
-
-	/**
-	 * @param resultType
-	 *            the resultType to set
-	 */
-	public void setResultType(String resultType) {
-		this.resultType = resultType;
-	}
-
-	/**
-	 * @return the failDirective
-	 */
-	public String getFailDirective() {
-		return failDirective;
-	}
-
-	/**
-	 * @param failDirective
-	 *            the failDirective to set
-	 */
-	public void setFailDirective(String failDirective) {
-		this.failDirective = failDirective;
-	}
-
-	/**
-	 * @return the failDirectiveOperator
-	 */
-	public String getFailDirectiveOperator() {
-		return failDirectiveOperator;
-	}
-
-	/**
-	 * @param failDirectiveOperator
-	 *            the failDirectiveOperator to set
-	 */
-	public void setFailDirectiveOperator(String failDirectiveOperator) {
-		this.failDirectiveOperator = failDirectiveOperator;
-	}
-
-	/**
-	 * @return the repairType
-	 */
-	public String getRepairType() {
-		return repairType;
-	}
-
-	/**
-	 * @param repairType
-	 *            the repairType to set
-	 */
-	public void setRepairType(String repairType) {
-		this.repairType = repairType;
-	}
-
-	/**
-	 * @return the repairCodeType
-	 */
-	public String getRepairCodeType() {
-		return repairCodeType;
-	}
-
-	/**
-	 * @param repairCodeType the repairCodeType to set
-	 */
-	public void setRepairCodeType(String repairCodeType) {
-		this.repairCodeType = repairCodeType;
-	}
-
-	/**
-	 * @return the repairCode
-	 */
-	public String getRepairCode() {
-		return repairCode;
-	}
-
-	/**
-	 * @param repairCode the repairCode to set
-	 */
-	public void setRepairCode(String repairCode) {
-		this.repairCode = repairCode;
-	}
-
-	/**
-	 * @return the repairDirective
-	 */
-	public String getRepairDirective() {
-		return repairDirective;
-	}
-
-	/**
-	 * @param repairDirective
-	 *            the repairDirective to set
-	 */
-	public void setRepairDirective(String repairDirective) {
-		this.repairDirective = repairDirective;
-	}
-
-	/**
-	 * @return the repairParameters
-	 */
-	public String getRepairParameters() {
-		return repairParameters;
-	}
-
-	/**
-	 * @param repairParameters
-	 *            the repairParameters to set
-	 */
-	public void setRepairParameters(String repairParameters) {
-		this.repairParameters = repairParameters;
-	}
-
-	/**
-	 * @return the latestResults
-	 */
-	public IntegrityCheckResults getLatestResults() {
-		return latestResults;
-	}
-
-	/**
-	 * @param latestResults
-	 *            the latestResults to set
-	 */
-	public void setLatestResults(IntegrityCheckResults latestResults) {
-		if (latestResults != null)
-			latestResults.setIntegrityCheck(this);
-		this.latestResults = latestResults;
-	}
-
-	// DEPRECATED getters and setters
-
-	/**
-	 * @deprecated see {@link #getId()}
-	 */
-	@Deprecated
-	public int getIntegrityCheckId() {
-		return this.getId();
-	}
-
-	/**
-	 * @deprecated see {@link #setId(int)}
-	 */
-	@Deprecated
-	public void setIntegrityCheckId(int id) {
-		this.setId(id);
-	}
-
-	/**
-	 * @deprecated see {@link #getName()}
-	 */
-	@Deprecated
-	public String getIntegrityCheckName() {
-		return this.getName();
-	}
-
-	/**
-	 * @deprecated see {@link #setName(String)}
-	 */
-	@Deprecated
-	public void setIntegrityCheckName(String name) {
-		this.setName(name);
-	}
-
-	/**
-	 * @deprecated see {@link #getCheckType()}
-	 */
-	@Deprecated
-	public String getIntegrityCheckType() {
-		return this.getCheckType();
-	}
-
-	/**
-	 * @deprecated see {@link #setCheckType(String)}
-	 */
-	@Deprecated
-	public void setIntegrityCheckType(String checkType) {
-		this.setCheckType(checkType);
-	}
-
-	/**
-	 * @deprecated see {@link #getCheckCode()}
-	 */
-	@Deprecated
-	public String getIntegrityCheckCode() {
-		return this.getCheckCode();
-	}
-
-	/**
-	 * @deprecated see {@link #setCheckCode(String)}
-	 */
-	@Deprecated
-	public void setIntegrityCheckCode(String checkCode) {
-		this.setCheckCode(checkCode);
-	}
-
-	/**
-	 * @deprecated see {@link #getResultType()}
-	 */
-	@Deprecated
-	public String getIntegrityCheckResultType() {
-		return this.getResultType();
-	}
-
-	/**
-	 * @deprecated see {@link #setResultType(String)}
-	 */
-	@Deprecated
-	public void setIntegrityCheckResultType(String resultType) {
-		this.setResultType(resultType);
-	}
-
-	/**
-	 * @deprecated see {@link #getFailDirective()}
-	 */
-	@Deprecated
-	public String getIntegrityCheckFailDirective() {
-		return this.getFailDirective();
-	}
-
-	/**
-	 * @deprecated see {@link #setFailDirective(String)}
-	 */
-	@Deprecated
-	public void setIntegrityCheckFailDirective(String failDirective) {
-		this.setFailDirective(failDirective);
-	}
-
-	/**
-	 * @deprecated see {@link #getFailDirectiveOperator()}
-	 */
-	@Deprecated
-	public String getIntegrityCheckFailDirectiveOperator() {
-		return this.getFailDirectiveOperator();
-	}
-
-	/**
-	 * @deprecated see {@link #setFailDirectiveOperator(String)}
-	 */
-	@Deprecated
-	public void setIntegrityCheckFailDirectiveOperator(
-			String failDirectiveOperator) {
-		this.setFailDirectiveOperator(failDirectiveOperator);
-	}
-
-	/**
-	 * @deprecated see {@link #getRepairType()}
-	 */
-	@Deprecated
-	public String getIntegrityCheckRepairType() {
-		return this.getRepairType();
-	}
-
-	/**
-	 * @deprecated see {@link #setRepairType(String)}
-	 */
-	@Deprecated
-	public void setIntegrityCheckRepairType(String repairType) {
-		this.setRepairType(repairType);
-	}
-
-	/**
-	 * @deprecated see {@link #getRepairDirective()}
-	 */
-	@Deprecated
-	public String getIntegrityCheckRepairDirective() {
-		return this.getRepairDirective();
-	}
-
-	/**
-	 * @deprecated see {@link #setRepairDirective(String)}
-	 */
-	@Deprecated
-	public void setIntegrityCheckRepairDirective(String repairDirective) {
-		this.setRepairDirective(repairDirective);
-	}
-
-	/**
-	 * @deprecated see {@link #getRepairParameters()}
-	 */
-	@Deprecated
-	public String getIntegrityCheckParameters() {
-		return this.getRepairParameters();
-	}
-
-	/**
-	 * @deprecated see {@link #setRepairParameters(String)}
-	 */
-	@Deprecated
-	public void setIntegrityCheckParameters(String repairParameters) {
-		this.setRepairParameters(repairParameters);
-	}
-
 }

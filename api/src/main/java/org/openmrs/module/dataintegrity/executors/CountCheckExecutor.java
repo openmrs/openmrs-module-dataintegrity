@@ -3,7 +3,6 @@ package org.openmrs.module.dataintegrity.executors;
 import org.openmrs.api.APIException;
 import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.IntegrityCheck;
-import org.openmrs.module.dataintegrity.IntegrityCheckUtil;
 import org.openmrs.module.dataintegrity.QueryResults;
 import org.openmrs.module.dataintegrity.db.DataIntegrityDAO;
 import org.openmrs.util.OpenmrsUtil;
@@ -15,9 +14,7 @@ import org.openmrs.util.OpenmrsUtil;
 public class CountCheckExecutor implements ICheckExecutor {
 	private IntegrityCheck check;
 	private DataIntegrityDAO dao;
-	private String parameterValues;
 	private QueryResults failedRecords;
-	private boolean checkPassed;
 
 	/**
 	 * basic constructor to set private DAO
@@ -31,11 +28,9 @@ public class CountCheckExecutor implements ICheckExecutor {
 	/**
 	 * @see ICheckExecutor#initializeExecutor(IntegrityCheck, String)
 	 */
-	public void initializeExecutor(IntegrityCheck check, String parameterValues) {
+	public void initializeExecutor(IntegrityCheck check) {
 		this.check = check;
-		this.parameterValues = parameterValues;
 		this.failedRecords = new QueryResults();
-		this.checkPassed = true;
 	}
 
 	/**
@@ -43,46 +38,10 @@ public class CountCheckExecutor implements ICheckExecutor {
 	 */
 	public void executeCheck() throws Exception {
 		// get the check code
-		String checkCode = IntegrityCheckUtil.getModifiedCheckCode(
-				this.check.getCheckCode(), this.check.getRepairParameters(),
-				this.parameterValues);
+		String checkCode = this.check.getCheckCode();
 
 		// run the query
 		failedRecords = dao.getQueryResults(checkCode);
-
-		// find the numeric fail directive
-		int failDirective = 0;
-		try {
-			failDirective = Integer.valueOf(this.check.getFailDirective());
-		} catch (NumberFormatException e) {
-			throw new APIException("fail directive must be an integer: '"
-					+ check.getFailDirective() + "'", e);
-		}
-
-		// execute the check logic
-		if (OpenmrsUtil.nullSafeEquals(check.getFailDirectiveOperator(),
-				DataIntegrityConstants.FAILURE_OPERATOR_LESS_THAN)) {
-			if (failedRecords.size() < failDirective) {
-				checkPassed = false;
-			}
-		} else if (OpenmrsUtil.nullSafeEquals(check.getFailDirectiveOperator(),
-				DataIntegrityConstants.FAILURE_OPERATOR_GREATER_THAN)) {
-			if (failedRecords.size() > failDirective) {
-				checkPassed = false;
-			}
-		} else if (OpenmrsUtil.nullSafeEquals(check.getFailDirectiveOperator(),
-				DataIntegrityConstants.FAILURE_OPERATOR_EQUALS)) {
-			if (failedRecords.size() == failDirective) {
-				checkPassed = false;
-			}
-		} else if (OpenmrsUtil.nullSafeEquals(check.getFailDirectiveOperator(),
-				DataIntegrityConstants.FAILURE_OPERATOR_NOT_EQUALS)) {
-			if (failedRecords.size() != failDirective) {
-				checkPassed = false;
-			}
-		} else {
-			throw new APIException("Specified failure operator is unsupported");
-		}
 	}
 
 	/**
@@ -96,6 +55,37 @@ public class CountCheckExecutor implements ICheckExecutor {
 	 * get the result of the check
 	 */
 	public boolean getCheckResult() {
-		return checkPassed;
+		// find the numeric fail directive
+ 		int failureThreshold = 0;
+		try {
+			failureThreshold = Integer.valueOf(this.check.getFailureThreshold());
+		} catch (NumberFormatException e) {
+			throw new APIException("failure threshold must be an integer: '"
+					+ check.getFailureThreshold() + "'", e);
+		}
+
+		return compare(failureThreshold, failedRecords.size(), check.getFailureOperator());
 	}
+	
+	public boolean compare(Integer threshold, Integer count, String operator) {
+		// execute the check logic
+		if (OpenmrsUtil.nullSafeEquals(operator,
+				DataIntegrityConstants.FAILURE_OPERATOR_LESS_THAN))
+			return !(count < threshold);
+		
+		if (OpenmrsUtil.nullSafeEquals(operator,
+				DataIntegrityConstants.FAILURE_OPERATOR_GREATER_THAN))
+			return !(count > threshold);
+		
+		if (OpenmrsUtil.nullSafeEquals(operator,
+				DataIntegrityConstants.FAILURE_OPERATOR_EQUALS))
+			return !(count == threshold);
+		
+		if (OpenmrsUtil.nullSafeEquals(operator,
+				DataIntegrityConstants.FAILURE_OPERATOR_NOT_EQUALS))
+			return !(count != threshold);
+		
+		throw new APIException("Specified failure operator is unsupported");
+	}
+
 }

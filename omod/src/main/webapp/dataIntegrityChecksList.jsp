@@ -1,81 +1,160 @@
 <%@ include file="/WEB-INF/template/include.jsp" %>
 
-<openmrs:require privilege="View Integrity Checks" otherwise="/login.htm" redirect="/module/dataintegrity/dataIntegrityChecks.list" />
+<openmrs:require privilege="View Integrity Checks" otherwise="/login.htm" redirect="/module/dataintegrity/list.htm" />
 
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <%@ include file="localHeader.jsp" %>
 
-<head>
-<openmrs:htmlInclude file="/moduleResources/dataintegrity/gs_sortable.js" />
-</head>
-<script type="text/javascript">
-	var TSort_Data = new Array ('integrityCheckTable', 'i', 'h', '', '', '', '', 'h', 'h');
-	tsRegister();
+<openmrs:htmlInclude file="/dwr/interface/DWRDataIntegrityService.js"/>
+<openmrs:htmlInclude file="/moduleResources/dataintegrity/js/jquery.easy-confirm-dialog.js" />
+
+<style>
+	#integrityCheckTable td { padding: 0.5em; vertical-align: middle; }
+	#integrityCheckTable th { padding: 0.5em; }
+	td.checkbox { text-align: center; }
+/*
+	td.run .latest { margin-left: 1.5em; }
+	td.run .history { margin-left: 1.5em; }
+	td.run .history .details { margin-top: 0.5em; }
+*/
+	td.run .details { white-space: nowrap; }
+	td.run .passed { width: 7em; display: inline-block; text-align: center; line-height: 2em; font-weight: bold; text-transform: uppercase; }
+	td.run .true { background: #afa; }
+	td.run .false { background: #faa; }
+	td.run .dateRan { margin-left: 0.5em; white-space: nowrap; }
+	td.run .expander { display: none; }
+/*
+	td.run .expander { display: block; position: absolute; margin-top: 4px; }
+*/	span.runner { width: 18px; text-align: right; }
+</style>
+
+<script>
+	$j(document).ready(function(){
+		// hide previous results
+		$j("td.run .history").hide();
+		
+		$j("td.run span.true").html("PASSED");
+		$j("td.run span.false").html("FAILED");
+		
+		// magic for expanding results list
+		$j("td.run .expander").click(function(){
+			toggleHistory(this);
+		});
+		$j('td.run .expander').hover(
+			function() { $j(this).css('cursor', 'pointer'); }, 
+			function() { $j(this).css('cursor', 'auto');	}
+		);
+		
+		// configure confirmation on all .confirm links
+		$j(".confirm").easyconfirm({
+			locale: {
+				text: "<spring:message code="dataintegrity.delete.areyousure"/>"
+			}
+		});
+		
+		// magic for the run icon
+		$j('input.runner').click(function(){
+			var el = this;
+			var checkId = $j(el).parents('td').find('input[name=checkId]').val();
+			if (checkId == null || checkId == "")
+				return;
+			$j(el).attr('src', '${pageContext.request.contextPath}/images/loading.gif');
+			DWRDataIntegrityService.runIntegrityCheck(checkId, {
+				callback: function(run){ 
+					if (run != null) {
+						var parent = $j(el).parents("tr");
+						var latest = $j(parent).find(".latest");
+						var lastrun = '<div class="details">' + $j(latest).html()+ '</div>';
+						$j(parent).find(".history").prepend(lastrun);
+						$j(parent).find(".latest .passed").html(run.checkPassed ? "PASSED" : "FAILED");
+						$j(parent).find(".latest .dateRan").html(run.dateCreated.toLocaleString());
+					}
+					$j(el).attr('src', '${pageContext.request.contextPath}/images/play.gif');
+				},
+				errorHandler: function(msg, ex){ 
+					handler(msg, ex);
+					$j(el).attr('src', '${pageContext.request.contextPath}/images/play.gif');
+				}
+			});
+		});
+	});
+
+	function toggleHistory(el) {
+		var parent = $j(el).parent();
+		if ($j(parent).find(".history").is(":visible")) {
+			$j(parent).find(".history").hide("blind");
+			$j(el).toggleClass("ui-icon-triangle-1-s", false);
+			$j(el).toggleClass("ui-icon-triangle-1-e", true);
+		} else {
+			$j(parent).find(".history").show("blind");
+			$j(el).toggleClass("ui-icon-triangle-1-e", false);
+			$j(el).toggleClass("ui-icon-triangle-1-s", true);
+		}
+	}
 </script>
 
 <h2><spring:message code="dataintegrity.manage.title"/></h2>
 
 <openmrs:hasPrivilege privilege="Manage Integrity Checks">
-	<a href="integrityCheck.form"><spring:message code="dataintegrity.addCheck"/></a> 
-	<c:if test="${not empty dataIntegrityChecksList}">
-		<a href="deleteIntegrityCheck.form"><spring:message code="dataintegrity.deleteCheck"/></a>
-		<a href="copyCheck.form"><spring:message code="dataintegrity.copyCheck"/></a>
-	</c:if>
+<p><a href="new.htm"><spring:message code="dataintegrity.addCheck"/></a></p>
 </openmrs:hasPrivilege>
 
-<br /><br />
-
-<b class="boxHeader"><spring:message code="dataintegrity.checksList.title"/></b>
+<b class="boxHeader"><spring:message code="dataintegrity.list.title"/></b>
 <div class="box">
-	<c:if test="${not empty dataIntegrityChecksList}">
+	<c:if test="${not empty checks}">
 	<table id="integrityCheckTable" cellpadding="10">
 		<thead>
 		<tr>
-			<th><spring:message code="dataintegrity.checksList.columns.id"/></th>
-			<th><spring:message code="dataintegrity.checksList.columns.name"/></th>
-			<th><spring:message code="dataintegrity.checksList.columns.code"/></th>
-			<th><spring:message code="dataintegrity.checksList.columns.resultType"/></th>
-			<th><spring:message code="dataintegrity.checksList.columns.failOp"/></th>
-			<th><spring:message code="dataintegrity.checksList.columns.fail"/></th>
-			<th><spring:message code="dataintegrity.checksList.columns.resultsPassed"/></th>
-			<th><spring:message code="dataintegrity.checksList.columns.resultsDate"/></th>
+			<th width="58px"><spring:message code="general.action"/></th>
+			<th><spring:message code="general.name"/></th>
+			<th><spring:message code="general.description"/></th>
+			<th><spring:message code="dataintegrity.list.columns.results"/></th>
 		</tr>
 		</thead>
-		<c:forEach items="${dataIntegrityChecksList}" var="integrityChecksObj" varStatus="varStatus">
-		<tr class="<c:choose><c:when test="${varStatus.index % 2 == 0}">oddRow</c:when><c:otherwise>evenRow</c:otherwise></c:choose>" id="${module.moduleId}">
-			<td valign="top" width="20">${integrityChecksObj.integrityCheckId}</td>
-			<td valign="top" width="225">${integrityChecksObj.integrityCheckName}
-				<openmrs:hasPrivilege privilege="Manage Integrity Checks">
-					[<a href="integrityCheck.form?checkId=${integrityChecksObj.integrityCheckId}"><spring:message code="dataintegrity.checksList.edit"/></a>]
+		<c:forEach items="${checks}" var="check" varStatus="varStatus">
+		<tr class="<c:choose><c:when test="${varStatus.index % 2 == 0}">oddRow</c:when><c:otherwise>evenRow</c:otherwise></c:choose>">
+			<td><input type="hidden" name="checkId" value="${check.id}"/>
+				<openmrs:hasPrivilege privilege="Run Integrity Checks">
+					<span class="runner">
+						<input class="runner" type="image" src="${pageContext.request.contextPath}/images/play.gif"/>
+					</span>
 				</openmrs:hasPrivilege>
+				<openmrs:hasPrivilege privilege="Manage Integrity Checks">
+					<a href="edit.htm?checkId=${check.id}"><input type="image" src="${pageContext.request.contextPath}/images/edit.gif"/></a>
+					<a class="confirm" href="delete.htm?checkId=${check.id}"><input type="image" src="${pageContext.request.contextPath}/images/trash.gif"/></a>
+				</openmrs:hasPrivilege>
+				</td>
+			<td><a href="view.htm?checkId=${check.id}">${check.name}</a></td>
+			<td>${check.description}</td>
+			<td class="run">
+				<c:if test="${not empty check.integrityCheckRuns}">
+					<div class="runWrapper">
+						<span class="expander ui-icon ui-icon-triangle-1-e"></span>
+						<c:forEach items="${check.integrityCheckRuns}" var="run" varStatus="runStatus">
+							<c:if test="${runStatus.index == 0}">
+								<div class="latest details">
+									<span class="passed ${run.checkPassed}">${run.checkPassed}</span>
+									<span class="dateRan"><openmrs:formatDate date="${run.dateCreated}" type="long"/></span>
+								</div>
+								<div class="history">
+							</c:if>
+							<c:if test="${runStatus.index != 0}">
+								<div class="details">
+									<span class="passed ${run.checkPassed}">${run.checkPassed}</span>
+									<abbr class="dateRan"><openmrs:formatDate date="${run.dateCreated}" type="long"/></span>
+								</div>
+							</c:if>
+						</c:forEach>
+						</div>
+					</div>
+				</c:if>
 			</td>
-			<td valign="top" width="250" height="55"><div style="overflow: auto; height: 55px;">${integrityChecksObj.integrityCheckCode}</div></td>
-			<td valign="top" width="60">${integrityChecksObj.integrityCheckResultType}</td>
-			<td valign="top" width="80">${integrityChecksObj.integrityCheckFailDirectiveOperator}</td>
-			<td valign="top" width="80">${integrityChecksObj.integrityCheckFailDirective}</td>
-			<td valign="top" width="8em" align="center"><c:if test="${not empty integrityChecksObj.latestResults}">
-				<c:if test="${integrityChecksObj.latestResults.checkPassed}">
-					<div style="text-align:center; background-color:green; font-weight:bold; color:white; width:8em; padding:0.5em 0;">
-						<spring:message code="dataintegrity.results.pass"/>
-					</div>
-				</c:if>
-				<c:if test="${not integrityChecksObj.latestResults.checkPassed}">
-					<div style="text-align:center; background-color:red; font-weight:bold; color:white; width:8em; padding:0.5em 0;">
-						<spring:message code="dataintegrity.results.fail"/>
-					</div>
-				</c:if>
-			</c:if></td>
-			<td valign="top" width="200"><c:if test="${not empty integrityChecksObj.latestResults}">
-				<a href="results.list?checkId=${integrityChecksObj.id}" title="<spring:message code="dataintegrity.checksList.seeResults"/>">
-					<openmrs:formatDate type="long" date="${integrityChecksObj.latestResults.dateOccurred}"/>
-				</a>
-			</c:if></td>
 		</tr>
 		</c:forEach>
 	</table>
 	</c:if>
 	
-	<c:if test="${empty dataIntegrityChecksList}"><spring:message code="dataintegrity.checksList.empty"/></c:if>
+	<c:if test="${empty checks}"><spring:message code="dataintegrity.list.empty"/></c:if>
 </div>
 
 <%@ include file="/WEB-INF/template/footer.jsp" %>

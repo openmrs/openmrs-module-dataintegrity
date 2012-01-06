@@ -108,23 +108,25 @@ public interface DataIntegrityService {
 	 * runs a data integrity check
 	 * 
 	 * @param integrityCheck
-	 * @param parameterValues
-	 * @return
 	 * @throws Exception
-	 * @should return results with linked integrity check
 	 */
-	public IntegrityCheckResults runIntegrityCheck(
-			IntegrityCheck integrityCheck, String parameterValues)
-			throws Exception;
+	public IntegrityCheckRun runIntegrityCheck(IntegrityCheck integrityCheck) throws Exception;
 
-	/**
-	 * repairs data based on a given script
-	 * 
-	 * @param integrityCheck
-	 * @throws Exception
-	 */
-	public void repairIntegrityCheckViaScript(
-			IntegrityCheck integrityCheck) throws Exception;
+    /**
+     * runs a query and returns the results
+     * 
+     * @param code
+     * @return 
+     */
+    public QueryResults getQueryResults(String code) throws APIException;
+        
+    /**
+     * runs a query and returns the results
+     *
+     * @param code
+     * @return
+     */
+    public QueryResults getQueryResults(String code, Integer limit) throws APIException;
 
 	/**
 	 * returns results for the given integrity check
@@ -134,4 +136,7 @@ public interface DataIntegrityService {
 	 */
 	public IntegrityCheckResults getResultsForIntegrityCheck(
 			IntegrityCheck integrityCheck);
+
+	public IntegrityCheckResult findResultForIntegrityCheckByUid(IntegrityCheck integrityCheck, String uid);
+
 }

@@ -77,17 +77,18 @@ public class TransferCheckListController extends SimpleFormController {
 							DataIntegrityXmlFileParser fileParser = new DataIntegrityXmlFileParser(checkFile);
 							List<IDataIntegrityCheckUpload> checksToUpload = fileParser.getChecksToAdd();
 							for (int i=0; i<checksToUpload.size(); i++) {
+                                                                // TODO get this running better ... with new fields (desc, totals)
 								IDataIntegrityCheckUpload check = checksToUpload.get(i);
 								IntegrityCheck template = new IntegrityCheck();
-								template.setCheckType(check.getCheckType());
+								template.setCheckLanguage(check.getCheckType());
 								template.setCheckCode(check.getCheckCode());
-								template.setFailDirective(check.getCheckFailDirective());
-								template.setFailDirectiveOperator(check.getCheckFailDirectiveOperator());
+								template.setFailureThreshold(check.getCheckFailDirective());
+								template.setFailureOperator(check.getCheckFailDirectiveOperator());
 								template.setName(check.getCheckName());
-								template.setRepairDirective(check.getCheckRepairDirective());
-								template.setResultType(check.getCheckResultType());
-								template.setRepairType(check.getCheckRepairType());
-								template.setRepairParameters(check.getCheckParameters());
+								//template.setRepairDirective(check.getCheckRepairDirective());
+								template.setResultsLanguage(check.getCheckResultType());
+								//template.setRepairType(check.getCheckRepairType());
+								//template.setRepairParameters(check.getCheckParameters());
 								getDataIntegrityService().saveIntegrityCheck(template);
 								success += check.getCheckName() + " " + msa.getMessage("dataintegrity.upload.success") + "<br />";
 							}
@@ -122,19 +123,20 @@ public class TransferCheckListController extends SimpleFormController {
 				StringBuffer exportString = new StringBuffer();
 				exportString.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<checks>\r\n");
 				for (String checkId : checkList) {
+                                        // TODO use metadata sharing module for this ... and/or fix it to work w/ new fields
 					IntegrityCheck template = service.getIntegrityCheck(Integer.valueOf(checkId));
-					exportString.append("\t<check type=\"" + template.getCheckType() + "\">\r\n");
-					exportString.append("\t\t<name>" + template.getName() + "</name>\r\n");
-					exportString.append("\t\t<code>" + template.getCheckCode() + "</code>\r\n");
-					exportString.append("\t\t<resultType>" + template.getResultType() + "</resultType>\r\n");
-					exportString.append("\t\t<fail operator=\"" + template.getFailDirectiveOperator() + "\">" + template.getFailDirective() + "</fail>\r\n");
-					if (!template.getRepairType().equals("none")) {
-						exportString.append("\t\t<repair type=\"" + template.getRepairType() + "\">" + template.getRepairDirective() + "</repair>\r\n");
-					}
-					if (!template.getRepairParameters().equals("")) {
-						exportString.append("\t\t<parameters>" + template.getRepairParameters() + "</parameters>\r\n");
-					}
-					exportString.append("\t</check>\r\n");
+//					exportString.append("\t<check type=\"" + template.getCheckType() + "\">\r\n");
+//					exportString.append("\t\t<name>" + template.getName() + "</name>\r\n");
+//					exportString.append("\t\t<code>" + template.getCheckCode() + "</code>\r\n");
+//					exportString.append("\t\t<resultType>" + template.getResultType() + "</resultType>\r\n");
+//					exportString.append("\t\t<fail operator=\"" + template.getFailDirectiveOperator() + "\">" + template.getFailDirective() + "</fail>\r\n");
+//					if (!template.getRepairType().equals("none")) {
+//						exportString.append("\t\t<repair type=\"" + template.getRepairType() + "\">" + template.getRepairDirective() + "</repair>\r\n");
+//					}
+//					if (!template.getRepairParameters().equals("")) {
+//						exportString.append("\t\t<parameters>" + template.getRepairParameters() + "</parameters>\r\n");
+//					}
+//					exportString.append("\t</check>\r\n");
 				}
 				exportString.append("</checks>\r\n");
 				out.write(exportString.toString());

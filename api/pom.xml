@@ -27,14 +27,24 @@
 			<type>jar</type>
 		</dependency>
 		<dependency>
+			<groupId>org.openmrs.api</groupId>
+			<artifactId>openmrs-api</artifactId>
+			<type>test-jar</type>
+		</dependency>
+		<dependency>
 			<groupId>org.openmrs.web</groupId>
 			<artifactId>openmrs-web</artifactId>
 			<type>jar</type>
 		</dependency>
 		<dependency>
+			<groupId>org.openmrs.web</groupId>
+			<artifactId>openmrs-web</artifactId>
+			<type>test-jar</type>
+		</dependency>
+		<dependency>
 			<groupId>org.openmrs.test</groupId>
 			<artifactId>openmrs-test</artifactId>
-			<type>jar</type>
+			<type>pom</type>
 		</dependency>
 		<dependency>
 			<groupId>com.metaparadigm</groupId>

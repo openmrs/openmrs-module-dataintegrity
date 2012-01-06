@@ -59,13 +59,9 @@ public class RunSingleCheckListController extends SimpleFormController {
 					int id = Integer.valueOf(checkId);
 					IntegrityCheck template = getDataIntegrityService().getIntegrityCheck(id);
 					checkName = template.getName();
-					String parameterValues = null;
-					if (!template.getCheckParameters().equals("")) {
-						parameterValues = request.getParameter("checkParameter" + checkId);
-					}
-					IntegrityCheckResults resultTemplate = getDataIntegrityService().runIntegrityCheck(template, parameterValues);
+					getDataIntegrityService().runIntegrityCheck(template);
 					List<IntegrityCheckResults> result = new ArrayList<IntegrityCheckResults>();
-					result.add(resultTemplate);
+					// result.add(resultTemplate);
 					httpSession.setAttribute("singleCheckResults", result);
 					success = checkName + " " + msa.getMessage("dataintegrity.runSingleCheck.success");
 					view = getSuccessView();

@@ -65,12 +65,8 @@ public class RunMultipleChecksListController extends SimpleFormController {
 					try {
 						int id = Integer.valueOf(checkId);
 						IntegrityCheck template = service.getIntegrityCheck(id);
-						String parameterValues = null;
-						if (!template.getRepairParameters().equals("")) {
-							parameterValues = request.getParameter("checkParameter" + checkId);
-						}
-						IntegrityCheckResults resultTemplate = service.runIntegrityCheck(template, parameterValues);
-						results.add(resultTemplate);
+						service.runIntegrityCheck(template);
+						// results.add(resultTemplate);
 						successCount++;
 					} catch (Exception e) {
 						errorCount++;

@@ -169,6 +169,38 @@
     </mappingFiles>
     <!-- /Hibernate Mapping -->
     
+    <!-- DWR -->
+
+        <dwr>
+                <allow>
+                        <create creator="new" javascript="DWRDataIntegrityService">
+                                <param name="class" value="@MODULE_PACKAGE@.web.DWRDataIntegrityService"/>
+                                <include method="testCode"/>
+                                <include method="getColumnsFromCode"/>
+                                <include method="runIntegrityCheck"/>
+								<include method="ignoreResult"/>
+                        </create>
+                        <convert converter="bean" match="@MODULE_PACKAGE@.web.DWRQueryResults"/>
+                        <convert converter="bean" match="@MODULE_PACKAGE@.web.DWRIntegrityCheckColumns"/>
+                        <convert converter="bean" match="@MODULE_PACKAGE@.IntegrityCheckColumn"/>
+                        <convert converter="bean" match="@MODULE_PACKAGE@.IntegrityCheckRun"/>
+                        <convert converter="bean" match="@MODULE_PACKAGE@.IntegrityCheckResult"/>
+                        <convert converter="bean" match="@MODULE_PACKAGE@.IntegrityCheck"/>
+                </allow>
+                
+                <signatures>
+                        <![CDATA[
+                        import @MODULE_PACKAGE@.web.DWRDataIntegrityService;
+                        DWRDataIntegrityService.testCode(String code, Integer limit);
+                        DWRDataIntegrityService.getColumnsFromCode(String code);
+                        DWRDataIntegrityService.runIntegrityCheck(Integer checkId);
+						DWRDataIntegrityService.ignoreResult(Integer checkId, String uid);
+                        ]]>
+                </signatures>	
+        </dwr>
+    
+    <!-- /DWR -->
+    
     <!-- Servlets -->
 	<!-- Accessed through the url /pageContext()/moduleServlet/<moduleId>/<servlet-name> -->
 	<!-- commented out ... let's worry about this later

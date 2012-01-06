@@ -1,137 +1,204 @@
 package org.openmrs.module.dataintegrity.web.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.dataintegrity.DataIntegrityConstants;
-import org.openmrs.module.dataintegrity.IntegrityCheckResults;
+import org.openmrs.messagesource.MessageSourceService;
 import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
+import org.openmrs.module.dataintegrity.IntegrityCheckColumn;
 import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.web.WebConstants;
-import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.BindException;
-import org.springframework.validation.Errors;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.WebRequest;
 
-public class IntegrityCheckFormController extends SimpleFormController {
-	private String success = "";
-	private String error = "";
+@Controller
+public class IntegrityCheckFormController {
+	private static final String EDIT_VIEW = "/module/dataintegrity/editCheck";
+	private static final String SUCCESS_VIEW = "redirect:list.htm";
+	
+	private final Log log = LogFactory.getLog(this.getClass());
 	
 	private DataIntegrityService getDataIntegrityService() {
         return (DataIntegrityService)Context.getService(DataIntegrityService.class);
     }
-	
-	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-		return "not used";
-    }
-	
-	@Override
-	protected Map<String, Object> referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
-		Map<String, Object> map = new HashMap<String, Object>();
-		if (request.getParameter("checkId") != null)
-			map.put("integrityCheck", getDataIntegrityService().getIntegrityCheck(Integer.parseInt(request.getParameter("checkId"))));
-		else
-			map.put("integrityCheck", new IntegrityCheck());
+
+	/**
+	 * handle initial edit request
+	 *
+	 * @param checkId
+	 * @param modelMap
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/module/dataintegrity/edit.htm")
+	public String editIntegrityCheck(@RequestParam(value="checkId", required=true) Integer checkId, ModelMap modelMap) {
+		modelMap.put("check", getDataIntegrityService().getIntegrityCheck(checkId));
+        return EDIT_VIEW;
+	}
+
+	@RequestMapping(value="/module/dataintegrity/new.htm")
+	public String editIntegrityCheck(ModelMap modelMap) {
+		modelMap.put("check", new IntegrityCheck());
+        return EDIT_VIEW;
+	}
+
+	@RequestMapping(value="/module/dataintegrity/delete.htm")
+	public String deleteIntegrityCheck(@RequestParam(value="checkId", required=true) Integer checkId, WebRequest request) {
+		DataIntegrityService service = Context.getService(DataIntegrityService.class);
+		MessageSourceService mss = Context.getMessageSourceService();
+
+		String checkTitle = mss.getMessage("dataintegrity.delete.checktitle");
+		String deleted = mss.getMessage("dataintegrity.delete.deleted");
+		String notDeleted = mss.getMessage("dataintegrity.delete.notdeleted");
+		String notFound = mss.getMessage("dataintegrity.delete.notfound");
+		String success = "";
+		String error = "";
 		
-        return map;
+		IntegrityCheck check = service.getIntegrityCheck(checkId);
+		if (check != null)
+			try {
+				String name = check.getName();
+				service.deleteIntegrityCheck(check);
+				success = checkTitle + " #" + checkId + " (" + name + ") " + deleted;
+			} catch (Exception e) {
+				error = checkTitle + " #" + checkId + " " + notDeleted + ": " + e.getMessage();
+			}
+		else
+			error = checkTitle + " #" + checkId + " " + notDeleted + ": " + notFound;
+		
+		if (!success.equals(""))
+			request.setAttribute(WebConstants.OPENMRS_MSG_ATTR, success, WebRequest.SCOPE_SESSION);
+		if (!error.equals(""))
+			request.setAttribute(WebConstants.OPENMRS_MSG_ATTR, error, WebRequest.SCOPE_SESSION);
+
+		return SUCCESS_VIEW;
 	}
 	
-	private String saveIntegrityCheck(HttpServletRequest request) {
-		String checkName = "";
-		String view = "";
-		MessageSourceAccessor msa = getMessageSourceAccessor();
+	@RequestMapping(value="/module/dataintegrity/save.htm")
+	public String saveIntegrityCheck(WebRequest request,
+			@RequestParam(value="checkId", required=false) Integer checkId,
+			@RequestParam(value="name", required=true) String name,
+			@RequestParam(value="description", required=true) String description,
+			@RequestParam(value="checkLanguage", required=false) String checkLanguage,
+			@RequestParam(value="checkCode", required=false) String checkCode,
+			@RequestParam(value="failureType", required=false) String failureType,
+			@RequestParam(value="failureOperator", required=false) String failureOperator,
+			@RequestParam(value="failureThreshold", required=false) Integer failureThreshold,
+			@RequestParam(value="useTotal", required=false) Boolean useTotal,
+			@RequestParam(value="totalLanguage", required=false) String totalLanguage,
+			@RequestParam(value="totalCode", required=false) String totalCode,
+			@RequestParam(value="useDiscoveryForResults", required=false) Boolean useDiscoveryForResults,
+			@RequestParam(value="resultsLanguage", required=false) String resultsLanguage,
+			@RequestParam(value="resultsCode", required=false) String resultsCode,
+			@RequestParam(value="columns[]", required=false) String[] columns) {
+
+		// debugging
+		Iterator<String> ack = request.getParameterNames();
+		while (ack.hasNext())
+			log.error("request: " + ack.next());
+		log.error("name: " + name);
+		log.error("columns: " + columns);
+		
+		MessageSourceService mss = Context.getMessageSourceService();
 		
 		try {
-			String checkId = request.getParameter("checkId");
-			checkName = request.getParameter("name");
-			String checkCode = request.getParameter("checkCode");
-			String checkType = request.getParameter("checkType");
-			String checkParameters = request.getParameter("checkParameters");
-			String resultType = request.getParameter("resultType");
-			String fail = request.getParameter("fail");
-			String failOp = request.getParameter("failOp");
-			String repairType = request.getParameter("repairType");
-			String repairCodeType = request.getParameter("repairCodeType");
-			String repairCode = OpenmrsUtil.nullSafeEquals(repairCodeType,
-					DataIntegrityConstants.NONE) ? null : request
-					.getParameter("repairCode");
-			String clearResults = request.getParameter("clearResults"); 
-			String repairDirective = OpenmrsUtil.nullSafeEquals(repairType,
-					DataIntegrityConstants.NONE) ? "" : request
-					.getParameter("repair");
-			String repairParameters = request.getParameter("repairParameters");
+			// validate code fields
+			validateCode(checkCode);
+			validateCode(totalCode);
+			validateCode(resultsCode);
 			
+			// set booleans if they didn't come through
+			if (useTotal == null)
+				useTotal = false;
+			if (useDiscoveryForResults == null)
+				useDiscoveryForResults = false;
+
+			// create integrity check
 			IntegrityCheck check = new IntegrityCheck();
-			if (checkId != null) {
-				check.setId(Integer.valueOf(checkId));
-			}
-			
-			String codeCopy = checkCode;
-			if (codeCopy.toLowerCase().contains("delete") || codeCopy.toLowerCase().contains("update") || codeCopy.toLowerCase().contains("insert")) {
-				throw new Exception("Code will modify the database hence not allowed");
-			}
-			check.setName(checkName);
+			check.setId(checkId);
+			check.setName(name);
+			check.setDescription(description);
 			check.setCheckCode(checkCode);
-			check.setCheckType(checkType);
-			check.setCheckParameters(checkParameters);
-			check.setResultType(resultType);
-			check.setFailDirective(fail);
-			check.setFailDirectiveOperator(failOp);
-			check.setRepairType(repairType);
-			check.setRepairCodeType(repairCodeType);
-			check.setRepairCode(repairCode);
-			check.setRepairDirective(repairDirective);
-			check.setRepairParameters(repairParameters);
+			check.setCheckLanguage(checkLanguage);
+			check.setFailureType(failureType);
+			check.setFailureThreshold(failureThreshold.toString());
+			check.setFailureOperator(failureOperator);
+			check.setTotalLanguage(useTotal ? totalLanguage : null);
+			check.setTotalCode(useTotal ? totalCode : null);
+			check.setResultsLanguage(useDiscoveryForResults ? null : resultsLanguage);
+			check.setResultsCode(useDiscoveryForResults ? null : resultsCode);
+
+			// process columns ...
+
+			for (IntegrityCheckColumn column: generateColumns(columns))
+				check.addResultsColumn(column);
 			
 			DataIntegrityService service = (DataIntegrityService)Context.getService(DataIntegrityService.class);
 			service.saveIntegrityCheck(check);
 
-			if (StringUtils.hasText(clearResults)) {
-				// re-get integrity check to grab latest results
-				IntegrityCheckResults results = service.getResultsForIntegrityCheck(check);
-				if (results != null)
-					service.deleteResults(results);
-			}
+			// TODO figure out how to send this value back in an annotated controller :-/
+			String success = name + " " + mss.getMessage("dataintegrity.addeditCheck.saved");
+			request.setAttribute(WebConstants.OPENMRS_MSG_ATTR, success, WebRequest.SCOPE_SESSION);
 			
-			success = checkName + " " + msa.getMessage("dataintegrity.addeditCheck.saved");
-			
-			view = getSuccessView();
-			return view;
+			return SUCCESS_VIEW;
 			
 		} catch (Exception e) {
-			error = msa.getMessage("dataintegrity.addeditCheck.failed") + " " + checkName + ". Message: " + e.getMessage();
-			view = "integrityCheck.form";
-			return view;
+			StringBuilder sb = new StringBuilder();
+			sb.append(mss.getMessage("dataintegrity.edit.failed"));
+			sb.append(": ");
+			sb.append(name);
+			sb.append(", Message: ");
+			sb.append(e.getMessage());
+
+			log.warn(sb.toString(), e);
+			request.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, sb.toString(), WebRequest.SCOPE_SESSION);
+			
+			// TODO retain the data from the form so it can be repopulated
+			return EDIT_VIEW;
 		}
 	}
-	
-	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object obj,
-            BindException errors) throws Exception {
-		HttpSession httpSession = request.getSession();
-		
-		String view = getSuccessView();
-		if (Context.isAuthenticated()) {
-			view = saveIntegrityCheck(request);
-		}
-		if (!success.equals("")) {
-			httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, success);
-			success = "";
-		}
-		if (!error.equals("")) {
-			httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, error);
-			error = "";
-		}
-		
-		return new ModelAndView(new RedirectView(view));
+
+	private void validateCode(String code) throws Exception {
+		// TODO make this better
+		List<String> tokens = Arrays.asList(code.toLowerCase().split(" "));
+		if (tokens.contains("delete") || tokens.contains("update") || tokens.contains("insert"))
+			throw new Exception("Code has potential to modify database, so it is not allowed.");
 	}
+
+	private List<IntegrityCheckColumn> generateColumns(String[] columns) {
+		List<IntegrityCheckColumn> results = new ArrayList<IntegrityCheckColumn>();
+		for(String column: columns) {
+			// deserialize the column
+			String[] items = column.split(":", 5);
+			
+			// properties should be in order [id:show:uid:name:display]
+			IntegrityCheckColumn c = new IntegrityCheckColumn();
+			try {
+				c.setColumnId(StringUtils.hasText(items[0]) ? Integer.parseInt(items[0]) : null);
+			} catch (NumberFormatException e) {
+				log.warn("could not interpret IntegrityCheckColumn id of " 
+						+ items[0] + " as an Integer; defaulting to null.");
+				c.setColumnId(null);
+			}
+			c.setShowInResults(OpenmrsUtil.nullSafeEquals(items[1], "true"));
+			c.setUsedInUid(OpenmrsUtil.nullSafeEquals(items[2], "true"));
+			c.setName(StringUtils.hasText(items[3]) ? items[3] : null);
+			c.setDisplayName(StringUtils.hasText(items[4]) ? items[4] : null);
+			
+			// if the name is null, there's a problem ... probaby a dud
+			if (c.getName() != null)
+				results.add(c);
+		}
+		return results;
+	}
+
 }

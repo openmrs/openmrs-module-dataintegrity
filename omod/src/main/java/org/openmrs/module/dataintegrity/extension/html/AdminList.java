@@ -41,11 +41,9 @@ public class AdminList extends AdministrationSectionExt {
 		Map<String, String> map = new LinkedHashMap<String, String>();
 		
 		if (Context.hasPrivilege(DataIntegrityConstants.PRIV_VIEW_INTEGRITY_CHECKS)) {
-			map.put("module/dataintegrity/dataIntegrityChecks.list", "dataintegrity.manage.link");
+			map.put("module/dataintegrity/list.htm", "dataintegrity.manage.link");
 		}
 		if (Context.hasPrivilege(DataIntegrityConstants.PRIV_RUN_INTEGRITY_CHECKS)) {
-			map.put("module/dataintegrity/runSingleCheck.list", "dataintegrity.runSingleCheck.link");
-			map.put("module/dataintegrity/runMultipleChecks.list", "dataintegrity.runMultipleChecks.link");
 			map.put("module/dataintegrity/integritySchedule.list", "dataintegrity.schedule.link");
 		}
 		if (Context.hasPrivilege(DataIntegrityConstants.PRIV_MANAGE_INTEGRITY_CHECKS)) {

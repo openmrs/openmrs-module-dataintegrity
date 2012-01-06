@@ -16,7 +16,7 @@ public class DataIntegritySqlUpload implements IDataIntegrityCheckUpload {
 	private String parameters;
 	
 	public DataIntegritySqlUpload(Element element) throws Exception {
-		this.checkType = DataIntegrityConstants.CHECK_TYPE_SQL;
+		this.checkType = DataIntegrityConstants.CHECK_LANGUAGE_SQL;
 		
 		NodeList nameList = element.getElementsByTagName("name");
 		Element nameNode = (Element) nameList.item(0);
@@ -38,7 +38,7 @@ public class DataIntegritySqlUpload implements IDataIntegrityCheckUpload {
 		NodeList failList = element.getElementsByTagName("fail");
 		Element failNode = (Element) failList.item(0);
 		this.failDirective = failNode.getFirstChild().getNodeValue();
-		if (!this.resultType.equals(DataIntegrityConstants.RESULT_TYPE_BOOLEAN)) {
+		if (!this.resultType.equals(DataIntegrityConstants.FAILURE_TYPE_BOOLEAN)) {
 			this.failDirectiveOperator = failNode.getAttribute("operator");
 		} else {
 			this.failDirectiveOperator = "equals";

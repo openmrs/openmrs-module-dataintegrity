@@ -4,23 +4,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
-import org.springframework.web.servlet.mvc.SimpleFormController;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-public class DataIntegrityChecksListController extends SimpleFormController{
+@Controller
+public class DataIntegrityChecksListController {
 	private DataIntegrityService getDataIntegrityService() {
         return (DataIntegrityService)Context.getService(DataIntegrityService.class);
     }
 	
-	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+	@RequestMapping(value="/module/dataintegrity/list.htm")
+	public String listIntegrityChecks(ModelMap modelMap) throws ServletException {
         List<IntegrityCheck> checks = new ArrayList<IntegrityCheck>();
         if (Context.isAuthenticated()) {
         	checks = getDataIntegrityService().getAllIntegrityChecks(); 
         }
-        return checks;
+		modelMap.put("checks", checks);
+		
+        return "/module/dataintegrity/dataIntegrityChecksList";
     }
 }

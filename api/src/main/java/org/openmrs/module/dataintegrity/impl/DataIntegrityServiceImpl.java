@@ -11,26 +11,33 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-
 package org.openmrs.module.dataintegrity.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import java.util.UUID;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.openmrs.module.dataintegrity.IntegrityCheck;
+import org.openmrs.module.dataintegrity.IntegrityCheckColumn;
+import org.openmrs.module.dataintegrity.IntegrityCheckResult;
 import org.openmrs.module.dataintegrity.IntegrityCheckResults;
+import org.openmrs.module.dataintegrity.IntegrityCheckRun;
+import org.openmrs.module.dataintegrity.QueryResult;
 import org.openmrs.module.dataintegrity.QueryResults;
 import org.openmrs.module.dataintegrity.db.DataIntegrityDAO;
-import org.openmrs.module.dataintegrity.executors.BooleanCheckExecutor;
 import org.openmrs.module.dataintegrity.executors.CountCheckExecutor;
 import org.openmrs.module.dataintegrity.executors.ICheckExecutor;
-import org.openmrs.module.dataintegrity.executors.NumberCheckExecutor;
-import org.openmrs.module.dataintegrity.executors.StringCheckExecutor;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.util.StringUtils;
 
 /**
@@ -44,11 +51,12 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 	 * dao for use with this service implementation
 	 */
 	private DataIntegrityDAO dao;
-
 	/**
 	 * cache of executors
 	 */
 	private Map<String, ICheckExecutor> executors = null;
+
+	protected final Log log = LogFactory.getLog(getClass());
 	
 	/**
 	 * @see org.openmrs.module.dataintegrity.DataIntegrityService#setDataIntegrityDAO(DataIntegrityDAO)
@@ -70,7 +78,7 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 	public List<IntegrityCheck> getAllIntegrityChecks() throws APIException {
 		return this.dao.getAllIntegrityChecks();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.dataintegrity.DataIntegrityService#getIntegrityCheck(Integer)
 	 */
@@ -97,54 +105,93 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 	/**
 	 * @see org.openmrs.module.dataintegrity.DataIntegrityService#runIntegrityCheck(IntegrityCheck, String)
 	 */
-	public IntegrityCheckResults runIntegrityCheck(IntegrityCheck integrityCheck, String parameterValues)
-			throws Exception {
+	public IntegrityCheckRun runIntegrityCheck(IntegrityCheck integrityCheck) throws Exception {
+		DataIntegrityService service = Context.getService(DataIntegrityService.class);
+		
 		// do nothing if the check is null
-		if (integrityCheck == null)
+		if (integrityCheck == null) {
 			return null;
+		}
 
 		// pick the executor
 		ICheckExecutor executor = getExecutors().get(
-				integrityCheck.getResultType());
-		if (executor == null)
+				integrityCheck.getFailureType());
+		if (executor == null) {
 			throw new APIException(
-					"An executor was expected for integrity check type '"
-							+ integrityCheck.getResultType()
-							+ "' but none was found.");
-		
-		executor.initializeExecutor(integrityCheck, parameterValues);
+					"An executor was expected for integrity check failure type '"
+					+ integrityCheck.getFailureType()
+					+ "' but none was found.");
+		}
 
-		IntegrityCheckResults results = new IntegrityCheckResults(integrityCheck);
+		executor.initializeExecutor(integrityCheck);
+
+		IntegrityCheckRun run = new IntegrityCheckRun();
 
 		// time the query
 		Long startTime = System.currentTimeMillis();
 		executor.executeCheck();
-		results.setDuration(System.currentTimeMillis() - startTime);
-		
+		run.setDuration(System.currentTimeMillis() - startTime);
+
 		QueryResults failedRecords = executor.getFailedRecords();
-		results.setCheckPassed(executor.getCheckResult());
-		results.setFailedRecordCount(failedRecords.size());
+		run.setCheckPassed(executor.getCheckResult());
+		
+		run.setTotalCount(failedRecords.size());
 
 		// get the repair results if it failed
-		if (!results.isCheckPassed() && StringUtils.hasText(integrityCheck.getRepairCode())) {
+		if (!run.getCheckPassed() && StringUtils.hasText(integrityCheck.getResultsCode())) {
 			// time the repair query
 			startTime = System.currentTimeMillis();
-			failedRecords = dao.getQueryResults(integrityCheck.getRepairCode());
-			results.setDuration(results.getDuration() + System.currentTimeMillis() - startTime);
-		} 
-		
-		results.setFailedRecords(failedRecords);
+			failedRecords = dao.getQueryResults(integrityCheck.getResultsCode());
+			run.setDuration(run.getDuration() + System.currentTimeMillis() - startTime);
+		}
 
+		// update failed records
+		this.addOrUpdateResultsForRun(integrityCheck, failedRecords, run);
+
+		// re-evaluate pass/fail knowing how many records should be ignored
+		run.setCheckPassed(
+				executor.compare(
+					Integer.valueOf(integrityCheck.getFailureThreshold()), 
+					run.getTotalCount() - run.getIgnoredCount(), 
+					integrityCheck.getFailureOperator()));
+		
+		// iterate over records and void those that did not show up this time
+		this.voidResultsNotFoundInThisRun(integrityCheck, run);
+		
+		// set other stuff on the run
+		run.setCreator(Context.getAuthenticatedUser());
+		run.setDateCreated(new Date());
+		
 		// save (or update) the results
-		return this.saveResults(results);
+		integrityCheck.addRun(run);
+		service.saveIntegrityCheck(integrityCheck);
+		return run;
 	}
 
 	/**
-	 * @see org.openmrs.module.dataintegrity.DataIntegrityService#repairIntegrityCheckViaScript(IntegrityCheck)
-	 **/
-	public void repairIntegrityCheckViaScript(IntegrityCheck integrityCheck)
-			throws Exception {
-		this.dao.repairDataIntegrityCheckViaScript(integrityCheck);
+	 * 
+	 */
+	public QueryResults getQueryResults(String code) throws APIException {
+		return getQueryResults(code, null);
+	}
+
+	/**
+	 * 
+	 * @param code
+	 * @param limit
+	 * @return
+	 * @throws APIException 
+	 */
+	public QueryResults getQueryResults(String code, Integer limit) throws APIException {
+		if (code == null) {
+			return null;
+		}
+
+		if (!code.trim().toLowerCase().startsWith("select")) {
+			throw new APIException("can not process SQL that does not begin with SELECT.");
+		}
+
+		return dao.getQueryResults(code, limit);
 	}
 
 	/**
@@ -187,16 +234,99 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 	private Map<String, ICheckExecutor> getExecutors() {
 		if (executors == null) {
 			executors = new HashMap<String, ICheckExecutor>();
-			executors.put(DataIntegrityConstants.RESULT_TYPE_BOOLEAN,
-					new BooleanCheckExecutor(this.getDataIntegrityDAO()));
-			executors.put(DataIntegrityConstants.RESULT_TYPE_COUNT,
+			executors.put(DataIntegrityConstants.FAILURE_TYPE_COUNT,
 					new CountCheckExecutor(this.getDataIntegrityDAO()));
-			executors.put(DataIntegrityConstants.RESULT_TYPE_NUMBER,
-					new NumberCheckExecutor(this.getDataIntegrityDAO()));
-			executors.put(DataIntegrityConstants.RESULT_TYPE_STRING,
-					new StringCheckExecutor(this.getDataIntegrityDAO()));
 		}
 		return executors;
 	}
 
+	private void addOrUpdateResultsForRun(IntegrityCheck integrityCheck, QueryResults failedRecords, IntegrityCheckRun run) {
+		// get column names for uniqueIdentifier (in order)
+		UniqueIdentifierFinder finder = new UniqueIdentifierFinder(integrityCheck, failedRecords.getColumns());
+		
+		for (Object[] record: failedRecords) {
+			// generate uniqueIdentifier
+			String uid = finder.findUniqueIdentifier(record);
+			
+			// check for result by uniqueIdentifier
+			// TODO make this efficient, perhaps with a cached map or a DAO method
+			IntegrityCheckResult result = null;
+			Iterator<IntegrityCheckResult> iter = integrityCheck.getIntegrityCheckResults().iterator();
+			if (iter != null)
+				while (result == null && iter.hasNext()) {
+					result = iter.next();
+					if (!(result != null && OpenmrsUtil.nullSafeEquals(result.getUniqueIdentifier(), uid)))
+						result = null;
+				}
+			
+			// create a new result if it does not exist already
+			if (result == null) {
+				log.error("creating a new result ...");
+				result = new IntegrityCheckResult();
+				result.setUniqueIdentifier(uid);
+				result.setFirstSeen(run);
+				result.setIntegrityCheck(integrityCheck);
+				result.setDateCreated(new Date());
+				result.setCreator(Context.getAuthenticatedUser());
+				result.setUuid(UUID.randomUUID().toString());
+			} else {
+				log.error("found it! uid=" + result.getUniqueIdentifier());
+			}
+
+			// update or set the status
+			if (DataIntegrityConstants.RESULT_STATUS_IGNORED.equals(result.getStatus())) {
+				// document that this record was ignored during this run
+				log.error("it was already ignored!");
+				run.setIgnoredCount(run.getIgnoredCount() == null ? 1 : run.getIgnoredCount() + 1);
+			} else if (!DataIntegrityConstants.RESULT_STATUS_NEW.equals(result.getStatus())) {
+				// if it was previously voided or did not exist, mark it as new
+				result.setStatus(DataIntegrityConstants.RESULT_STATUS_NEW);
+				run.setNewCount(run.getNewCount() == null ? 1 : run.getNewCount() + 1);
+			}
+
+			// update or set data and last seen run
+			result.setData(new QueryResult(record));
+			result.setLastSeen(run);
+			
+			// save it
+			integrityCheck.addOrReplaceResult(result);
+		}
+	}
+
+	public IntegrityCheckResult findResultForIntegrityCheckByUid(IntegrityCheck integrityCheck, String uid) {
+		return dao.findResultForIntegrityCheckByUid(integrityCheck, uid);
+	}
+
+	private void voidResultsNotFoundInThisRun(IntegrityCheck integrityCheck, IntegrityCheckRun run) {
+		for (IntegrityCheckResult result: integrityCheck.getIntegrityCheckResults())
+			if (result != null && result.getLastSeen() != null && !result.getLastSeen().equals(run)
+					&& !DataIntegrityConstants.RESULT_STATUS_VOIDED.equals(result.getStatus())
+					&& !DataIntegrityConstants.RESULT_STATUS_IGNORED.equals(result.getStatus())) {
+				result.setStatus(DataIntegrityConstants.RESULT_STATUS_VOIDED);
+				run.setVoidedCount(run.getVoidedCount() == null ? 1 : run.getVoidedCount() + 1);
+			}
+	}
+	
+	private class UniqueIdentifierFinder {
+		private List<Integer> indexes;
+		
+		public UniqueIdentifierFinder(IntegrityCheck check, List<String> columns) {
+			indexes = new ArrayList<Integer>();
+			for (IntegrityCheckColumn column: check.getResultsColumns())
+				if (column.getUsedInUid())
+					indexes.add(columns.indexOf(column.getName()));
+		}
+		
+		public String findUniqueIdentifier(Object[] result) {
+			StringBuilder sb = new StringBuilder();
+			try {
+				for (Integer index: indexes) {
+					sb.append(result[index].toString());
+				}
+			} catch (ArrayIndexOutOfBoundsException e) {
+				throw new APIException("cannot find unique identifier; ", e);
+			}
+			return sb.toString();
+		}
+	}
 }

@@ -50,14 +50,17 @@ public class CopyCheckFormController extends SimpleFormController {
 					IntegrityCheck check = new IntegrityCheck();
 					checkName = template.getName();
 					check.setName(template.getName() + " Copy");
+                                        check.setDescription(template.getDescription());
 					check.setCheckCode(template.getCheckCode());
-					check.setCheckType(template.getCheckType());
-					check.setResultType(template.getResultType());
-					check.setFailDirective(template.getFailDirective());
-					check.setFailDirectiveOperator(template.getFailDirectiveOperator());
-					check.setRepairType(template.getRepairType());
-					check.setRepairDirective(template.getRepairDirective());
-					check.setRepairParameters(template.getRepairParameters());
+					check.setCheckLanguage(template.getCheckLanguage());
+					check.setFailureType(template.getFailureType());
+					check.setFailureThreshold(template.getFailureThreshold());
+					check.setFailureOperator(template.getFailureOperator());
+                                        check.setTotalLanguage(template.getTotalLanguage());
+                                        check.setTotalCode(template.getTotalCode());
+					check.setResultsLanguage(template.getResultsLanguage());
+					check.setResultsCode(template.getResultsCode());
+					check.setResultsUniqueIdentifier(template.getResultsUniqueIdentifier());
 					getDataIntegrityService().saveIntegrityCheck(check);
 					
 					success = checkName + " " + msa.getMessage("dataintegrity.copyCheck.success");

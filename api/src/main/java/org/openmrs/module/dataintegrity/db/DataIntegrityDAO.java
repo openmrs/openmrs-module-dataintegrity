@@ -19,6 +19,7 @@ import java.util.List;
 import org.hibernate.SessionFactory;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.dataintegrity.IntegrityCheck;
+import org.openmrs.module.dataintegrity.IntegrityCheckResult;
 import org.openmrs.module.dataintegrity.IntegrityCheckResults;
 import org.openmrs.module.dataintegrity.QueryResults;
 
@@ -76,15 +77,6 @@ public interface DataIntegrityDAO {
 			throws DAOException;
 
 	/**
-	 * run an integrity check repair script against the database
-	 * 
-	 * @param template
-	 * @throws DAOException
-	 */
-	public void repairDataIntegrityCheckViaScript(IntegrityCheck template)
-			throws DAOException;
-
-	/**
 	 * save the results of an integrity check to the database
 	 * 
 	 * @param results
@@ -125,4 +117,14 @@ public interface DataIntegrityDAO {
 	 */
 	public QueryResults getQueryResults(String sql) throws DAOException;
 
+	/**
+	 * get the results of a query (columns and data)
+	 *
+	 * @param sql
+	 * @return QueryResults object containing columns and data
+	 * @throws DAOException
+	 */
+	public QueryResults getQueryResults(String sql, Integer limit) throws DAOException;
+
+	public IntegrityCheckResult findResultForIntegrityCheckByUid(IntegrityCheck integrityCheck, String uid);
 }

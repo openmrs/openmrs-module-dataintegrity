@@ -72,19 +72,6 @@
 				</select>
 			</td>
 		</tr>
-		<%int checkCount = 1; %>
-		<c:forEach items="${runSingleCheckList}" var="check">
-			<tr id="<%="checkRow" + checkCount%>" style="display: none;">
-				<td colspan="2"> 
-					<spring:message code="dataintegrity.runSingleCheck.parameters"/>
-					<label id="<%="checkParameterTxt" + checkCount%>">${check.checkParameters}</label>
-					<br />
-					<spring:message code="dataintegrity.runSingleCheck.parameterValues"/>
-					<input type="text" value="" name="checkParameter${check.id}" id="<%="checkParameterValueTxt" + checkCount%>"/>
-				</td>
-			</tr>
-			<%checkCount++; %>
-		</c:forEach>
 		<tr>
 			<td colspan="2">
 				<br />

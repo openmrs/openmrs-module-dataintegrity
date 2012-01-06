@@ -1,35 +1,15 @@
-<?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
-
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.openmrs.module.dataintegrity">
-
-	<class name="IntegrityCheckResults" table="dataintegrity_results">
-
-		<id name="id" type="int" column="results_id">
-			<generator class="native" />
-		</id>
-
-		<many-to-one name="integrityCheck" class="IntegrityCheck"
-			not-null="true" unique="true" column="integrity_check_id" />
-
-		<property name="failedRecordCount" type="int" not-null="true"
-			column="failed_record_count" />
-
-		<property name="checkPassed" type="boolean" not-null="true"
-			column="check_passed" />
-
-		<property name="failedRecords" column="failed_records" lazy="true"
-			type="org.openmrs.module.dataintegrity.db.hibernate.QueryResultsType"
-			 length="16777215" />
-
-		<property name="dateOccurred" type="java.util.Date" not-null="true"
-			length="19" column="date_occurred" />
-
-		<property name="duration" type="long" not-null="true" length="63"
-			column="duration" />
-
-	</class>
-
+  <class name="IntegrityCheckResults" table="dataintegrity_results">
+    <id column="results_id" name="id" type="int">
+      <generator class="native"/>
+    </id>
+    <many-to-one class="IntegrityCheck" column="integrity_check_id" name="integrityCheck" not-null="true" unique="true"/>
+    <property column="failed_record_count" name="failedRecordCount" not-null="true" type="int"/>
+    <property column="check_passed" name="checkPassed" not-null="true" type="boolean"/>
+    <property column="failed_records" lazy="true" length="16777215" name="failedRecords" type="org.openmrs.module.dataintegrity.db.hibernate.QueryResultsType"/>
+    <property column="date_occurred" length="19" name="dateOccurred" not-null="true" type="java.util.Date"/>
+    <property column="duration" length="63" name="duration" not-null="true" type="long"/>
+  </class>
 </hibernate-mapping>

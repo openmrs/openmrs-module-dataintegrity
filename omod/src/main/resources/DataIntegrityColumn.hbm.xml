@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.openmrs.module.dataintegrity">
+	<class name="IntegrityCheckColumn" table="dataintegrity_column">
+		<id column="column_id" name="columnId" type="int" unsaved-value="0">
+			<generator class="native"/>
+		</id>
+		<discriminator column="column_id" insert="false"/>
+		<property column="show_in_results" name="showInResults" not-null="true" type="boolean"/>
+		<property column="used_in_uid" name="usedInUid" not-null="true" type="boolean"/>
+		<property column="name" name="name" not-null="true" type="java.lang.String"/>
+		<property column="display_name" name="displayName" not-null="true" type="java.lang.String"/>
+	    
+		<!-- Associated objects -->
+		<many-to-one class="IntegrityCheck" column="integrity_check_id" name="integrityCheck" not-null="true"/>
+
+		<!-- BaseOpenmrsObject property -->
+		<property length="38" name="uuid" type="java.lang.String" unique="true"/>
+	</class>
+</hibernate-mapping>

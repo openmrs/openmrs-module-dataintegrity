@@ -9,9 +9,8 @@ public interface ICheckExecutor {
 	 * Method to initialize the check executing class.
 	 * 
 	 * @param check: The Integrity Check to be executed
-	 * @param parameterValues: Parameter values for the parameter fields
 	 */
-	public void initializeExecutor(IntegrityCheck check, String parameterValues);
+	public void initializeExecutor(IntegrityCheck check);
 	
 	/**
 	 * 
@@ -37,4 +36,6 @@ public interface ICheckExecutor {
 	 * @return whether the check passed or not
 	 */
 	public boolean getCheckResult();
+	
+	public boolean compare(Integer threshold, Integer count, String operator);
 }

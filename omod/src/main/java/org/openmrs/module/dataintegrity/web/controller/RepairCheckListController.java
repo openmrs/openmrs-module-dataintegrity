@@ -54,67 +54,68 @@ public class RepairCheckListController extends SimpleFormController {
 			
 			map.put("checkName", template.getName());
 			map.put("checkId", stringCheckId);
-			String repairType = template.getRepairType();
-			// Check its repair type
-			if (OpenmrsUtil.nullSafeEquals(repairType, DataIntegrityConstants.REPAIR_TYPE_INSTRUCTIONS)) {
-				map.put("repairCheckInstructions", template.getRepairDirective());
-			} else if (repairType.equals(DataIntegrityConstants.REPAIR_TYPE_SCRIPT)) {
-				try {
-					getDataIntegrityService().repairIntegrityCheckViaScript(template);
-					String success = msa.getMessage("dataintegrity.repair.success") + " " + template.getName();
-					map.put("repairCheckScript", success);
-				}
-				catch (Exception e) {
-					String error = msa.getMessage("dataintegrity.repair.error") + " " + template.getName() + ". Message: "
-					        + e.getMessage();
-					map.put("repairCheckScript", error);
-					Writer writer = new StringWriter();
-					PrintWriter printWriter = new PrintWriter(writer);
-					log.error(printWriter);
-					session.setAttribute(DataIntegrityConstants.DATA_INTEGRITY_ERROR_STACK_TRACE, writer.toString());
-				}
-			} else if (OpenmrsUtil.nullSafeEquals(repairType, DataIntegrityConstants.REPAIR_TYPE_LINK)) {
-				if (session.getAttribute("failedRecords") != null && template.getRepairDirective().contains("{result}")) {
-					Map<Integer, List<Object[]>> recordMap = (Map<Integer, List<Object[]>>) session
-					        .getAttribute("failedRecords");
-					List<Object[]> records = recordMap.get(checkId);
-					String repairDirective = template.getRepairDirective();
-					StringBuffer repairList = new StringBuffer();
-					repairList.append("<table><tr><th>" + msa.getMessage("dataintegrity.checksList.columns.id")
-					        + "</th><th>" + msa.getMessage("dataintegrity.repair.repair") + "</th></tr>");
-					AdministrationService as = Context.getAdministrationService();
-					String url = as.getGlobalProperty("dataintegrity.actionServerUrl");
-					if (!StringUtils.hasText(url))
-						url = IntegrityCheckUtil.getWebAppUrl(request);
-					else
-						url = url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
-					String rowStyle = "";
-					for (int rowIndex = 0; rowIndex < records.size(); rowIndex++) {
-						if (rowIndex % 2 == 0) {
-							rowStyle = "evenRow";
-						} else {
-							rowStyle = "oddRow";
-						}
-						repairList.append("<tr class=\"" + rowStyle + "\">");
-						Object[] rec = records.get(rowIndex);
-						String id = rec[0].toString();
-						repairList.append("<td>" + id + "</td>");
-						String newUrl = repairDirective.startsWith("/") ? url + repairDirective.replace("{result}", id)
-						        : url + "/" + repairDirective.replace("{result}", id);
-						String href = "<a target=\"_blank\" href=\"" + newUrl + "\">" + newUrl + "</a>";
-						repairList.append("<td>" + href + "</td>");
-						repairList.append("</tr>");
-					}
-					repairList.append("</table>");
-					map.put("repairCheckLink", repairList.toString());
-				} else {
-					String href = "<a target=\"_blank\" href=\"" + template.getRepairDirective() + "\">"
-					        + template.getRepairDirective() + "</a>";
-					map.put("repairCheckLink", href);
-				}
-			} else if (repairType.equals(DataIntegrityConstants.REPAIR_TYPE_NONE)) {
-				map.put("repairCheckNone", "none");
-			}
+                        // COMMENTING ALL THIS OUT BECAUSE REPARING WILL NOT HAPPEN ANYMORE
+//			String repairType = template.getRepairType();
+//			// Check its repair type
+//			if (OpenmrsUtil.nullSafeEquals(repairType, DataIntegrityConstants.REPAIR_TYPE_INSTRUCTIONS)) {
+//				map.put("repairCheckInstructions", template.getRepairDirective());
+//			} else if (repairType.equals(DataIntegrityConstants.REPAIR_TYPE_SCRIPT)) {
+//				try {
+//					getDataIntegrityService().repairIntegrityCheckViaScript(template);
+//					String success = msa.getMessage("dataintegrity.repair.success") + " " + template.getName();
+//					map.put("repairCheckScript", success);
+//				}
+//				catch (Exception e) {
+//					String error = msa.getMessage("dataintegrity.repair.error") + " " + template.getName() + ". Message: "
+//					        + e.getMessage();
+//					map.put("repairCheckScript", error);
+//					Writer writer = new StringWriter();
+//					PrintWriter printWriter = new PrintWriter(writer);
+//					log.error(printWriter);
+//					session.setAttribute(DataIntegrityConstants.DATA_INTEGRITY_ERROR_STACK_TRACE, writer.toString());
+//				}
+//			} else if (OpenmrsUtil.nullSafeEquals(repairType, DataIntegrityConstants.REPAIR_TYPE_LINK)) {
+//				if (session.getAttribute("failedRecords") != null && template.getRepairDirective().contains("{result}")) {
+//					Map<Integer, List<Object[]>> recordMap = (Map<Integer, List<Object[]>>) session
+//					        .getAttribute("failedRecords");
+//					List<Object[]> records = recordMap.get(checkId);
+//					String repairDirective = template.getRepairDirective();
+//					StringBuffer repairList = new StringBuffer();
+//					repairList.append("<table><tr><th>" + msa.getMessage("dataintegrity.checksList.columns.id")
+//					        + "</th><th>" + msa.getMessage("dataintegrity.repair.repair") + "</th></tr>");
+//					AdministrationService as = Context.getAdministrationService();
+//					String url = as.getGlobalProperty("dataintegrity.actionServerUrl");
+//					if (!StringUtils.hasText(url))
+//						url = IntegrityCheckUtil.getWebAppUrl(request);
+//					else
+//						url = url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
+//					String rowStyle = "";
+//					for (int rowIndex = 0; rowIndex < records.size(); rowIndex++) {
+//						if (rowIndex % 2 == 0) {
+//							rowStyle = "evenRow";
+//						} else {
+//							rowStyle = "oddRow";
+//						}
+//						repairList.append("<tr class=\"" + rowStyle + "\">");
+//						Object[] rec = records.get(rowIndex);
+//						String id = rec[0].toString();
+//						repairList.append("<td>" + id + "</td>");
+//						String newUrl = repairDirective.startsWith("/") ? url + repairDirective.replace("{result}", id)
+//						        : url + "/" + repairDirective.replace("{result}", id);
+//						String href = "<a target=\"_blank\" href=\"" + newUrl + "\">" + newUrl + "</a>";
+//						repairList.append("<td>" + href + "</td>");
+//						repairList.append("</tr>");
+//					}
+//					repairList.append("</table>");
+//					map.put("repairCheckLink", repairList.toString());
+//				} else {
+//					String href = "<a target=\"_blank\" href=\"" + template.getRepairDirective() + "\">"
+//					        + template.getRepairDirective() + "</a>";
+//					map.put("repairCheckLink", href);
+//				}
+//			} else if (repairType.equals(DataIntegrityConstants.REPAIR_TYPE_NONE)) {
+//				map.put("repairCheckNone", "none");
+//			}
 		}
 		return map;
 	}

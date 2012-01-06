@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.openmrs.module.dataintegrity">
+	<class name="IntegrityCheckResult" table="dataintegrity_result">
+		<id column="result_id" name="integrityCheckResultId" type="int" unsaved-value="0">
+			<generator class="native"/>
+		</id>
+		<discriminator column="result_id" insert="false"/>
+		
+		<property column="unique_identifier" name="uniqueIdentifier" not-null="true" type="java.lang.String"/>
+		<property name="data" not-null="true" type="org.openmrs.module.dataintegrity.db.hibernate.ResultDataType"/>
+		<property name="status" not-null="true" type="java.lang.Integer"/>
+		<many-to-one class="IntegrityCheck" column="integrity_check_id" name="integrityCheck" not-null="true"/>
+		<many-to-one class="IntegrityCheckRun" column="first_seen_run_id" name="firstSeen"/>
+		<many-to-one class="IntegrityCheckRun" column="last_seen_run_id" name="lastSeen"/>
+	    
+		<!-- BaseOpenmrsObject property -->
+		<property length="38" name="uuid" type="java.lang.String" unique="true"/>
+		
+		<!-- Other properties similar to OpenMRS data -->
+		<many-to-one class="org.openmrs.User" name="creator"/>
+		<property column="date_created" length="19" name="dateCreated" not-null="true" type="java.util.Date"/>
+	</class>
+</hibernate-mapping>
