@@ -13,11 +13,17 @@
  */
 package org.openmrs.module.dataintegrity;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.util.OpenmrsUtil;
+import org.springframework.util.StringUtils;
 
 /**
  * a data integrity check template
@@ -42,6 +48,8 @@ public class IntegrityCheck extends BaseOpenmrsData {
 	private Set<IntegrityCheckColumn> resultsColumns;
 	private Set<IntegrityCheckRun> integrityCheckRuns;
 	private Set<IntegrityCheckResult> integrityCheckResults;
+
+	private final Log log = LogFactory.getLog(this.getClass());
 
 	@Override
 	public Integer getId() {
@@ -230,5 +238,43 @@ public class IntegrityCheck extends BaseOpenmrsData {
 		}
 
 		this.getIntegrityCheckResults().add(result);
+	}
+	
+	/**
+	 * update columns, add new ones and remove columns that are no longer 
+	 * referenced. assumes that "name" of a column must be unique.
+	 * 
+	 * @param columns new list of columns to be used
+	 */
+	public void updateColumns(List<IntegrityCheckColumn> columns) {
+		// build a map of existing columns
+		Map<String, IntegrityCheckColumn> colMap = new HashMap<String, IntegrityCheckColumn>();
+		for (IntegrityCheckColumn column : this.getResultsColumns())
+			colMap.put(column.getName(), column);
+
+		// loop through new columns
+		for (IntegrityCheckColumn newColumn : columns) {
+			// use the uuid as an indicator of newness
+			String newName = newColumn.getName();
+			if (StringUtils.hasText(newName)) {
+				// the column must be referencing something that already exists
+				IntegrityCheckColumn existing = colMap.get(newName);
+				if (existing != null) {
+					// update the existing column
+					existing.updateWith(newColumn);
+					// remove it from the map
+					colMap.remove(newName);
+				} else {
+					// this uuid was not found, so it must be new
+					this.addResultsColumn(newColumn);
+				}
+			} else {
+				// a blank uuid means the column is new
+				this.addResultsColumn(newColumn);
+			}
+		}
+		
+		// clean up stragglers
+		this.getResultsColumns().removeAll(colMap.values());
 	}
 }

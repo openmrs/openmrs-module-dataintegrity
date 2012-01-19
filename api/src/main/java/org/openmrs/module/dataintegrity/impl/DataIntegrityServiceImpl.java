@@ -84,6 +84,8 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 	 */
 	public IntegrityCheck getIntegrityCheck(Integer checkId)
 			throws APIException {
+		if (checkId == null)
+			return null;
 		return this.dao.getIntegrityCheck(checkId);
 	}
 
@@ -132,10 +134,12 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 		executor.executeCheck();
 		run.setDuration(System.currentTimeMillis() - startTime);
 
+		// get the failed records
 		QueryResults failedRecords = executor.getFailedRecords();
-		run.setCheckPassed(executor.getCheckResult());
 		
+		// perform initial evaluation
 		run.setTotalCount(failedRecords.size());
+		run.setCheckPassed(executor.getCheckResult());
 
 		// get the repair results if it failed
 		if (!run.getCheckPassed() && StringUtils.hasText(integrityCheck.getResultsCode())) {
@@ -152,7 +156,7 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 		run.setCheckPassed(
 				executor.compare(
 					Integer.valueOf(integrityCheck.getFailureThreshold()), 
-					run.getTotalCount() - run.getIgnoredCount(), 
+					run.getTotalCount(), 
 					integrityCheck.getFailureOperator()));
 		
 		// iterate over records and void those that did not show up this time
@@ -244,6 +248,7 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 		// get column names for uniqueIdentifier (in order)
 		UniqueIdentifierFinder finder = new UniqueIdentifierFinder(integrityCheck, failedRecords.getColumns());
 		
+		// loop through failed records
 		for (Object[] record: failedRecords) {
 			// generate uniqueIdentifier
 			String uid = finder.findUniqueIdentifier(record);
@@ -254,8 +259,11 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 			Iterator<IntegrityCheckResult> iter = integrityCheck.getIntegrityCheckResults().iterator();
 			if (iter != null)
 				while (result == null && iter.hasNext()) {
+					// set the next result
 					result = iter.next();
+					// check to see if the result's UID matches
 					if (!(result != null && OpenmrsUtil.nullSafeEquals(result.getUniqueIdentifier(), uid)))
+						// if not, reset it to null
 						result = null;
 				}
 			
@@ -269,15 +277,14 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 				result.setDateCreated(new Date());
 				result.setCreator(Context.getAuthenticatedUser());
 				result.setUuid(UUID.randomUUID().toString());
-			} else {
-				log.error("found it! uid=" + result.getUniqueIdentifier());
 			}
 
 			// update or set the status
 			if (DataIntegrityConstants.RESULT_STATUS_IGNORED.equals(result.getStatus())) {
 				// document that this record was ignored during this run
-				log.error("it was already ignored!");
 				run.setIgnoredCount(run.getIgnoredCount() == null ? 1 : run.getIgnoredCount() + 1);
+				// remove the ignored record from the total
+				run.setTotalCount(run.getTotalCount() == null ? -1 : run.getTotalCount() - 1);
 			} else if (!DataIntegrityConstants.RESULT_STATUS_NEW.equals(result.getStatus())) {
 				// if it was previously voided or did not exist, mark it as new
 				result.setStatus(DataIntegrityConstants.RESULT_STATUS_NEW);

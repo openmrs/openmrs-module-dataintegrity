@@ -12,12 +12,6 @@
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/TableTools/js/TableTools.min.js" />
 
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/js/highcharts.js" />
-<!--
-<openmrs:htmlInclude file="/moduleResources/dataintegrity/js/jquery.flot.js" />
-<openmrs:htmlInclude file="/moduleResources/dataintegrity/js/jquery.flot.resize.js" />
-<openmrs:htmlInclude file="/moduleResources/dataintegrity/js/jquery.flot.threshold.js" />
--->
-
 
 <openmrs:htmlInclude file="/scripts/jquery/dataTables/css/dataTables.css" />
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/css/smoothness/jquery-ui-1.8.16.custom.css" />
@@ -70,8 +64,8 @@ ul.tabs a {
 .dataTables_length { width: auto; }
 .centered { text-align: center; }
 
-tr.status-1 { color: #ccc; }
-tr.status-2, tr.status-2 a:link { color: #a00; }
+tr.status-1, tr.status-1 a { color: #999 !important; }
+tr.status-2, tr.status-2 a { color: #a44 !important; }
 
 .settings { display: inline-block; position: absolute; margin: 3px 0 0 7px; }
 .settings.mini { }
@@ -141,10 +135,11 @@ tr.status-2, tr.status-2 a:link { color: #a00; }
 					{
 						sName: "${column.name}",
 						sTitle: "${column.displayName}",
+						sType: "${column.datatype == 'Date' ? 'date' : 'html'}",
 						bVisible: ${column.showInResults},
 						bUseRendered: false,
 						fnRender: function(data){
-							return renderCell(data.aData[${colNo.index + 2}], "${column.name}"); 
+							return renderCell(data.aData[${colNo.index + 2}], "${column.datatype}"); 
 						}
 					},
 				<c:set var="lastColumn" value="${colNo.index + 2}"/>
@@ -311,12 +306,24 @@ tr.status-2, tr.status-2 a:link { color: #a00; }
 		return "Other";
 	}
 
-	function renderCell(data, colName) {
-		if (colName == "person_id")
+	function renderCell(data, colDatatype) {
+		if (colDatatype == "Person")
+			return '<a target="new" href="<openmrs:contextPath/>/personDashboard.form?personId=' + data + '">' + data + '</a>';
+		if (colDatatype == "Patient")
 			return '<a target="new" href="<openmrs:contextPath/>/patientDashboard.form?patientId=' + data + '">' + data + '</a>';
-		else if (colName == "concept_id")
+		if (colDatatype == "Concept")
 			return '<a target="new" href="<openmrs:contextPath/>/dictionary/concept.htm?conceptId=' + data + '">' + data + '</a>';
-		else if ($j.inArray(colName, ["voided", "retired", "birthdate_estimated", "dead"]) > -1)
+		if (colDatatype == "User")
+			return '<a target="new" href="<openmrs:contextPath/>/admin/users/user.form?userId=' + data + '">' + data + '</a>';
+		if (colDatatype == "Encounter")
+			return '<a target="new" href="<openmrs:contextPath/>/admin/encounters/encounter.form?encounterId=' + data + '">' + data + '</a>';
+		if (colDatatype == "Observation")
+			return '<a target="new" href="<openmrs:contextPath/>/admin/observations/obs.form?obsId=' + data + '">' + data + '</a>';
+		if (colDatatype == "Date") {
+			// TODO find a good way of doing this from javascript
+			return data;
+		}
+		if (colDatatype == "Yes/No")
 			return data == "1" ? "Yes" : "No";
 		return data;
 	}

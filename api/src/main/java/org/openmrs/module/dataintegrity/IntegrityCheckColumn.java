@@ -16,6 +16,7 @@ public class IntegrityCheckColumn extends BaseOpenmrsObject {
 	private Boolean usedInUid;
 	private String name;
 	private String displayName;
+	private String datatype;
 	private IntegrityCheck integrityCheck;
 
 	public Integer getId() {
@@ -32,6 +33,14 @@ public class IntegrityCheckColumn extends BaseOpenmrsObject {
 
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
+	}
+
+	public String getDatatype() {
+		return datatype;
+	}
+
+	public void setDatatype(String datatype) {
+		this.datatype = datatype;
 	}
 
 	public Integer getColumnId() {
@@ -72,6 +81,19 @@ public class IntegrityCheckColumn extends BaseOpenmrsObject {
 
 	public void setIntegrityCheck(IntegrityCheck integrityCheck) {
 		this.integrityCheck = integrityCheck;
+	}
+
+	/**
+	 * updates this column with new column data; ignores id, uuid and integritycheck
+	 * 
+	 * @param newcol the new column to get data from
+	 */
+	void updateWith(IntegrityCheckColumn newcol) {
+		this.setDatatype(newcol.getDatatype());
+		this.setDisplayName(newcol.getDisplayName());
+		this.setName(newcol.getName());
+		this.setShowInResults(newcol.getShowInResults());
+		this.setUsedInUid(newcol.getUsedInUid());
 	}
 
 }

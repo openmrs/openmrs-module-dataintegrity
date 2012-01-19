@@ -10,6 +10,7 @@
 		<property column="used_in_uid" name="usedInUid" not-null="true" type="boolean"/>
 		<property column="name" name="name" not-null="true" type="java.lang.String"/>
 		<property column="display_name" name="displayName" not-null="true" type="java.lang.String"/>
+		<property column="datatype" name="datatype" type="java.lang.String"/>
 	    
 		<!-- Associated objects -->
 		<many-to-one class="IntegrityCheck" column="integrity_check_id" name="integrityCheck" not-null="true"/>

@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.messagesource.MessageSourceService;
+import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.openmrs.module.dataintegrity.IntegrityCheckColumn;
@@ -42,12 +43,14 @@ public class IntegrityCheckFormController {
 	@RequestMapping(value="/module/dataintegrity/edit.htm")
 	public String editIntegrityCheck(@RequestParam(value="checkId", required=true) Integer checkId, ModelMap modelMap) {
 		modelMap.put("check", getDataIntegrityService().getIntegrityCheck(checkId));
+		modelMap.put("columnDatatypes", DataIntegrityConstants.COLUMN_DATATYPES);
         return EDIT_VIEW;
 	}
 
 	@RequestMapping(value="/module/dataintegrity/new.htm")
-	public String editIntegrityCheck(ModelMap modelMap) {
+	public String newIntegrityCheck(ModelMap modelMap) {
 		modelMap.put("check", new IntegrityCheck());
+		modelMap.put("columnDatatypes", DataIntegrityConstants.COLUMN_DATATYPES);
         return EDIT_VIEW;
 	}
 
@@ -101,13 +104,7 @@ public class IntegrityCheckFormController {
 			@RequestParam(value="resultsCode", required=false) String resultsCode,
 			@RequestParam(value="columns[]", required=false) String[] columns) {
 
-		// debugging
-		Iterator<String> ack = request.getParameterNames();
-		while (ack.hasNext())
-			log.error("request: " + ack.next());
-		log.error("name: " + name);
-		log.error("columns: " + columns);
-		
+		DataIntegrityService service = (DataIntegrityService)Context.getService(DataIntegrityService.class);
 		MessageSourceService mss = Context.getMessageSourceService();
 		
 		try {
@@ -122,9 +119,14 @@ public class IntegrityCheckFormController {
 			if (useDiscoveryForResults == null)
 				useDiscoveryForResults = false;
 
-			// create integrity check
-			IntegrityCheck check = new IntegrityCheck();
-			check.setId(checkId);
+			// get Integrity Check if it exists
+			IntegrityCheck check = service.getIntegrityCheck(checkId);
+			if (check == null) {
+				// create integrity check
+				check = new IntegrityCheck();
+			}
+
+			// set all the other fields (ignore id if it was not found)
 			check.setName(name);
 			check.setDescription(description);
 			check.setCheckCode(checkCode);
@@ -137,12 +139,9 @@ public class IntegrityCheckFormController {
 			check.setResultsLanguage(useDiscoveryForResults ? null : resultsLanguage);
 			check.setResultsCode(useDiscoveryForResults ? null : resultsCode);
 
-			// process columns ...
-
-			for (IntegrityCheckColumn column: generateColumns(columns))
-				check.addResultsColumn(column);
-			
-			DataIntegrityService service = (DataIntegrityService)Context.getService(DataIntegrityService.class);
+			// process columns ... defer to IntegrityCheck object for this
+			check.updateColumns(generateColumns(columns));
+					
 			service.saveIntegrityCheck(check);
 
 			// TODO figure out how to send this value back in an annotated controller :-/
@@ -178,7 +177,7 @@ public class IntegrityCheckFormController {
 		List<IntegrityCheckColumn> results = new ArrayList<IntegrityCheckColumn>();
 		for(String column: columns) {
 			// deserialize the column
-			String[] items = column.split(":", 5);
+			String[] items = column.split(":", 7);
 			
 			// properties should be in order [id:show:uid:name:display]
 			IntegrityCheckColumn c = new IntegrityCheckColumn();
@@ -192,7 +191,13 @@ public class IntegrityCheckFormController {
 			c.setShowInResults(OpenmrsUtil.nullSafeEquals(items[1], "true"));
 			c.setUsedInUid(OpenmrsUtil.nullSafeEquals(items[2], "true"));
 			c.setName(StringUtils.hasText(items[3]) ? items[3] : null);
-			c.setDisplayName(StringUtils.hasText(items[4]) ? items[4] : null);
+			c.setDatatype(StringUtils.hasText(items[4]) ? items[4] : null);
+			c.setUuid(StringUtils.hasText(items[5]) ? items[5] : null);
+			c.setDisplayName(StringUtils.hasText(items[6]) ? items[6] : null);
+			
+			// convert "null" to null in UUID
+			if (OpenmrsUtil.nullSafeEquals(c.getUuid(), "null"))
+				c.setUuid(null);
 			
 			// if the name is null, there's a problem ... probaby a dud
 			if (c.getName() != null)

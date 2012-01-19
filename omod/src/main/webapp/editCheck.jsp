@@ -119,6 +119,8 @@
 					fnRender: function(data){
 						return '<input name="columns[' + data.aData[0] 
 							+ '][id]" type="hidden" value="' + data.aData[1] + '"/>'
+							+ '<input type="hidden" name="columns[' + data.aData[0]
+							+ '][uuid]" type="hidden" value="' + data.aData[7] + '"/>'
 							+ '<input name="columns[' + data.aData[0] + '][show]" type="checkbox"'
 							+ (data.aData[2] ? ' checked' : '') + ' value="true" />';
 					}
@@ -144,18 +146,64 @@
 					fnRender: function(data){
 						return '<input name="columns[' + data.aData[0] + '][display]" type="text" value="' + data.aData[5] + '"/>';
 					}
+				},
+				{
+					sName: "datatype",
+					sTitle: "<spring:message code="dataintegrity.edit.columns.datatype"/>",
+					fnRender: function(data){
+						return renderDatatypeSelection(data.aData[0], data.aData[6]);
+					}
 				}
 			]
 		});
 
 		// fill in the table with columns
 		$j(columns).each(function(index, column){
+			if (column.datatype == null || column.datatype == "") {
+				column.datatype = bestPossibleDatatypeFor(column.name);
+			}
 			columnTable.fnAddData([index, column.columnId, column.showInResults, 
-				column.usedInUid, column.name, column.displayName]);
+				column.usedInUid, column.name, column.displayName, column.datatype, column.uuid]);
 		});
 
 		$j("#columns").fadeIn();
     }
+
+	function renderDatatypeSelection(index, value) {
+		var selectbox = '<select name="columns[' + index + '][datatype]">';
+		selectbox += '<option value=""><spring:message code="dataintegrity.edit.columnDatatypeNotUsed"/></option>';
+		<c:forEach items="${columnDatatypes}" var="datatype">
+				selectbox += '<option value="${datatype}"' + (value == "${datatype}" ? ' selected="selected"' : "") + ">${datatype}</option>"
+		</c:forEach>
+		selectbox += '</select>'
+		return selectbox;
+	}
+
+	var columnDatatypeMap = {
+		user_id: "User",
+		creator: "User",
+		changed_by: "User",
+		voided_by: "User",
+		retired_by: "User",
+		person_id: "Person",
+		patient_id: "Patient",
+		obs_id: "Observation",
+		concept_id: "Concept",
+		encounter_id: "Encounter",
+		date_created: "Date",
+		date_changed: "Date",
+		date_voided: "Date",
+		date_retired: "Date",
+		voided: "Yes/No",
+		birthdate_estimated: "Yes/No",
+		retired: "Yes/No",
+		dead: "Yes/No"
+	}
+
+	function bestPossibleDatatypeFor(column) {
+		if (column in columnDatatypeMap)
+			return columnDatatypeMap[column];
+	}
 
     $j(document).ready(function(){
         $j("a.help").click(function(){ return false; });
@@ -229,9 +277,10 @@
 			var cols = data.columns;
 			var newcols = new Array();
 			var i = 0;
-			for (key in cols) {
+			for (var key in cols) {
 				var col = cols[key];
-				newcols[i++] = [col.id, col.show, col.uid, col.name, col.display].join(':');
+				newcols[i++] = [col.id, col.show, col.uid, col.name, 
+					col.datatype, col.uuid, col.display].join(':');
 			}
 			data.columns = newcols;
 			// submit
@@ -244,7 +293,9 @@
 			var columns = new Array();
 			<c:forEach var="col" items="${check.resultsColumns}">
 				columns.push({ columnId: ${col.columnId}, showInResults: ${col.showInResults}, 
-					usedInUid: ${col.usedInUid}, name: '${col.name}', displayName: '${col.displayName}' });
+					usedInUid: ${col.usedInUid}, name: '${col.name}', 
+					displayName: '${col.displayName}', datatype: '${col.datatype}',
+					uuid: '${col.uuid}' });
 			</c:forEach>
 			generateColumns(columns);
 		</c:if>

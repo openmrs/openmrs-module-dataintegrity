@@ -42,4 +42,9 @@ public class DataIntegrityConstants {
 	public static final Integer RESULT_STATUS_NEW = 0;
 	public static final Integer RESULT_STATUS_IGNORED = 1;
 	public static final Integer RESULT_STATUS_VOIDED = 2;
+	
+	public static final String[] COLUMN_DATATYPES = new String[] {
+		"Person", "Patient", "Observation", "Concept", "Encounter", "User", "Date", "Yes/No"
+	};
+	
 }

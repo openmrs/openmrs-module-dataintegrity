@@ -275,6 +275,7 @@
 			<column name="display_name" type="varchar(255)">
 				<constraints nullable="false"/>
 			</column>
+			<column name="datatype" type="varchar(255)"/>
 			<column name="show_in_results" type="boolean" defaultValueNumeric="0">
 				<constraints nullable="false"/>
 			</column>
