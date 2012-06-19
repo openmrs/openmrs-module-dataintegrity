@@ -245,12 +245,13 @@ tr.status-2, tr.status-2 a { color: #a44 !important; }
 						}
 					},
 					series: [
-						{ name: 'Total Records', data: totalData }, 
-						{ name: 'New Records', data: newData }, 
-						{ name: 'IgnoredRecords', data: ignoredData }, 
-						{ name: 'Voided Records', data: voidedData }
+						{ id: 0, name: 'Unresolved', data: totalData }, 
+						{ id: 1, name: 'New', data: newData }, 
+						{ id: 2, name: 'Ignored', data: ignoredData }, 
+						{ id: 3, name: 'Resolved', data: voidedData }
 					]
 			   });
+			   historyChart.get(2).hide();
 			}
 		});
 		

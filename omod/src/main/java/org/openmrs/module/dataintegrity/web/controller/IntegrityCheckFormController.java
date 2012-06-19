@@ -1,9 +1,9 @@
 package org.openmrs.module.dataintegrity.web.controller;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -140,7 +140,8 @@ public class IntegrityCheckFormController {
 			check.setResultsCode(useDiscoveryForResults ? null : resultsCode);
 
 			// process columns ... defer to IntegrityCheck object for this
-			check.updateColumns(generateColumns(columns));
+			//check.updateColumns(generateColumns(columns));
+			check.setResultsColumns(generateColumns(columns));
 					
 			service.saveIntegrityCheck(check);
 
@@ -173,8 +174,8 @@ public class IntegrityCheckFormController {
 			throw new Exception("Code has potential to modify database, so it is not allowed.");
 	}
 
-	private List<IntegrityCheckColumn> generateColumns(String[] columns) {
-		List<IntegrityCheckColumn> results = new ArrayList<IntegrityCheckColumn>();
+	private Set<IntegrityCheckColumn> generateColumns(String[] columns) {
+		Set<IntegrityCheckColumn> results = new LinkedHashSet<IntegrityCheckColumn>();
 		for(String column: columns) {
 			// deserialize the column
 			String[] items = column.split(":", 7);

@@ -107,7 +107,7 @@
 			bPaginate: false,
 			bLengthChange: false,
 			bFilter: false,
-			bSort: true,
+			bSort: false,
 			bInfo: false,
 			bAutoWidth: false,
 			aoColumns: [
