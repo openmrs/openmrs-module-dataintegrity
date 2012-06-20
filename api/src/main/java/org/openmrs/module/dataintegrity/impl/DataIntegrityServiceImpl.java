@@ -292,7 +292,7 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 			}
 
 			// update or set data and last seen run
-			result.setData(new QueryResult(record));
+			result.setData(new QueryResult(failedRecords.getColumns(), record));
 			result.setLastSeen(run);
 			
 			// save it

@@ -386,7 +386,7 @@ tr.status-2, tr.status-2 a { color: #a44 !important; }
 							<td></td>
 							<td>${result.uniqueIdentifier}</td>
 							<c:forEach items="${check.resultsColumns}" var="column" varStatus="colNo">
-								<td>${result.data[colNo.index]}</td>
+								<td>${result.data[column.name]}</td>
 							</c:forEach>
 							<td class="status">${result.status}</td>
 						</tr>

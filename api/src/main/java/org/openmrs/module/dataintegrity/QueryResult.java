@@ -1,10 +1,11 @@
 package org.openmrs.module.dataintegrity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.openmrs.api.APIException;
 
-public class QueryResult extends ArrayList<Object> {
+public class QueryResult extends HashMap<String, Object> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -22,7 +23,7 @@ public class QueryResult extends ArrayList<Object> {
 	 */
 	public QueryResult(QueryResult res) {
 		super();
-		this.addAll(res);
+		this.putAll(res);
 	}
 
 	/**
@@ -30,9 +31,9 @@ public class QueryResult extends ArrayList<Object> {
 	 * 
 	 * @param res
 	 */
-	public QueryResult(Object[] res) {
+	public QueryResult(Map res) {
 		super();
-		this.addAll(Arrays.asList(res));
+		this.putAll(res);
 	}
 
 	/**
@@ -40,9 +41,18 @@ public class QueryResult extends ArrayList<Object> {
 	 * 
 	 * @param res
 	 */
-	public QueryResult(List<Object> res) {
+	public QueryResult(List<String> columns, Object[] data) {
 		super();
-		this.addAll(res);
+
+		if (columns == null || data == null)
+			return;
+		
+		if (columns.size() != data.length)
+			throw new APIException("cannot create QueryResult from mismatched column and data");
+		
+		int i = 0;
+		for (String column: columns)
+			this.put(column, data[i++]);
 	}
 
 	/**

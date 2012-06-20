@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -146,11 +148,8 @@ public class IntegrityCheckUtil {
 		JSONObject results = new JSONObject();
 
 		// data
-		JSONArray newValue = new JSONArray();
-		for (Object obj: value)
-			newValue.put(obj == null ? JSONObject.NULL : obj.toString());
-
-		results.put("data", newValue);
+		for (Entry<String, Object> e: value.entrySet())
+			results.put(e.getKey(), e.getValue() == null ? JSONObject.NULL : e.getValue().toString());
 
 		return results.toString();
 	}
@@ -205,17 +204,17 @@ public class IntegrityCheckUtil {
 		try {
 			jValue = new JSONObject(value);
 		} catch (ParseException e) {
-			throw new APIException("", e);
+			throw new APIException("could not parse JSON from value: " + value, e);
 		}
-		if (!jValue.has("data"))
-			return null;
 		
-		// data
-		JSONArray jArr = jValue.getJSONArray("data");
-		List<Object> lObj = new ArrayList<Object>();
-		for (int j=0; j<jArr.length(); j++)
-			lObj.add(jArr.get(j));
+		// convert JSONObject to Map
+		QueryResult res = new QueryResult();
+		Iterator<String> keys = jValue.keys();
+		while (keys.hasNext()) {
+			String key = keys.next();
+			res.put(key, jValue.get(key));
+		}
 		
-		return new QueryResult(lObj);
+		return res;
 	}
 }
