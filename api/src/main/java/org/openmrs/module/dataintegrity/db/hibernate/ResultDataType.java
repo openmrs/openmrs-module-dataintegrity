@@ -116,16 +116,14 @@ public class ResultDataType implements UserType, Serializable {
 				// use this tricky here, in order to support Hibernate's
 				// easy-reading query mode, such as
 				// Expression.like(propertyName, value)
-				Hibernate.STRING.nullSafeSet(ps, value, index);
+				ps.setString(index, value.toString());
 			} else {
 				// only when create/update an OpenmrsMetadata object, the type
 				// of value will be LocalizedString
-				Hibernate.STRING.nullSafeSet(ps,
-						IntegrityCheckUtil.serializeResult((QueryResult) value),
-						index);
+				ps.setString(index, IntegrityCheckUtil.serializeResult((QueryResult) value));
 			}
 		} else {
-			Hibernate.STRING.nullSafeSet(ps, value, index);
+			ps.setString(index, null);
 		}
 	}
 
