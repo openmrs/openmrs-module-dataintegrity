@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.BaseOpenmrsData;
+import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.util.StringUtils;
 
@@ -30,11 +30,9 @@ import org.springframework.util.StringUtils;
  * 
  * @TODO describe this better
  */
-public class IntegrityCheck extends BaseOpenmrsData {
+public class IntegrityCheck extends BaseOpenmrsMetadata {
 
 	private Integer integrityCheckId;
-	private String name;
-	private String description;
 	private String checkLanguage;
 	private String checkCode;
 	private String failureType;
@@ -67,22 +65,6 @@ public class IntegrityCheck extends BaseOpenmrsData {
 
 	public void setIntegrityCheckId(Integer id) {
 		this.integrityCheckId = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	public String getCheckLanguage() {
@@ -219,7 +201,6 @@ public class IntegrityCheck extends BaseOpenmrsData {
 		}
 
 		boolean found = false;
-		boolean shouldBeIgnored = false;
 		IntegrityCheckResult toBeDeleted = null;
 
 		if (result.getIntegrityCheckResultId() != null) {

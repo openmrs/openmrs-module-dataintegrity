@@ -291,4 +291,76 @@
 			referencedTableName="dataintegrity_check" referencedColumnNames="check_id" />
 	</changeSet>
  
+	<changeSet id="dataintegrity-2012-06-20-11:42a" author="jkeiper">
+		<preConditions onFail="HALT">
+			<not>
+				<columnExists tableName="dataintegrity_check" columnName="creator"/>
+			</not>
+		</preConditions>
+		<comment>Add Data Integrity Check metadata columns.</comment>
+		<addColumn tableName="dataintegrity_check">
+			<column name="creator" type="int(11)">
+				<constraints nullable="false"/>
+			</column>
+		</addColumn>
+		<addColumn tableName="dataintegrity_check">
+			<column name="date_created" type="datetime">
+				<constraints nullable="false"/>
+			</column>
+		</addColumn>
+		<addColumn tableName="dataintegrity_check">
+			<column name="changed_by" type="int(11)"/>
+		</addColumn>
+		<addColumn tableName="dataintegrity_check">
+			<column name="date_changed" type="datetime"/>
+		</addColumn>
+		<addColumn tableName="dataintegrity_check">
+			<column name="retired" type="tinyint" defaultValueNumeric="0">
+				<constraints nullable="false"/>
+			</column>
+		</addColumn>
+		<addColumn tableName="dataintegrity_check">
+			<column name="retired_by" type="int(11)"/>
+		</addColumn>
+		<addColumn tableName="dataintegrity_check">
+			<column name="date_retired" type="datetime"/>
+		</addColumn>
+		<addColumn tableName="dataintegrity_check">
+			<column name="retired_reason" type="varchar(50)"/>
+		</addColumn>
+		<addColumn tableName="dataintegrity_check">
+			<column name="uuid" type="char(38)">
+				<constraints nullable="false"/>
+			</column>
+		</addColumn>
+	</changeSet>
+
+	<changeSet id="dataintegrity-2012-06-20-11:42b" author="jkeiper">
+		<preConditions onFail="HALT">
+			<columnExists tableName="dataintegrity_check" columnName="creator"/>
+		</preConditions>
+		<comment>Add default creator to existing checks.</comment>
+		<sql>
+			<![CDATA[
+			UPDATE dataintegrity_check SET creator=(SELECT MIN(user_id) FROM users), date_created=NOW();
+			]]>
+		</sql>
+	</changeSet>
+		
+	<changeSet id="dataintegrity-2012-06-20-11:42c" author="jkeiper">
+		<preConditions onFail="HALT">
+			<columnExists tableName="dataintegrity_check" columnName="creator"/>
+		</preConditions>
+		<comment>Add constraints for metadata to dataintegrity_check table.</comment>
+		<addForeignKeyConstraint constraintName="integrity_check_creator"
+			baseTableName="dataintegrity_check" baseColumnNames="creator"
+			referencedTableName="users" referencedColumnNames="user_id"/>
+		<addForeignKeyConstraint constraintName="integrity_check_changed_by"
+			baseTableName="dataintegrity_check" baseColumnNames="changed_by"
+			referencedTableName="users" referencedColumnNames="user_id"/>
+		<addForeignKeyConstraint constraintName="integrity_check_retired_by"
+			baseTableName="dataintegrity_check" baseColumnNames="retired_by"
+			referencedTableName="users" referencedColumnNames="user_id"/>
+	</changeSet>
+
 </databaseChangeLog>

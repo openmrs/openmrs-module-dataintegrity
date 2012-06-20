@@ -20,6 +20,7 @@
 		<property column="results_code" length="1000" name="resultsCode" type="java.lang.String"/>
 
 	    <!-- associated data -->
+		
 		<set name="resultsColumns" lazy="true" cascade="all-delete-orphan"
 			table="dataintegrity_column" inverse="true" sort="unsorted" 
 			order-by="column_id asc">
@@ -39,22 +40,21 @@
 			<one-to-many class="IntegrityCheckResult"/>
 		</set>
 
-		<!-- BaseOpenmrsData properties -->
-		<!-- not implemented yet
-		<property name="uuid" type="java.lang.String" length="38" unique="true"/>
+		<!-- BaseOpenmrsMetadata properties -->
+		
 		<many-to-one name="creator" class="org.openmrs.User" />
 		<property name="dateCreated" type="java.util.Date"
 			column="date_created" not-null="true" length="19" />
 		<many-to-one name="changedBy" class="org.openmrs.User" column="changed_by" />
 		<property name="dateChanged" type="java.util.Date"
 			column="date_changed" length="19" />
-		<property name="voided" type="java.lang.Boolean" length="1"
+		<property name="retired" type="java.lang.Boolean" length="1"
 			not-null="true" />
-		<many-to-one name="voidedBy" class="org.openmrs.User" column="voided_by" />
-		<property name="dateVoided" type="java.util.Date"
-			column="date_voided" length="19" />
-		<property name="voidReason" type="java.lang.String"
-			column="void_reason" length="255" />
-		-->
+		<many-to-one name="retiredBy" class="org.openmrs.User" column="retired_by" />
+		<property name="dateRetired" type="java.util.Date"
+			column="date_retired" length="19" />
+		<property name="retireReason" type="java.lang.String"
+			column="retired_reason" length="50" />
+		<property name="uuid" type="java.lang.String" length="38" unique="true"/>
 	</class>
 </hibernate-mapping>
