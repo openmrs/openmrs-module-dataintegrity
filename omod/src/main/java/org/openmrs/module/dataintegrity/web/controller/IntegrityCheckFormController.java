@@ -139,9 +139,10 @@ public class IntegrityCheckFormController {
 			check.setResultsLanguage(useDiscoveryForResults ? null : resultsLanguage);
 			check.setResultsCode(useDiscoveryForResults ? null : resultsCode);
 
-			// process columns ... defer to IntegrityCheck object for this
-			//check.updateColumns(generateColumns(columns));
-			check.setResultsColumns(generateColumns(columns));
+			// replace existing columns with new ones
+			check.setResultsColumns(null);
+			for (IntegrityCheckColumn col: generateColumns(columns))
+				check.addResultsColumn(col);
 					
 			service.saveIntegrityCheck(check);
 
