@@ -1,9 +1,8 @@
 package org.openmrs.module.dataintegrity.web.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -85,6 +84,75 @@ public class IntegrityCheckFormController {
 
 		return SUCCESS_VIEW;
 	}
+
+	@RequestMapping(value="/module/dataintegrity/retire.htm")
+	public String retireIntegrityCheck(
+			@RequestParam(value="checkId", required=true) Integer checkId, 
+			@RequestParam(value="retireReason", required=true) String retireReason, 
+			WebRequest request) {
+		DataIntegrityService service = Context.getService(DataIntegrityService.class);
+		MessageSourceService mss = Context.getMessageSourceService();
+
+		String checkTitle = mss.getMessage("dataintegrity.delete.checktitle");
+		String retired = mss.getMessage("general.retired");
+		String notRetired = mss.getMessage("general.cannot.retire");
+		String notFound = mss.getMessage("dataintegrity.delete.notfound");
+		String success = "";
+		String error = "";
+		
+		IntegrityCheck check = service.getIntegrityCheck(checkId);
+		if (check != null)
+			try {
+				String name = check.getName();
+				service.retireIntegrityCheck(check, retireReason);
+				success = checkTitle + " #" + checkId + " (" + name + ") " + retired;
+			} catch (Exception e) {
+				error = checkTitle + " #" + checkId + " " + notRetired + ": " + e.getMessage();
+			}
+		else
+			error = checkTitle + " #" + checkId + " " + notRetired + ": " + notFound;
+		
+		if (!success.equals(""))
+			request.setAttribute(WebConstants.OPENMRS_MSG_ATTR, success, WebRequest.SCOPE_SESSION);
+		if (!error.equals(""))
+			request.setAttribute(WebConstants.OPENMRS_MSG_ATTR, error, WebRequest.SCOPE_SESSION);
+
+		return SUCCESS_VIEW;
+	}
+	
+	@RequestMapping(value="/module/dataintegrity/unretire.htm")
+	public String unretireIntegrityCheck(
+			@RequestParam(value="checkId", required=true) Integer checkId,
+			WebRequest request) {
+		DataIntegrityService service = Context.getService(DataIntegrityService.class);
+		MessageSourceService mss = Context.getMessageSourceService();
+
+		String checkTitle = mss.getMessage("dataintegrity.delete.checktitle");
+		String unretired = mss.getMessage("general.unretired");
+		String notUnretired = mss.getMessage("general.cannot.unretire");
+		String notFound = mss.getMessage("dataintegrity.delete.notfound");
+		String success = "";
+		String error = "";
+		
+		IntegrityCheck check = service.getIntegrityCheck(checkId);
+		if (check != null)
+			try {
+				String name = check.getName();
+				service.unretireIntegrityCheck(check);
+				success = checkTitle + " #" + checkId + " (" + name + ") " + unretired;
+			} catch (Exception e) {
+				error = checkTitle + " #" + checkId + " " + notUnretired + ": " + e.getMessage();
+			}
+		else
+			error = checkTitle + " #" + checkId + " " + notUnretired + ": " + notFound;
+		
+		if (!success.equals(""))
+			request.setAttribute(WebConstants.OPENMRS_MSG_ATTR, success, WebRequest.SCOPE_SESSION);
+		if (!error.equals(""))
+			request.setAttribute(WebConstants.OPENMRS_MSG_ATTR, error, WebRequest.SCOPE_SESSION);
+
+		return SUCCESS_VIEW;
+	}
 	
 	@RequestMapping(value="/module/dataintegrity/save.htm")
 	public String saveIntegrityCheck(WebRequest request,
@@ -140,9 +208,7 @@ public class IntegrityCheckFormController {
 			check.setResultsCode(useDiscoveryForResults ? null : resultsCode);
 
 			// replace existing columns with new ones
-			check.setResultsColumns(null);
-			for (IntegrityCheckColumn col: generateColumns(columns))
-				check.addResultsColumn(col);
+			check.updateColumns(generateColumns(columns));
 					
 			service.saveIntegrityCheck(check);
 
@@ -175,8 +241,8 @@ public class IntegrityCheckFormController {
 			throw new Exception("Code has potential to modify database, so it is not allowed.");
 	}
 
-	private Set<IntegrityCheckColumn> generateColumns(String[] columns) {
-		Set<IntegrityCheckColumn> results = new LinkedHashSet<IntegrityCheckColumn>();
+	private List<IntegrityCheckColumn> generateColumns(String[] columns) {
+		List<IntegrityCheckColumn> results = new ArrayList<IntegrityCheckColumn>();
 		for(String column: columns) {
 			// deserialize the column
 			String[] items = column.split(":", 7);

@@ -16,8 +16,8 @@
 <!-- end 1.6.x required prep -->
 
 <openmrs:htmlInclude file="/scripts/calendar/calendar.js" />
-<openmrs:htmlInclude file="/moduleResources/dataintegrity/jquery-ui-timepicker-addon.min.js" />
-<openmrs:htmlInclude file="/moduleResources/dataintegrity/jquery.validate.min.js" />
+<openmrs:htmlInclude file="/moduleResources/dataintegrity/js/jquery-ui-timepicker-addon.min.js" />
+<openmrs:htmlInclude file="/moduleResources/dataintegrity/js/jquery.validate.min.js" />
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/common.css" />
 
 <script type="text/javascript">

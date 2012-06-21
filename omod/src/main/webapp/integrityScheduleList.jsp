@@ -14,7 +14,7 @@
 </script>
 <!-- end 1.6.x required prep -->
 
-<openmrs:htmlInclude file="/moduleResources/dataintegrity/jquery.showtime.js" />
+<openmrs:htmlInclude file="/moduleResources/dataintegrity/js/jquery.showtime.js" />
 
 <h2><spring:message code="dataintegrity.title" /></h2>
 

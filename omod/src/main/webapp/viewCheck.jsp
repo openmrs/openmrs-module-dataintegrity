@@ -5,9 +5,8 @@
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <%@ include file="localHeader.jsp" %>
 
-<openmrs:htmlInclude file="/moduleResources/dataintegrity/jquery.dataTables.min.js" />
-<openmrs:htmlInclude file="/moduleResources/dataintegrity/jquery.tools.min.js" />
-<openmrs:htmlInclude file="/moduleResources/dataintegrity/jquery.corner.js" />
+<openmrs:htmlInclude file="/moduleResources/dataintegrity/js/jquery.dataTables.min.js" />
+<openmrs:htmlInclude file="/moduleResources/dataintegrity/js/jquery.corner.js" />
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/js/ColVis.js" />
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/TableTools/js/TableTools.min.js" />
 
@@ -22,71 +21,50 @@
 <openmrs:htmlInclude file="/dwr/interface/DWRDataIntegrityService.js"/>
 
 <style>
+	.dataTables_info { font-weight: normal; }
+	.ui-widget-header { font-weight: inherit; }
+	#resultsTable, #historyTable, #summaryColumns { width: 100% !important; }
+	.css_right { float: right; }
+	.css_left { float: left; }
+	.ColVis { float: left; margin-bottom: 0 }
+	.dataTables_length { width: auto; }
+	.centered { text-align: center; }
+	.retiredMessage { margin-bottom: 1em; }
 
-ul.tabs { margin:0 !important; padding:0; height:30px; border-bottom:1px solid #666; }
-ul.tabs li { float:left; padding:0; margin:0; list-style-type:none; }
-ul.tabs a:hover { background-color:#F7F7F7; color:#333; }
-ul.tabs a.current { background-color:#eee; border-bottom:1px solid #eee; color:#000; cursor:default; }
-	
-ul.tabs a {
-	float:left;
-	font-size:13px;
-	display:block;
-	padding:5px 30px;	
-	text-decoration:none;
-	border:1px solid #666;	
-	border-bottom:0px;
-	height:18px;
-	background-color:#dedede;
-	color:#777;
-	margin-right:2px;
-	position:relative;
-	top:1px;	
-	outline:0;
-	-moz-border-radius:4px 4px 0 0;	
-}
+	tr.status-1, tr.status-1 a { color: #999 !important; }
+	tr.status-2, tr.status-2 a { color: #a44 !important; }
 
-.panes > div {
-	display:none;
-	border:1px solid #666;
-	border-width:0 1px 1px 1px;
-	min-height:150px;
-	padding:15px 20px;
-	background-color:#eee;	
-}
+	.settings { display: inline-block; position: absolute; margin: 3px 0 0 7px; }
+	.settings.mini { }
+	.settings.full { display: none; z-index: 9999; }
+	.settings.full ul { list-style: none; padding: 0; margin: 0; padding: 0; border: 1px solid #aaa; background: #eee; margin-left: 16px; }
+	.settings.full li { font-size: 10pt; font-weight: normal; }
+	.settings.full li a { display: block; padding: 0.25em 0.5em; text-decoration: none; color: #b0bed9; }
+	.settings.full li a:hover { background: #b0bed9; color: black; }
 
-.dataTables_info { font-weight: normal; }
-.ui-widget-header { font-weight: inherit; }
-#resultsTable, #historyTable, #summaryColumns { width: 100% !important; }
-.css_right { float: right; }
-.css_left { float: left; }
-.ColVis { float: left; margin-bottom: 0 }
-.dataTables_length { width: auto; }
-.centered { text-align: center; }
+	#resultsTableFilters { padding-top: 0.5em; }
+	#resultsTableFilters label { margin-right: 0.5em; }
 
-tr.status-1, tr.status-1 a { color: #999 !important; }
-tr.status-2, tr.status-2 a { color: #a44 !important; }
+	#historyChartWrapper { text-align: center; padding-top: 1.5em; }
+	#historyChart { width: 80% !important; height: 20em !important; margin: 0 auto 1.5em; }
 
-.settings { display: inline-block; position: absolute; margin: 3px 0 0 7px; }
-.settings.mini { }
-.settings.full { display: none; z-index: 9999; }
-.settings.full ul { list-style: none; padding: 0; margin: 0; padding: 0; border: 1px solid #aaa; background: #eee; margin-left: 16px; }
-.settings.full li { font-size: 10pt; font-weight: normal; }
-.settings.full li a { display: block; padding: 0.25em 0.5em; text-decoration: none; color: #b0bed9; }
-.settings.full li a:hover { background: #b0bed9; color: black; }
+	#summaryTab .fieldValue { margin-bottom: 1em; }
+	#summaryTab .code { font-family: "courier"; padding: 0.5em; font-size: 0.85em; border: 1px dashed black; background: #ddd; }
 
-#resultsTableFilters { padding-top: 0.5em; }
-#resultsTableFilters label { margin-right: 0.5em; }
+	#summaryTab > div { padding: 0; }
+	#summaryTab h3 { border-bottom: 1px solid black; margin: 1em 0; }
 
-#historyChartWrapper { text-align: center; padding-top: 1.5em; }
-#historyChart { width: 80% !important; height: 20em !important; margin: 0 auto 1.5em; }
+	/* required for rendering history chart on a hidden tab */
+	.ui-tabs .ui-tabs-hide {
+		position: absolute;
+		left: -10000px;
+	}
 
-#summaryTab .fieldValue { margin-bottom: 1em; }
-#summaryTab .code { font-family: "courier"; padding: 0.5em; font-size: 0.85em; border: 1px dashed black; background: #ddd; }
-
-#summaryTab > div { padding: 0; }
-#summaryTab h3 { border-bottom: 1px solid black; margin: 1em 0; }
-
+	/* retire dialog */
+	#retireWrapper { text-align: center; }
+	#retireForm { margin: 1.5em auto; text-align: left; width: 34em; }
+	#retireForm label { margin-right: 1em; }
+	#retireForm input { width: 25em; }
 </style>
 
 <script type="text/javascript">
@@ -109,13 +87,40 @@ tr.status-2, tr.status-2 a { color: #a44 !important; }
 	var durationData = [];
 	
 	$j(document).ready(function(){
-		// format the tabs
-		$j("ul.tabs").tabs("div.panes > div");
-		$j("ul.tabs li a").corner("top 5px");
-		$j(".panes > div").corner("bottom");
 		
 		<c:set var="lastColumn" value="1"/>
-		
+
+		$j("#retireDialog").dialog({
+			autoOpen: false,
+			width: "38em",
+			modal: true,
+			buttons: {
+				"<spring:message code="general.retire"/>": function() {
+					$j.post("retire.htm", {
+						checkId: ${check.id},
+						retireReason: $j("input[name=retireReason]").val()
+					}, function(){ window.location = "list.htm"; });
+					return false;
+				},
+				Cancel: function() {
+					$j(this).dialog("close");
+				}
+			},
+			close: function() {
+				$j("input[name=retireReason]").val("");
+			}
+		});
+
+		$j("#retireLink").click(function() {
+			$j("#retireDialog").dialog("open");
+			return false;
+		});
+
+		$j("#unretireLink").click(function() {
+			$j.post("unretire.htm", { checkId: ${check.id} }, function(){ window.location = "list.htm"; });
+			return false;
+		});
+
 		// format the results datatable
 		resultsTable = $j("#resultsTable").dataTable({
 			sDom: '<"H"Clfr>t<"F"ip>',
@@ -150,8 +155,7 @@ tr.status-2, tr.status-2 a { color: #a44 !important; }
 					fnRender: function(data){ return renderStatus(data.aData[${lastColumn+1}]); }
 				}
 			]
-		});
-		
+		});	
 
 		// format the results datatable
 		var historyTable = $j("#historyTable").dataTable({
@@ -182,8 +186,6 @@ tr.status-2, tr.status-2 a { color: #a44 !important; }
 			]
 		});
 
-//			sSwfPath: "<openmrs:contextPath/>/moduleResources/dataintegrity/TableTools/swf/copy_cvs_xls_pdf.swf"
-
 		var resultsTableTools = new TableTools(resultsTable, {
 			buttons: [ 
 				"copy", 
@@ -213,48 +215,45 @@ tr.status-2, tr.status-2 a { color: #a44 !important; }
 		<c:set var="aboveColor" value="${check.failureOperator == 'greater than' ? 'rgb(255,0,0)' : 'rgb(0,255,0)'}"/>
 		<c:set var="belowColor" value="${check.failureOperator == 'less than' ? 'rgb(255,0,0)' : 'rgb(0,255,0)'}"/>
 		
-		var tabs = $j("ul.tabs").data("tabs");
-		tabs.onClick(function(e, index){
-			if (index == 1) {
-				var historyChart = new Highcharts.Chart({
-					chart: {
-						renderTo: 'historyChart',
-						zoomType: 'x',
-						defaultSeriesType: 'areaspline'
-					},
-					title: {
-						text: 'Data Integrity Over Time'
-					},
-//					subtitle: {
-//						text: 'Errors detected at various points'
-//					},
-					xAxis: {
-						type: 'datetime',
-						dateTimeLabelFormats: { // don't display the dummy year
-							month: '%e. %b',
-							year: '%b'
-						}
-					},
-					yAxis: {
-						title: { text: 'Count' }
-					},
-					tooltip: {
-						formatter: function() {
-						   return '<b>'+ this.series.name +'</b><br/>'+
-							   Highcharts.dateFormat('%e. %b', this.x) +': '+ this.y;
-						}
-					},
-					series: [
-						{ id: 0, name: 'Unresolved', data: totalData }, 
-						{ id: 1, name: 'New', data: newData }, 
-						{ id: 2, name: 'Ignored', data: ignoredData }, 
-						{ id: 3, name: 'Resolved', data: voidedData }
-					]
-			   });
-			   historyChart.get(2).hide();
-			}
+		var historyChart = new Highcharts.Chart({
+			chart: {
+				renderTo: 'historyChart',
+				zoomType: 'x',
+				defaultSeriesType: 'areaspline'
+			},
+			title: {
+				text: 'Data Integrity Over Time'
+			},
+			subtitle: {
+				text: 'Errors detected at various points'
+			},
+			xAxis: {
+				type: 'datetime',
+				dateTimeLabelFormats: { // don't display the dummy year
+					month: '%e. %b',
+					year: '%b'
+				}
+			},
+			yAxis: {
+				title: { text: 'Count' }
+			},
+			tooltip: {
+				formatter: function() {
+					return '<b>'+ this.series.name +'</b><br/>'+
+						Highcharts.dateFormat('%e. %b', this.x) +': '+ this.y;
+				}
+			},
+			series: [
+				{ id: 0, name: 'Unresolved', data: totalData }, 
+				{ id: 1, name: 'New', data: newData }, 
+				{ id: 2, name: 'Ignored', data: ignoredData }, 
+				{ id: 3, name: 'Resolved', data: voidedData }
+			]
 		});
-		
+		historyChart.get(2).hide();
+
+		var tabs = $j("#tabs").tabs();
+
 		$j(".settings.mini a.gear").click(function(){ 
 			$j(this).parent().parent().find(".settings.full").fadeIn();
 		});
@@ -290,7 +289,7 @@ tr.status-2, tr.status-2 a { color: #a44 !important; }
 				}
 			});
 		})
-	});
+	});		
 
 	function renderActions() {
 		return '<a href="#" class="ignore">ignore</a>';
@@ -335,6 +334,10 @@ tr.status-2, tr.status-2 a { color: #a44 !important; }
 	
 </script>
 
+<c:if test="${check.retired}">
+	<div class="retiredMessage"><div><spring:message code="dataintegrity.retiredMessage"/></div></div>
+</c:if>
+
 <h2 class="name">
 	${check.name}
 	<span class="settings mini">
@@ -345,7 +348,12 @@ tr.status-2, tr.status-2 a { color: #a44 !important; }
 		<ul>
 			<li><a href="edit.htm?checkId=${check.id}">Edit</a></li>
 			<li><a href="run.htm?checkId=${check.id}">Run</a></li>
-			<li><a href="delete.htm?checkId=${check.id}">Delete</a></li>
+			<c:if test="${not check.retired}">
+				<li><a id="retireLink" href="#"><spring:message code="general.retire"/></a></li>
+			</c:if>
+			<c:if test="${check.retired}">
+				<li><a id="unretireLink" href="#"><spring:message code="general.unretire"/></a></li>
+			</c:if>
 			<li><a href="duplicate.htm?checkId=${check.id}">Duplicate</a></li>
 		</ul>
 	</span>
@@ -353,13 +361,13 @@ tr.status-2, tr.status-2 a { color: #a44 !important; }
 	
 <p class="description">${check.description}</p>
 
-<ul class="tabs">
-	<li><a href="#">Results</a></li>
-	<li><a href="#">History</a></li>
-	<li><a href="#">Summary</a></li>
-</ul>
+<div id="tabs">
+	<ul>
+		<li><a href="#resultsTab">Results</a></li>
+		<li><a href="#historyTab">History</a></li>
+		<li><a href="#summaryTab">Summary</a></li>
+	</ul>
 
-<div class="panes">
 	<div id="resultsTab">
 		<div id="tableTools"></div>
 		<div id="resultsTableFilters">
@@ -423,6 +431,35 @@ tr.status-2, tr.status-2 a { color: #a44 !important; }
 		</table>
 	</div>
 	<div id="summaryTab">
+		<div id="summaryAuditInfo">
+			<h3><spring:message code="dataintegrity.auditInfo"/></h3>
+			
+			<h4><spring:message code="general.creator"/></h4>
+			<div class="fieldValue">${check.creator.personName}</div>
+
+			<h4><spring:message code="general.dateCreated"/></h4>
+			<div class="fieldValue">${check.dateCreated}</div>
+
+			<c:if test="${not empty check.changedBy}">
+				<h4><spring:message code="general.changedBy"/></h4>
+				<div class="fieldValue">${check.changedBy.personName}</div>
+
+				<h4><spring:message code="general.dateChanged"/></h4>
+				<div class="fieldValue">${check.dateChanged}</div>
+			</c:if>
+				
+			<c:if test="${check.retired}">
+				<h4><spring:message code="general.retiredBy"/></h4>
+				<div class="fieldValue">${check.retiredBy.personName}</div>
+
+				<h4><spring:message code="dataintegrity.auditInfo.dateRetired"/></h4>
+				<div class="fieldValue">${check.dateRetired}</div>
+
+				<h4><spring:message code="general.retiredReason"/></h4>
+				<div class="fieldValue">${check.retireReason}</div>
+			</c:if>
+		</div>
+		
 		<div id="summaryDiscovery">
 			<h3><spring:message code="dataintegrity.discovery.title"/></h3>
 
@@ -490,6 +527,15 @@ tr.status-2, tr.status-2 a { color: #a44 !important; }
 					</tbody>
 				</table>
 			</div>
+		</div>
+	</div>
+</div>
+
+<div id="retireDialog" class="hidden">
+	<div id="retireWrapper">
+		<div id="retireForm">
+			<label for="retireReason"><spring:message code="dataintegrity.auditInfo.retireReason"/></label>
+			<input type="text" name="retireReason" id="retireReason" size="100"/>
 		</div>
 	</div>
 </div>

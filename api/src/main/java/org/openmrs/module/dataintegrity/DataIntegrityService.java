@@ -139,4 +139,8 @@ public interface DataIntegrityService {
 
 	public IntegrityCheckResult findResultForIntegrityCheckByUid(IntegrityCheck integrityCheck, String uid);
 
+	public void retireIntegrityCheck(IntegrityCheck check, String reason);
+
+	public void unretireIntegrityCheck(IntegrityCheck check);
+
 }

@@ -313,6 +313,17 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 				run.setVoidedCount(run.getVoidedCount() == null ? 1 : run.getVoidedCount() + 1);
 			}
 	}
+
+	public void retireIntegrityCheck(IntegrityCheck check, String reason) {
+		check.setRetired(true);
+		check.setRetireReason(reason);
+		Context.getService(DataIntegrityService.class).saveIntegrityCheck(check);
+	}
+
+	public void unretireIntegrityCheck(IntegrityCheck check) {
+		check.setRetired(false);
+		Context.getService(DataIntegrityService.class).saveIntegrityCheck(check);
+	}
 	
 	private class UniqueIdentifierFinder {
 		private List<Integer> indexes;

@@ -5,12 +5,12 @@
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <%@ include file="localHeader.jsp" %>
 
-<openmrs:htmlInclude file="/moduleResources/dataintegrity/jquery.dataTables.min.js" />
+<openmrs:htmlInclude file="/moduleResources/dataintegrity/js/jquery.dataTables.min.js" />
 <openmrs:htmlInclude file="/scripts/jquery/dataTables/css/dataTables.css" />
 <openmrs:htmlInclude file="/scripts/jquery/dataTables/css/dataTables_jui.css" />
 
-<openmrs:htmlInclude file="/moduleResources/dataintegrity/jquery.tools.min.js" />
-<openmrs:htmlInclude file="/moduleResources/dataintegrity/jquery.formparams.min.js" />
+<openmrs:htmlInclude file="/moduleResources/dataintegrity/js/jquery.tools.min.js" />
+<openmrs:htmlInclude file="/moduleResources/dataintegrity/js/jquery.formparams.min.js" />
 
 <openmrs:htmlInclude file="/dwr/interface/DWRDataIntegrityService.js"/>
 
@@ -288,6 +288,39 @@
 			return false;
 		});
 
+		<c:if test="${not new}">
+		$j("#retireDialog").dialog({
+			autoOpen: false,
+			width: "38em",
+			modal: true,
+			buttons: {
+				"<spring:message code="general.retire"/>": function() {
+					$j.post("retire.htm", {
+						checkId: ${check.id},
+						retireReason: $j("input[name=retireReason]").val()
+					}, function(){ window.location = "list.htm"; });
+					return false;
+				},
+				Cancel: function() {
+					$j(this).dialog("close");
+				}
+			},
+			close: function() {
+				$j("input[name=retireReason]").val("");
+			}
+		});
+
+		$j("#retireButton").click(function() {
+			$j("#retireDialog").dialog("open");
+			return false;
+		});
+
+		$j("#unretireButton").click(function() {
+			$j.post("unretire.htm", { checkId: ${check.id} }, function(){ window.location = "list.htm"; });
+			return false;
+		});
+		</c:if>
+				
 		// build the initial set of columns if they already exist
 		<c:if test="${not empty check.resultsColumns}">
 			var columns = new Array();
@@ -310,8 +343,10 @@
     .code { border: 1px dashed #aaa; background: #eee; padding: 0.25em 1em; }
     .centered { text-align: center; vertical-align: middle; }
     .nowrap { white-space: nowrap; }
+	.retiredMessage { margin-bottom: 1em; }
     a.help { display: inline-block; }
     #checkEditForm input[type="text"], #checkEditForm textarea { border-color: #999; width: 100%; }
+    #checkEditForm input[name="name"] { font-size: 1.25em; line-height: 2.0em; }
     #checkEditForm h3 { padding: 0; font-size: 1em; color: black; line-height: 2em; font-style: normal; border-bottom: 1px dashed #ccc; }
     #columnTable { margin: 0 auto; }
     #columnTable input[type=text] { width: 10em; }
@@ -322,15 +357,26 @@
     .dataTables_paginate { padding-top: 0; }
     .css_right { float: right; }
     .dataTables_wrapper { font-size: 0.85em; }
+	
+	/* retire dialog */
+	#retireWrapper { text-align: center; }
+	#retireForm { margin: 1.5em auto; text-align: left; width: 34em; }
+	#retireForm label { margin-right: 1em; }
+	#retireForm input { width: 25em; }
 </style>
 
 <div class="error" id="errorDiv" style="display: none"><spring:message code="dataintegrity.checksList.blank"/></div>
+
+<c:if test="${check.retired}">
+	<div class="retiredMessage"><div><spring:message code="dataintegrity.retiredMessage"/></div></div>
+</c:if>
 
 <form id="checkEditForm" action="save.htm" method="post" onsubmit="return inputValidator()">
 
     <div class="vertical-spacing">
         <label for="name"><spring:message code="dataintegrity.edit.name"/><span style="color: red">*</span></label>
         <input class="fullwidth" type="text" name="name" value="${check.name}" maxlength="100" id="nameTxt"/>
+			   
     </div>
 
     <div class="vertical-spacing">
@@ -485,7 +531,15 @@
     </div>
 
     <input type="hidden" name="checkId" value="${check.id}" />
-    <input type="submit" id="submitButton" value="<spring:message code="dataintegrity.edit.save"/>"/>
+    <input type="submit" id="submitButton" value="<spring:message code="general.save"/>"/>
+	<c:if test="${not new}">
+		<c:if test="${not check.retired}">
+			<button id="retireButton"><spring:message code="general.retire"/></button>
+		</c:if>
+		<c:if test="${check.retired}">
+			<button id="unretireButton"><spring:message code="general.unretire"/></button>
+		</c:if>
+	</c:if>
 </form>
 <br/>
 
@@ -498,5 +552,16 @@
         <li><i><spring:message code="dataintegrity.edit.help.score"/></i>
     </ul>
 </div>
+
+<c:if test="${not new}">
+	<div id="retireDialog" class="hidden">
+		<div id="retireWrapper">
+			<div id="retireForm">
+				<label for="retireReason"><spring:message code="dataintegrity.auditInfo.retireReason"/></label>
+				<input type="text" name="retireReason" id="retireReason" size="100"/>
+			</div>
+		</div>
+	</div>
+</c:if>
 
 <%@ include file="/WEB-INF/template/footer.jsp" %>
