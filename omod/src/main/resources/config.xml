@@ -194,7 +194,7 @@
                         DWRDataIntegrityService.testCode(String code, Integer limit);
                         DWRDataIntegrityService.getColumnsFromCode(String code);
                         DWRDataIntegrityService.runIntegrityCheck(Integer checkId);
-						DWRDataIntegrityService.ignoreResult(Integer checkId, String uid);
+						DWRDataIntegrityService.ignoreResult(Integer checkId, String uid, Integer status);
                         ]]>
                 </signatures>	
         </dwr>

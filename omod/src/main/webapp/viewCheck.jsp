@@ -73,12 +73,31 @@
 		function( oSettings, aData, iDataIndex ) {
 			var viewVoided = $j("#viewVoided").is(":checked");
 			var viewIgnored = $j("#viewIgnored").is(":checked");
-			if ( !viewVoided && aData[aData.length-1] == "Voided") { return false; }
-			if ( !viewIgnored && aData[aData.length-1] == "Ignored") { return false; }
+			if (!viewVoided && (aData[aData.length-1] == "Voided" || aData[aData.length-1] == 2)) { return false; }
+			if (!viewIgnored && (aData[aData.length-1] == "Ignored" || aData[aData.length-1] == 1)) { return false; }
 			return true;
 		}
 	);
 
+	jQuery.fn.dataTableExt.oApi.fnStandingRedraw = function(oSettings) {
+		//redraw to account for filtering and sorting
+		// concept here is that (for client side) there is a row got inserted at the end (for an add)
+		// or when a record was modified it could be in the middle of the table
+		// that is probably not supposed to be there - due to filtering / sorting
+		// so we need to re process filtering and sorting
+		// BUT - if it is server side - then this should be handled by the server - so skip this step
+		if(oSettings.oFeatures.bServerSide === false){
+			var before = oSettings._iDisplayStart;
+			oSettings.oApi._fnReDraw(oSettings);
+			//iDisplayStart has been reset to zero - so lets change it back
+			oSettings._iDisplayStart = before;
+			oSettings.oApi._fnCalculateEnd(oSettings);
+		}
+		
+		//draw the 'current' page
+		oSettings.oApi._fnDraw(oSettings);
+	};
+	
 	var resultsTable = null;
 	var totalData = [];
 	var newData = [];
@@ -133,7 +152,7 @@
 					bVisible: true, 
 					bSortable: false, 
 					sClass: "centered",
-					fnRender: function(data){ return renderActions(); }
+					fnRender: function(data){ return renderActions(data.aData[data.aData.length-1]); }
 				},
 				{ sName: "uid", sTitle: "Unique Identifier", bVisible: false },
 				<c:forEach items="${check.resultsColumns}" var="column" varStatus="colNo">
@@ -201,7 +220,7 @@
 
 		$j('#tableTools').html(resultsTableTools.dom.container);
 		
-		$j("#resultsTableFilters input").click(function(){ resultsTable.fnDraw(); });
+		$j("#resultsTableFilters input").click(function(){ resultsTable.fnStandingRedraw(); });
 		
 		// history chart
 		<c:forEach items="${check.integrityCheckRuns}" var="run" varStatus="runCount">
@@ -265,34 +284,59 @@
 		$j("a.ignore").live('click', function(){
 			// get the parent tr for this cell
 			var tr = $j(this).closest("tr");
+			
 			// find it in the table
 			var row = resultsTable.fnGetPosition(tr[0]);
+			
 			// get the table data for that row
 			var data = resultsTable.fnGetData(row);
+			
 			// pull the uid
 			var uid = data[1];
+			
+			// determine current status and convert to a number
+            var vatStatus = data[data.length-1];
+			if (isNaN(parseFloat(vatStatus))) {
+				vatStatus =
+					(vatStatus == "New" ? 0 : 
+						(vatStatus == "Ignored" ? 1 : 2));
+			}
+			
 			// ignore it in the backend
-			DWRDataIntegrityService.ignoreResult(${check.id}, uid, function(success){
+			DWRDataIntegrityService.ignoreResult(${check.id}, uid, vatStatus, function(success){
 				if (success) {
-					// change the table data to reflect ignored status
-					data[data.length-1] = "Ignored";
+					// if it was previously ignored, make it new ... otherwise ignored
+					var newStatus = (vatStatus == 1) ? 0 : 1;
+
+					// change the table data to reflect new status
+					data[data.length-1] = newStatus;
+					
 					// hacky but effective way to switch to "ignored" class
-					$j(tr).removeClass("status-0");
-					$j(tr).removeClass("status-2");
-					$j(tr).addClass("status-1");
+					$j(tr).toggleClass("status-0", newStatus == 0);
+					$j(tr).toggleClass("status-1", newStatus == 1);
+					$j(tr).toggleClass("status-2", newStatus == 2);
+					
 					// change the contents of the actual table cell
-					$j(tr).find("td:last").html("Ignored");
-					// redraw the table (hopefully apply the filters but stay on that page)
-					resultsTable.fnDraw();
+					$j(tr).find("td:first").html(renderActions(newStatus));
+					$j(tr).find("td:last").html(renderStatus(newStatus));
+					
+					// redraw the table
+                    resultsTable.fnStandingRedraw();
 				} else {
 					alert("ERROR!");
 				}
 			});
+			return false;
 		})
 	});		
 
-	function renderActions() {
-		return '<a href="#" class="ignore">ignore</a>';
+	function renderActions(status) {
+		if (status == 2)
+			return "";
+		
+		return '<a href="#" class="ignore">' +
+			(status == 0 ? '<spring:message code="dataintegrity.viewcheck.ignore" />' : '<spring:message code="dataintegrity.viewcheck.unignore" />' ) +
+			'</a>';
 	}
 	
 	function renderPassed(data) {

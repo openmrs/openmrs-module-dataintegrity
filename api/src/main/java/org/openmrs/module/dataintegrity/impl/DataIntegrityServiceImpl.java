@@ -269,7 +269,6 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 			
 			// create a new result if it does not exist already
 			if (result == null) {
-				log.error("creating a new result ...");
 				result = new IntegrityCheckResult();
 				result.setUniqueIdentifier(uid);
 				result.setFirstSeen(run);

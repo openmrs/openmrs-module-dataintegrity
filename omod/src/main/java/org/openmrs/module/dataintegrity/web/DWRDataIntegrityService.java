@@ -17,6 +17,7 @@ import org.openmrs.module.dataintegrity.IntegrityCheckColumn;
 import org.openmrs.module.dataintegrity.IntegrityCheckResult;
 import org.openmrs.module.dataintegrity.IntegrityCheckRun;
 import org.openmrs.module.dataintegrity.QueryResults;
+import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.web.dwr.DWRException;
 
 /**
@@ -81,7 +82,7 @@ public class DWRDataIntegrityService {
 		return null;
 	}
 	
-	public Boolean ignoreResult(Integer checkId, String uid) {
+	public Boolean ignoreResult(Integer checkId, String uid, Integer status) {
 		DataIntegrityService service = Context.getService(DataIntegrityService.class);
 		if (checkId == null || StringUtils.isEmpty(uid))
 			return false;
@@ -94,7 +95,9 @@ public class DWRDataIntegrityService {
 		if (result == null)
 			return false;
 		
-		result.setStatus(DataIntegrityConstants.RESULT_STATUS_IGNORED);
+		result.setStatus(DataIntegrityConstants.RESULT_STATUS_NEW.equals(status) ? 
+				DataIntegrityConstants.RESULT_STATUS_IGNORED :
+				DataIntegrityConstants.RESULT_STATUS_NEW);
 		service.saveIntegrityCheck(check);
 		return true;
 	}
