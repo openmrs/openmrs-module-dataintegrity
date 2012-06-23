@@ -47,7 +47,6 @@ public class AdminList extends AdministrationSectionExt {
 			map.put("module/dataintegrity/integritySchedule.list", "dataintegrity.schedule.link");
 		}
 		if (Context.hasPrivilege(DataIntegrityConstants.PRIV_MANAGE_INTEGRITY_CHECKS)) {
-			map.put("module/dataintegrity/transferCheck.list", "dataintegrity.upload.link");
 			map.put("module/dataintegrity/settings.htm", "dataintegrity.settings.link");
 		}
 		return map;

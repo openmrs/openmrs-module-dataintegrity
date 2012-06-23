@@ -10,11 +10,6 @@
 		</li>
 	</openmrs:hasPrivilege>
 	<openmrs:hasPrivilege privilege="Manage Integrity Checks">
-		<li <c:if test='<%= request.getRequestURI().contains("uploadCheck") %>'>class="active"</c:if>>
-			<a href="${pageContext.request.contextPath}/module/dataintegrity/transferCheck.list">
-				<spring:message code="dataintegrity.upload.link"/>
-			</a>
-		</li>
 		<li <c:if test='<%= request.getRequestURI().contains("integritySchedule") %>'>class="active"</c:if>>
             <a href="${pageContext.request.contextPath}/module/dataintegrity/integritySchedule.list">
                 <spring:message code="dataintegrity.schedule.link"/>

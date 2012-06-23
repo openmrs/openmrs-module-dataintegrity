@@ -203,15 +203,5 @@
     
     <!-- Servlets -->
 	<!-- Accessed through the url /pageContext()/moduleServlet/<moduleId>/<servlet-name> -->
-	<!-- commented out ... let's worry about this later
-	<servlet>
-		<servlet-name>template</servlet-name>
-		<servlet-class>@MODULE_PACKAGE@.web.servlet.TemplateServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>results</servlet-name>
-		<servlet-class>@MODULE_PACKAGE@.web.servlet.ResultsServlet</servlet-class>
-	</servlet>
-	 -->
 	<!-- Servlets -->
 </module>

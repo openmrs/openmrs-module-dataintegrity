@@ -57,41 +57,6 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest {
 		Assert.notNull(template.getIntegrityCheckRuns());
 	}
 
-	// @Test
-//	public void shouldUploadDataIntegrityCheck() throws Exception {
-//		DataIntegrityService service = (DataIntegrityService) Context
-//				.getService(DataIntegrityService.class);
-//		List<IntegrityCheck> templates = service
-//				.getAllIntegrityChecks();
-//		int templateCountBeforeAdding = templates.size();
-//
-//		File file = new File(
-//				"F:\\GSOC2009\\workspaces\\DataIntegrityModule\\test\\org\\openmrs\\module\\dataintegrity\\test\\test.xml");
-//		DataIntegrityXmlFileParser parser = new DataIntegrityXmlFileParser(file);
-//		List<IDataIntegrityCheckUpload> checks = parser.getChecksToAdd();
-//		for (int i = 0; i < checks.size(); i++) {
-//			IDataIntegrityCheckUpload check = checks.get(i);
-//			IntegrityCheck template = new IntegrityCheck();
-//			template.setCheckType(check.getCheckType());
-//			template.setCheckCode(check.getCheckCode());
-//			template.setFailDirective(check
-//					.getCheckFailDirective());
-//			template.setFailDirectiveOperator(check
-//					.getCheckFailDirectiveOperator());
-//			template.setName(check.getCheckName());
-//			template.setRepairDirective(check
-//					.getCheckRepairDirective());
-//			template.setResultType(check.getCheckResultType());
-//			template.setRepairType(check.getCheckRepairType());
-//			template.setRepairParameters(check.getCheckParameters());
-//			service.saveIntegrityCheck(template);
-//		}
-//
-//		int templateCountAfterAdding = service
-//				.getAllIntegrityChecks().size();
-//		Assert.isTrue(templateCountAfterAdding > templateCountBeforeAdding);
-//	}
-
 	/**
 	 * @see {@link DataIntegrityService#runIntegrityCheck(IntegrityCheck,String)}
 	 */
@@ -112,8 +77,6 @@ public class DataIntegrityServiceTest extends BaseModuleContextSensitiveTest {
 		integrityCheck = service.saveIntegrityCheck(integrityCheck);
 
 		service.runIntegrityCheck(integrityCheck);
-		
-		// Assert.isTrue(results.getIntegrityCheck() != null);
 	}
 
 }

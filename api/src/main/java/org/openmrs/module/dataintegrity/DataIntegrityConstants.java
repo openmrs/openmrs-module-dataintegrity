@@ -9,11 +9,6 @@ public class DataIntegrityConstants {
 	public static final String NONE = "none";
 	public static final String CHECK_LANGUAGE_SQL = "sql";
 	
-//	public static final String REPAIR_TYPE_SCRIPT = "script";
-//	public static final String REPAIR_TYPE_LINK = "link";
-//	public static final String REPAIR_TYPE_INSTRUCTIONS = "instructions";
-//	public static final String REPAIR_TYPE_NONE = "none";
-
 	public static final String FAILURE_TYPE_NUMBER = "number";
 	public static final String FAILURE_TYPE_COUNT = "count";
 	public static final String FAILURE_TYPE_STRING = "string";
