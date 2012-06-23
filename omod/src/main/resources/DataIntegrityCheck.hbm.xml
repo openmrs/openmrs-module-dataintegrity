@@ -23,7 +23,7 @@
 		
 		<set name="resultsColumns" lazy="true" cascade="all-delete-orphan"
 			table="dataintegrity_column" inverse="true" sort="unsorted" 
-			order-by="column_id asc">
+			order-by="column_index asc">
 			<key column="integrity_check_id" not-null="true"/>
 			<one-to-many class="IntegrityCheckColumn"/>
 		</set>

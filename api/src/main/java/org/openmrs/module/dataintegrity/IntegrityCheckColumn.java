@@ -18,6 +18,7 @@ public class IntegrityCheckColumn extends BaseOpenmrsObject {
 	private String displayName;
 	private String datatype;
 	private IntegrityCheck integrityCheck;
+	private Integer columnIndex;
 
 	public Integer getId() {
 		return this.getColumnId();
@@ -82,6 +83,14 @@ public class IntegrityCheckColumn extends BaseOpenmrsObject {
 	public void setIntegrityCheck(IntegrityCheck integrityCheck) {
 		this.integrityCheck = integrityCheck;
 	}
+	
+	public Integer getColumnIndex() {
+		return columnIndex;
+	}
+
+	public void setColumnIndex(Integer columnIndex) {
+		this.columnIndex = columnIndex;
+	}
 
 	/**
 	 * updates this column with new column data; ignores id, uuid and integritycheck
@@ -94,6 +103,7 @@ public class IntegrityCheckColumn extends BaseOpenmrsObject {
 		this.setName(newcol.getName());
 		this.setShowInResults(newcol.getShowInResults());
 		this.setUsedInUid(newcol.getUsedInUid());
+		this.setColumnIndex(newcol.getColumnIndex());
 	}
 
 }

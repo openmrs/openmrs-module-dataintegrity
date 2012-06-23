@@ -258,21 +258,29 @@
 			hideCode("#resultsCodeTestResults"); 
 			$j(this).fadeOut(); return false; });
 
-        $j("#generateColumns").click(function(){
-			// TODO add something here to verify overwriting existing columns
-			// TODO also do some kind of subscription to check and results code change events
-            var code = $j("#useDiscoveryForResults").is(":checked") ? $j("#checkCode").val() : $j("#resultsCode").val();
-            generateColumnsFromCode(code);
-            return false;
-        });
+		// watch #checkCode and #resultsCode for changes to column definitions
+		$j("#checkCode").blur(function(){
+			populateNewColumns();
+    	});
+		$j("#resultsCode").blur(function(){
+			populateNewColumns();
+    	});
 
         // toggle checkboxes
         $j("#useTotal").change(function(){ $j("#totalWrapper").toggle("slow"); });
-        $j("#useDiscoveryForResults").change(function(){ $j("#resultsWrapper").toggle("slow"); });
+        $j("#useDiscoveryForResults").change(function(){ 
+			$j("#resultsWrapper").toggle("slow");
+			populateNewColumns();
+		});
 
 		// set click action on submit button
 		$j("#submitButton").click(function(){ 
+			// update columns
+			populateNewColumns();
+			
+			// gather the form data
 			var data = $j("#checkEditForm").formParams(false);
+			
 			// convert columns into serialized strings
 			var cols = data.columns;
 			var newcols = new Array();
@@ -283,12 +291,14 @@
 					col.datatype, col.uuid, col.display].join(':');
 			}
 			data.columns = newcols;
+			
 			// submit
 			$j.post("save.htm", data, function(){ window.location = "list.htm"; });
 			return false;
 		});
 
 		<c:if test="${not new}">
+		// initialize retire dialog
 		$j("#retireDialog").dialog({
 			autoOpen: false,
 			width: "38em",
@@ -310,11 +320,11 @@
 			}
 		});
 
+		// set retire and unretire actions
 		$j("#retireButton").click(function() {
 			$j("#retireDialog").dialog("open");
 			return false;
 		});
-
 		$j("#unretireButton").click(function() {
 			$j.post("unretire.htm", { checkId: ${check.id} }, function(){ window.location = "list.htm"; });
 			return false;
@@ -332,11 +342,68 @@
 			</c:forEach>
 			generateColumns(columns);
 		</c:if>
-
     });
+
+	// TODO if the new columns have not changed, do not reload them ...
+	function populateNewColumns(){
+		// do not regenerate columns if there is no code to use
+		var code = $j("#useDiscoveryForResults").is(":checked") ? $j("#checkCode").val() : $j("#resultsCode").val();
+		if (code.trim() == "") {
+			return;
+		}
+		
+		$j("#columns").fadeOut("fast", function(){
+			$j("#columnsMessage").fadeIn("fast", function(){
+				
+				// get existing column definitions from the form
+				var data = $j("#checkEditForm").formParams(false);
+				var oldColumns = data.columns;
+				
+				// render new column definitions from the code
+				DWRDataIntegrityService.getColumnsFromCode(code, function(results){
+					var newColumns = results.columns;
+					$j(newColumns).each(function(index, columnNew){
+
+						// verify the datatype
+						if (columnNew.datatype == null || columnNew.datatype == "") {
+							columnNew.datatype = bestPossibleDatatypeFor(columnNew.name);
+						}
+
+						// check against previous columns
+						for (var key in oldColumns) {
+							var columnOld = oldColumns[key];
+							if(columnNew.name == columnOld.name){
+								columnNew.showInResults = (columnOld.show == "true");
+								columnNew.usedInUid = (columnOld.uid == "true");
+								columnNew.columnId = columnOld.id;
+								columnNew.uuid = columnOld.uuid;
+								columnNew.displayName = columnOld.display;
+								delete oldColumns[key];
+								break;
+							}
+						}
+					});
+
+					// cycle through leftover old columns and alert if used in uid
+					for (var key in oldColumns) {
+						var columnOld = oldColumns[key];
+						if("true" == columnOld.uid){
+							alert("You just lost [" + columnOld.name + "] which was a unique ID.");
+						}
+					}
+
+					// render new columns
+					$j("#columnsMessage").fadeOut("fast", function(){
+						generateColumns(newColumns);
+					});
+				});
+			});
+		});
+	}
 </script>
 
 <style>
+	.hidden { display: none; }
     .fullwidth { width: 99% !important; }
     .vertical-spacing { margin-bottom: 1em; }
     .description { font-style: italic; }
@@ -363,6 +430,18 @@
 	#retireForm { margin: 1.5em auto; text-align: left; width: 34em; }
 	#retireForm label { margin-right: 1em; }
 	#retireForm input { width: 25em; }
+	
+	/* loading */
+	.message {
+	    border: 1px solid #bbb;
+		padding: 0.25em 0.5em;
+		font-size: 0.85em;
+		margin-left: 0.5em;
+	    background: #eee;
+		position: relative;
+		top: -2px;
+	}
+	.message img { top: 5px; position: relative; }
 </style>
 
 <div class="error" id="errorDiv" style="display: none"><spring:message code="dataintegrity.checksList.blank"/></div>
@@ -523,9 +602,17 @@
 
     </div>
 
-    <div class="description vertical-spacing"><spring:message code="dataintegrity.edit.results.columns.description"/></div>
+    <h3 class="vertical-spacing description">
+		<spring:message code="dataintegrity.edit.step.4"/>
+		<spring:message code="dataintegrity.edit.columns.title"/>
+		<span id="columnsMessage" class="hidden message">
+			<img src="${pageContext.request.contextPath}/images/loading.gif"/>
+			<spring:message code="general.loading"/>
+		</span>
+	</h3>
 
-    <button id="generateColumns">Generate Column List &raquo;</button>
+    <div class="description vertical-spacing"><spring:message code="dataintegrity.edit.columns.description"/></div>
+
     <div id="columns">
         <table id="columnTable" class="vertical-spacing"></table>
     </div>

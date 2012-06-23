@@ -362,5 +362,17 @@
 			baseTableName="dataintegrity_check" baseColumnNames="retired_by"
 			referencedTableName="users" referencedColumnNames="user_id"/>
 	</changeSet>
+	
+	<changeSet id="dataintegrity-2011-11-15-13:18" author="jmwogi">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<columnExists tableName="dataintegrity_column" columnName="column_index"/>
+			</not>
+		</preConditions>
+		<comment>Add Data Integrity column_index column.</comment>
+		<addColumn tableName="dataintegrity_column">
+			<column name="column_index" type="int"/>
+		</addColumn>
+	</changeSet>
 
 </databaseChangeLog>

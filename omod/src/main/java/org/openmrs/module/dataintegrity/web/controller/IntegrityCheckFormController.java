@@ -243,6 +243,7 @@ public class IntegrityCheckFormController {
 
 	private List<IntegrityCheckColumn> generateColumns(String[] columns) {
 		List<IntegrityCheckColumn> results = new ArrayList<IntegrityCheckColumn>();
+		Integer index = 1;
 		for(String column: columns) {
 			// deserialize the column
 			String[] items = column.split(":", 7);
@@ -262,6 +263,7 @@ public class IntegrityCheckFormController {
 			c.setDatatype(StringUtils.hasText(items[4]) ? items[4] : null);
 			c.setUuid(StringUtils.hasText(items[5]) ? items[5] : null);
 			c.setDisplayName(StringUtils.hasText(items[6]) ? items[6] : null);
+			c.setColumnIndex(index++);
 			
 			// convert "null" to null in UUID
 			if (OpenmrsUtil.nullSafeEquals(c.getUuid(), "null"))
