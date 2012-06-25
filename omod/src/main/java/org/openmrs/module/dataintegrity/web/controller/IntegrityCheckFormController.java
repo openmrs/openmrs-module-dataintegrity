@@ -53,6 +53,18 @@ public class IntegrityCheckFormController {
         return EDIT_VIEW;
 	}
 
+	@RequestMapping(value="/module/dataintegrity/duplicate.htm")
+	public String copy(@RequestParam(value="checkId", required=true) Integer checkId, ModelMap modelMap) {
+		// create a copy ...
+		IntegrityCheck clone = getDataIntegrityService().getIntegrityCheck(checkId).clone(false);
+		clone.setName(null);
+		clone.setDescription(null);
+		
+		modelMap.put("check", clone);
+		modelMap.put("columnDatatypes", DataIntegrityConstants.COLUMN_DATATYPES);
+        return EDIT_VIEW;
+	}
+
 	@RequestMapping(value="/module/dataintegrity/delete.htm")
 	public String deleteIntegrityCheck(@RequestParam(value="checkId", required=true) Integer checkId, WebRequest request) {
 		DataIntegrityService service = Context.getService(DataIntegrityService.class);

@@ -34,9 +34,10 @@
 	tr.status-1, tr.status-1 a { color: #999 !important; }
 	tr.status-2, tr.status-2 a { color: #a44 !important; }
 
-	.settings { display: inline-block; position: absolute; margin: 3px 0 0 7px; }
-	.settings.mini { }
-	.settings.full { display: none; z-index: 9999; }
+	.settings { display: inline-block; position: absolute; margin-left: 10px; }
+	.settings.mini a { display: block; background: #ddd; border: 1px solid #ccc; padding: 2px 4px 2px 2px; }
+	.settings.mini a:hover { background: #eee; }
+	.settings.full { display: none; z-index: 9999; margin: 5px 0 0 5px;}
 	.settings.full ul { list-style: none; padding: 0; margin: 0; padding: 0; border: 1px solid #aaa; background: #eee; margin-left: 16px; }
 	.settings.full li { font-size: 10pt; font-weight: normal; }
 	.settings.full li a { display: block; padding: 0.25em 0.5em; text-decoration: none; color: #b0bed9; }
@@ -281,6 +282,29 @@
 			$j(this).fadeOut();
 		});
 		
+		// magic for the run link
+		$j('a.runner').click(function(){
+			var el = this;
+			if ($j(el).html() == "Running ...")
+				return;
+			
+			var checkId = $j(el).attr("checkId");
+			if (checkId == null || checkId == "")
+				return;
+			
+			$j(el).html("Running ...");
+			DWRDataIntegrityService.runIntegrityCheck(checkId, {
+				callback: function(run){ 
+					// TODO refresh the page? reload data?
+					$j(el).html("<spring:message code="dataintegrity.run"/>");
+				},
+				errorHandler: function(msg, ex){ 
+					handler(msg, ex);
+					$j(el).html("<spring:message code="dataintegrity.run"/>");
+				}
+			});
+		});
+
 		$j("a.ignore").live('click', function(){
 			// get the parent tr for this cell
 			var tr = $j(this).closest("tr");
@@ -388,17 +412,22 @@
 		<a class="gear" href="#" title="Open Settings"><span class="ui-icon ui-icon-gear"></span></a>
 	</span>
 	<span class="settings full">
-		<span class="ui-icon ui-icon-gear"></span>
 		<ul>
-			<li><a href="edit.htm?checkId=${check.id}">Edit</a></li>
-			<li><a href="run.htm?checkId=${check.id}">Run</a></li>
-			<c:if test="${not check.retired}">
-				<li><a id="retireLink" href="#"><spring:message code="general.retire"/></a></li>
-			</c:if>
-			<c:if test="${check.retired}">
-				<li><a id="unretireLink" href="#"><spring:message code="general.unretire"/></a></li>
-			</c:if>
-			<li><a href="duplicate.htm?checkId=${check.id}">Duplicate</a></li>
+			<openmrs:hasPrivilege privilege="Run Integrity Checks">
+				<li><a class="runner" href="#" checkId="${check.id}"><spring:message code="dataintegrity.run"/></a></li>
+			</openmrs:hasPrivilege>
+			<openmrs:hasPrivilege privilege="Manage Integrity Checks">
+				<li><a href="edit.htm?checkId=${check.id}"><spring:message code="general.edit"/></a></li>
+				<li><a href="duplicate.htm?checkId=${check.id}"><spring:message code="dataintegrity.duplicate"/></a></li>
+				<li>
+				<c:if test="${not check.retired}">
+					<a class="retireLink" href="" checkId="${check.id}"><spring:message code="general.retire"/></a>
+				</c:if>
+				<c:if test="${check.retired}">
+					<a class="unretireLink" href="" checkId="${check.id}"><spring:message code="general.unretire"/></a>
+				</c:if>
+				</li>
+			</openmrs:hasPrivilege>
 		</ul>
 	</span>
 </h2>

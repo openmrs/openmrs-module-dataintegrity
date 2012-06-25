@@ -6,12 +6,12 @@
 <%@ include file="localHeader.jsp" %>
 
 <openmrs:htmlInclude file="/dwr/interface/DWRDataIntegrityService.js"/>
-<openmrs:htmlInclude file="/moduleResources/dataintegrity/js/jquery.easy-confirm-dialog.js" />
+
+<openmrs:htmlInclude file="/moduleResources/dataintegrity/css/smoothness/jquery-ui-1.8.16.custom.css" />
 
 <style>
 	#integrityCheckTable td { padding: 0.5em; vertical-align: middle; }
 	#integrityCheckTable th { padding: 0.5em; }
-	#integrityCheckTable td.action, #integrityCheckTable td.action * { text-decoration: none; }
 	
 	td.checkbox { text-align: center; }
 
@@ -29,6 +29,22 @@
 	#retireForm { margin: 1.5em auto; text-align: left; width: 34em; }
 	#retireForm label { margin-right: 1em; }
 	#retireForm input { width: 25em; }
+	
+	/* context settings */
+	td.action {text-decoration: none; width: 25px; }
+	td.action * { text-decoration: none; }
+	td.action .settings { display: inline-block; position: absolute; margin: -10px 0 0; }
+	td.action .settings.mini a { display: block; background: #ddd; border: 1px solid #ccc; padding: 2px 4px 2px 2px; }
+	td.action .settings.mini a:hover { background: #eee; }
+	td.action .settings.full { display: none; z-index: 9999; margin: 5px 0 0 5px;}
+	td.action .settings.full ul { list-style: none; padding: 0; margin: 0; padding: 0; border: 1px solid #aaa; background: #eee; margin-left: 16px; }
+	td.action .settings.full li { font-size: 10pt; font-weight: normal; }
+	td.action .settings.full li a { display: block; padding: 0.25em 0.5em; text-decoration: none; color: #b0bed9; }
+	td.action .settings.full li a:hover { background: #b0bed9; color: black; }
+	
+	tr.retired, tr.retired * { text-decoration: inherit; font-style: italic; }
+	tr.retired td.action { text-decoration: inherit; font-style: normal; }
+	
 </style>
 
 <script>
@@ -50,21 +66,26 @@
 			function() { $j(this).css('cursor', 'pointer'); }, 
 			function() { $j(this).css('cursor', 'auto');	}
 		);
-		
-		// configure confirmation on all .confirm links
-		$j(".confirm").easyconfirm({
-			locale: {
-				text: "<spring:message code="dataintegrity.delete.areyousure"/>"
-			}
+
+		$j(".settings.mini a.gear").click(function(){ 
+			$j(this).parent().parent().find(".settings.full").fadeIn();
+		});
+
+		$j(".settings.full").mouseleave(function(){
+			$j(this).fadeOut();
 		});
 		
-		// magic for the run icon
-		$j('input.runner').click(function(){
+		// magic for the run link
+		$j('a.runner').click(function(){
 			var el = this;
-			var checkId = $j(el).parents('td').find('input[name=checkId]').val();
+			if ($j(el).html() == "Running ...")
+				return;
+			
+			var checkId = $j(el).attr("checkId");
 			if (checkId == null || checkId == "")
 				return;
-			$j(el).attr('src', '${pageContext.request.contextPath}/images/loading.gif');
+			
+			$j(el).html("Running ...");
 			DWRDataIntegrityService.runIntegrityCheck(checkId, {
 				callback: function(run){ 
 					if (run != null) {
@@ -75,11 +96,11 @@
 						$j(parent).find(".latest .passed").html(run.checkPassed ? "PASSED" : "FAILED");
 						$j(parent).find(".latest .dateRan").html(run.dateCreated.toLocaleString());
 					}
-					$j(el).attr('src', '${pageContext.request.contextPath}/images/play.gif');
+					$j(el).html("<spring:message code="dataintegrity.run"/>");
 				},
 				errorHandler: function(msg, ex){ 
 					handler(msg, ex);
-					$j(el).attr('src', '${pageContext.request.contextPath}/images/play.gif');
+					$j(el).html("<spring:message code="dataintegrity.run"/>");
 				}
 			});
 		});
@@ -148,10 +169,10 @@
 </b>
 <div class="box">
 	<c:if test="${not empty checks}">
-	<table id="integrityCheckTable" cellpadding="10">
+	<table id="integrityCheckTable" cellpadding="10" cellspacing="0">
 		<thead>
 		<tr>
-			<th width="80px"><spring:message code="general.action"/></th>
+			<th></th>
 			<th><spring:message code="general.name"/></th>
 			<th><spring:message code="general.description"/></th>
 			<th><spring:message code="dataintegrity.list.columns.results"/></th>
@@ -159,26 +180,32 @@
 		</thead>
 		<c:forEach items="${checks}" var="check" varStatus="varStatus">
 		<tr class="<c:choose><c:when test="${varStatus.index % 2 == 0}">oddRow</c:when><c:otherwise>evenRow</c:otherwise></c:choose> <c:if test="${check.retired}">retired</c:if>">
-			<td class="action"><input type="hidden" name="checkId" value="${check.id}"/>
-				<a href="view.htm?checkId=${check.id}"><input type="image" src="${pageContext.request.contextPath}/images/open.gif"/></a>
-				<openmrs:hasPrivilege privilege="Manage Integrity Checks">
-					<a href="edit.htm?checkId=${check.id}"><input type="image" src="${pageContext.request.contextPath}/images/edit.gif"/></a>
-				</openmrs:hasPrivilege>
-				<openmrs:hasPrivilege privilege="Run Integrity Checks">
-					<span class="runner">
-						<input class="runner" type="image" src="${pageContext.request.contextPath}/images/play.gif"/>
-					</span>
-				</openmrs:hasPrivilege>
-				<openmrs:hasPrivilege privilege="Manage Integrity Checks">
-					<c:if test="${not check.retired}">
-						<a class="retireLink" href="" checkId="${check.id}"><input type="image" src="${pageContext.request.contextPath}/images/trash.gif"/></a>
-					</c:if>
-					<c:if test="${check.retired}">
-						<a class="unretireLink" href="" checkId="${check.id}"><input type="image" src="${pageContext.request.contextPath}/images/lookup.gif"/></a>
-					</c:if>
-				</openmrs:hasPrivilege>
-				</td>
-			<td>${check.name}</td>
+			<td class="action">
+				<span class="settings mini">
+					<a class="gear" href="#" title="Open Settings"><span class="ui-icon ui-icon-gear"></span></a>
+				</span>
+				<span class="settings full">
+					<ul>
+						<li><a href="view.htm?checkId=${check.id}"><spring:message code="general.view"/></a></li>
+						<openmrs:hasPrivilege privilege="Run Integrity Checks">
+							<li><a class="runner" href="#" checkId="${check.id}"><spring:message code="dataintegrity.run"/></a></li>
+						</openmrs:hasPrivilege>
+						<openmrs:hasPrivilege privilege="Manage Integrity Checks">
+							<li><a href="edit.htm?checkId=${check.id}"><spring:message code="general.edit"/></a></li>
+							<li><a href="duplicate.htm?checkId=${check.id}"><spring:message code="dataintegrity.duplicate"/></a></li>
+							<li>
+							<c:if test="${not check.retired}">
+								<a class="retireLink" href="" checkId="${check.id}"><spring:message code="general.retire"/></a>
+							</c:if>
+							<c:if test="${check.retired}">
+								<a class="unretireLink" href="" checkId="${check.id}"><spring:message code="general.unretire"/></a>
+							</c:if>
+							</li>
+						</openmrs:hasPrivilege>
+					</ul>
+				</span>
+			</td>
+			<td><a href="view.htm?checkId=${check.id}">${check.name}</a></td>
 			<td>${check.description}</td>
 			<td class="run">
 				<c:if test="${not empty check.integrityCheckRuns}">

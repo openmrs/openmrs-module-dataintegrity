@@ -12,7 +12,6 @@
                 <prop key="module/dataintegrity/runMultipleChecks.list">runMultipleChecksList</prop>
                 <prop key="module/dataintegrity/results.list">resultsList</prop>
                 <prop key="module/dataintegrity/failedRecords.list">failedRecordsList</prop>
-                <prop key="module/dataintegrity/copyCheck.form">copyCheckForm</prop>
                 <prop key="module/dataintegrity/repairCheck.list">repairCheckList</prop>
                 <prop key="module/dataintegrity/integritySchedule.list">integrityScheduleList</prop>
                 <prop key="module/dataintegrity/integritySchedule.form">integrityScheduleForm</prop>
@@ -69,12 +68,6 @@
         <property name="commandName"><value>failedRecordsList</value></property>
         <property name="formView"><value>/module/dataintegrity/failedRecordsList</value></property>
         <property name="successView"><value>failedRecords.list</value></property>
-    </bean>
-    
-    <bean id="copyCheckForm" class="org.openmrs.module.dataintegrity.web.controller.CopyCheckFormController">
-        <property name="commandName"><value>copyCheckForm</value></property>
-        <property name="formView"><value>/module/dataintegrity/copyCheckForm</value></property>
-        <property name="successView"><value>copyCheck.form</value></property>
     </bean>
     
     <bean id="repairCheckList" class="org.openmrs.module.dataintegrity.web.controller.RepairCheckListController">

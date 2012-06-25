@@ -335,7 +335,7 @@
 		<c:if test="${not empty check.resultsColumns}">
 			var columns = new Array();
 			<c:forEach var="col" items="${check.resultsColumns}">
-				columns.push({ columnId: ${col.columnId}, showInResults: ${col.showInResults}, 
+				columns.push({ columnId: '${col.columnId}', showInResults: ${col.showInResults}, 
 					usedInUid: ${col.usedInUid}, name: '${col.name}', 
 					displayName: '${col.displayName}', datatype: '${col.datatype}',
 					uuid: '${col.uuid}' });

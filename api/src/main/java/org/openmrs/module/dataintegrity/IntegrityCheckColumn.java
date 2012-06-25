@@ -106,4 +106,23 @@ public class IntegrityCheckColumn extends BaseOpenmrsObject {
 		this.setColumnIndex(newcol.getColumnIndex());
 	}
 
+	/**
+	 * provides an exact copy of this column, minus id and integrity check reference.
+	 * 
+	 * @param includeUuids
+	 * @return 
+	 */
+	IntegrityCheckColumn clone(Boolean includeUuids) {
+		IntegrityCheckColumn column = new IntegrityCheckColumn();
+		column.setName(this.getName());
+		column.setDisplayName(this.getDisplayName());
+		column.setDatatype(this.getDatatype());
+		column.setShowInResults(this.getShowInResults());
+		column.setUsedInUid(this.getUsedInUid());
+		column.setColumnIndex(this.getColumnIndex());
+		column.setUuid(includeUuids ? this.getUuid() : null);
+		
+		return column;
+	}
+
 }

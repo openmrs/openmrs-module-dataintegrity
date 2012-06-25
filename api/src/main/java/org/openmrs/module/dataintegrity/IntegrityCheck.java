@@ -258,4 +258,39 @@ public class IntegrityCheck extends BaseOpenmrsMetadata {
 		// clean up stragglers
 		this.getResultsColumns().removeAll(colMap.values());
 	}
+	
+	/**
+	 * provides an exact copy of this integrity check, minus runs and results.
+	 * 
+	 * @param includeUuids
+	 * @return 
+	 */
+	public IntegrityCheck clone(Boolean includeUuids){
+		IntegrityCheck check = new IntegrityCheck();
+		check.setUuid(includeUuids ? this.getUuid() : null);
+		check.setName(this.getName());
+		check.setDescription(this.getDescription());
+		check.setCheckLanguage(this.getCheckLanguage());
+		check.setCheckCode(this.getCheckCode());
+		check.setFailureType(this.getFailureType());
+		check.setFailureOperator(this.getFailureOperator());
+		check.setFailureThreshold(this.getFailureThreshold());
+		check.setResultsLanguage(this.getResultsLanguage());
+		check.setResultsCode(this.getResultsCode());
+		check.setResultsUniqueIdentifier(this.getResultsUniqueIdentifier());
+		check.setTotalLanguage(this.getTotalLanguage());
+		check.setTotalCode(this.getTotalCode());
+
+		for (IntegrityCheckColumn column: this.getResultsColumns())
+			check.addResultsColumn(column.clone(includeUuids));
+		
+		return check;
+	}
+
+	/**
+	 * helper method for Metadata Sharing Module.
+	 */
+	public Object writeReplace(){
+		return this.clone(true);
+	}
 }
