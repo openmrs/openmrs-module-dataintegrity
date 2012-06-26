@@ -10,6 +10,7 @@
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/js/ColVis.js" />
 
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/js/highcharts.js" />
+<openmrs:htmlInclude file="/moduleResources/dataintegrity/js/highcharts-exporting.js" />
 
 <openmrs:htmlInclude file="/scripts/jquery/dataTables/css/dataTables.css" />
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/css/smoothness/jquery-ui-1.8.16.custom.css" />
@@ -48,7 +49,7 @@
 	#tableTools button { line-height: 1.75em; color: #444; padding: 0 0.75em; }
 	
 	#historyChartWrapper { text-align: center; padding-top: 1.5em; }
-	#historyChart { width: 80% !important; height: 20em !important; margin: 0 auto 1.5em; }
+	#historyChart { width: 80% !important; margin: 0 auto 1.5em; }
 
 	#summaryTab .fieldValue { margin-bottom: 1em; }
 	#summaryTab .code { font-family: "courier"; padding: 0.5em; font-size: 0.85em; border: 1px dashed black; background: #ddd; }
@@ -243,7 +244,18 @@
 			chart: {
 				renderTo: 'historyChart',
 				zoomType: 'x',
+				height: 600,
 				defaultSeriesType: 'areaspline'
+			},
+            exporting: {
+                buttons: {
+                    exportButton: {
+                        x: -20
+                    },
+                    printButton: {
+                        x: -75
+                    }
+                }
 			},
 			title: {
 				text: 'Data Integrity Over Time'
