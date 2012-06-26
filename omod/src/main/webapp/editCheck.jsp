@@ -272,12 +272,45 @@
 			$j("#resultsWrapper").toggle("slow");
 			populateNewColumns();
 		});
+        
+        var requiredFields;
+        if($j("#useDiscoveryForResults").is(":checked"))
+        	requiredFields = ["nameTxt", "descriptionTxt", "checkCode"];
+        else
+        	requiredFields = ["nameTxt", "descriptionTxt", "checkCode", "resultsCode"];
+        
+        var errornotice = $j("#errorDiv");
+        var emptyerror = "Please fill out this field.";
+        
+        // Clears any fields in the form when the user clicks on them
+        $j(":input").focus(function(){
+        	if($j(this).hasClass("needsfilled")){
+        		$j(this).val("");
+        		$j(this).removeClass("needsfilled");
+        	}
+       	});
 
 		// set click action on submit button
 		$j("#submitButton").click(function(){ 
-			// update columns
-			populateNewColumns();
+			//Validate required fields
+			for (var i=0; i<requiredFields.length; i++) {
+				var input = $j('#'+requiredFields[i]);
+				if((input.val() == "") || (input.val() == emptyerror)) {
+					input.addClass("needsfilled");
+					input.val(emptyerror);
+					errornotice.fadeIn(750);
+				}else{
+					input.removeClass("needsfilled");
+				}
+			}
 			
+			//if any inputs on the page have the class 'needsfilled' the form will not submit
+			if ($j(":input").hasClass("needsfilled")) {
+				$j("html, body").animate({ scrollTop: 0 }, "slow");
+				return false;
+			} else {
+				errornotice.hide();
+			}
 			// gather the form data
 			var data = $j("#checkEditForm").formParams(false);
 			
@@ -285,12 +318,19 @@
 			var cols = data.columns;
 			var newcols = new Array();
 			var i = 0;
+			var confirmedUidExist = false;
 			for (var key in cols) {
 				var col = cols[key];
 				newcols[i++] = [col.id, col.show, col.uid, col.name, 
 					col.datatype, col.uuid, col.display].join(':');
+				if(col.uid == "true")
+					confirmedUidExist = true;
 			}
 			data.columns = newcols;
+			if(confirmedUidExist == false){
+				alert("Please choose a unique ID (uid) for your check");
+				return false;
+			}
 			
 			// submit
 			$j.post("save.htm", data, function(){ window.location = "list.htm"; });
@@ -403,6 +443,7 @@
 </script>
 
 <style>
+	.needsfilled {background:pink; color:white;}
 	.hidden { display: none; }
     .fullwidth { width: 99% !important; }
     .vertical-spacing { margin-bottom: 1em; }
@@ -444,7 +485,7 @@
 	.message img { top: 5px; position: relative; }
 </style>
 
-<div class="error" id="errorDiv" style="display: none"><spring:message code="dataintegrity.checksList.blank"/></div>
+<div class="error" id="errorDiv" style="display: none"><spring:message code="dataintegrity.list.blank"/></div>
 
 <c:if test="${check.retired}">
 	<div class="retiredMessage"><div><spring:message code="dataintegrity.retiredMessage"/></div></div>
