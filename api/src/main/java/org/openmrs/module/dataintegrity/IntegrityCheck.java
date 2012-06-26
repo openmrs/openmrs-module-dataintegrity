@@ -163,6 +163,10 @@ public class IntegrityCheck extends BaseOpenmrsMetadata {
 		this.resultsColumns = resultsColumns;
 	}
 
+	public IntegrityCheckRun getMostRecentRun(){
+		return getIntegrityCheckRuns().toArray(new IntegrityCheckRun[]{})[0];
+	}
+	
 	public Set<IntegrityCheckRun> getIntegrityCheckRuns() {
 		if (integrityCheckRuns == null) {
 			integrityCheckRuns = new LinkedHashSet<IntegrityCheckRun>();

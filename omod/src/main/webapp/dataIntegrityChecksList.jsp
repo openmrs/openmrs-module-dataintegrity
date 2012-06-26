@@ -15,6 +15,7 @@
 	
 	td.checkbox { text-align: center; }
 
+	td.run { line-height: 2em; }
 	td.run .details { white-space: nowrap; }
 	td.run .passed { width: 7em; display: inline-block; text-align: center; line-height: 2em; font-weight: bold; text-transform: uppercase; }
 	td.run .true { background: #afa; }
@@ -89,18 +90,38 @@
 			DWRDataIntegrityService.runIntegrityCheck(checkId, {
 				callback: function(run){ 
 					if (run != null) {
-						var parent = $j(el).parents("tr");
-						var latest = $j(parent).find(".latest");
-						var lastrun = '<div class="details">' + $j(latest).html()+ '</div>';
-						$j(parent).find(".history").prepend(lastrun);
-						$j(parent).find(".latest .passed").html(run.checkPassed ? "PASSED" : "FAILED");
-						$j(parent).find(".latest .dateRan").html(run.dateCreated.toLocaleString());
+						renderRunStats($j(el).closest("tr").find("td.run"), run);
 					}
 					$j(el).html("<spring:message code="dataintegrity.run"/>");
 				},
 				errorHandler: function(msg, ex){ 
 					handler(msg, ex);
 					$j(el).html("<spring:message code="dataintegrity.run"/>");
+				}
+			});
+		});
+		
+		// magic for the never-run link
+		$j('a.neverRunLink').click(function(){
+			var el = this;
+			if ($j(el).html() == "Running ...")
+				return;
+			
+			var checkId = $j(el).attr("checkId");
+			if (checkId == null || checkId == "")
+				return;
+			
+			$j(el).html("Running ...");
+			DWRDataIntegrityService.runIntegrityCheck(checkId, {
+				callback: function(run){ 
+					if (run != null) {
+						renderRunStats($j(el).closest("td"), run);
+					}
+					$j(el).remove();
+				},
+				errorHandler: function(msg, ex){ 
+					handler(msg, ex);
+					$j(el).html("<spring:message code="dataintegrity.no-runs"/>");
 				}
 			});
 		});
@@ -139,18 +160,14 @@
 
 	});
 
-	function toggleHistory(el) {
-		var parent = $j(el).parent();
-		if ($j(parent).find(".history").is(":visible")) {
-			$j(parent).find(".history").hide("blind");
-			$j(el).toggleClass("ui-icon-triangle-1-s", false);
-			$j(el).toggleClass("ui-icon-triangle-1-e", true);
-		} else {
-			$j(parent).find(".history").show("blind");
-			$j(el).toggleClass("ui-icon-triangle-1-e", false);
-			$j(el).toggleClass("ui-icon-triangle-1-s", true);
-		}
+	function renderRunStats(el, run) {
+		var content = '<div class="latest details">';
+		content += '<span class="passed ' + run.checkPassed + '">';
+		content += (run.checkPassed ? "PASSED" : "FAILED") + '</span>';
+		content += '<span class="dateRan">' + run.dateCreated + '</span></div>';
+		$j(el).html(content);
 	}
+
 </script>
 
 <h2><spring:message code="dataintegrity.manage.title"/></h2>
@@ -188,7 +205,9 @@
 					<ul>
 						<li><a href="view.htm?checkId=${check.id}"><spring:message code="general.view"/></a></li>
 						<openmrs:hasPrivilege privilege="Run Integrity Checks">
-							<li><a class="runner" href="#" checkId="${check.id}"><spring:message code="dataintegrity.run"/></a></li>
+							<c:if test="${not empty check.resultsColumns}">
+								<li><a class="runner" href="#" checkId="${check.id}"><spring:message code="dataintegrity.run"/></a></li>
+							</c:if>
 						</openmrs:hasPrivilege>
 						<openmrs:hasPrivilege privilege="Manage Integrity Checks">
 							<li><a href="edit.htm?checkId=${check.id}"><spring:message code="general.edit"/></a></li>
@@ -209,25 +228,17 @@
 			<td>${check.description}</td>
 			<td class="run">
 				<c:if test="${not empty check.integrityCheckRuns}">
-					<div class="runWrapper">
-						<span class="expander ui-icon ui-icon-triangle-1-e"></span>
-						<c:forEach items="${check.integrityCheckRuns}" var="run" varStatus="runStatus">
-							<c:if test="${runStatus.index == 0}">
-								<div class="latest details">
-									<span class="passed ${run.checkPassed}">${run.checkPassed}</span>
-									<span class="dateRan"><openmrs:formatDate date="${run.dateCreated}" type="long"/></span>
-								</div>
-								<div class="history">
-							</c:if>
-							<c:if test="${runStatus.index != 0}">
-								<div class="details">
-									<span class="passed ${run.checkPassed}">${run.checkPassed}</span>
-									<abbr class="dateRan"><openmrs:formatDate date="${run.dateCreated}" type="long"/></span>
-								</div>
-							</c:if>
-						</c:forEach>
-						</div>
+					<c:set value="${check.mostRecentRun}" var="run"/>
+					<div class="latest details">
+						<span class="passed ${run.checkPassed}">${run.checkPassed}</span>
+						<span class="dateRan"><openmrs:formatDate date="${run.dateCreated}" type="long"/></span>
 					</div>
+				</c:if>
+				<c:if test="${empty check.resultsColumns}">
+					<span class="message"><a href="edit.htm?checkId=${check.id}#columns"><spring:message code="dataintegrity.no-columns"/></a></span>
+				</c:if>
+				<c:if test="${not empty check.resultsColumns and empty check.integrityCheckRuns}">
+					<span class="message"><a class="neverRunLink" checkId="${check.id}" href="#"><spring:message code="dataintegrity.no-runs"/></a></span>
 				</c:if>
 			</td>
 		</tr>

@@ -10,6 +10,7 @@
 <openmrs:htmlInclude file="/scripts/jquery/dataTables/css/dataTables_jui.css" />
 
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/js/jquery.tools.min.js" />
+<openmrs:htmlInclude file="/moduleResources/dataintegrity/js/jquery.scrollTo-min.js" />
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/js/jquery.formparams.min.js" />
 
 <openmrs:htmlInclude file="/dwr/interface/DWRDataIntegrityService.js"/>
@@ -95,7 +96,7 @@
 		});
 	}
 
-    function generateColumns(columns){
+    function generateColumns(columns, callback){
         $j("#columns").fadeOut();
 
 		if (columnTable != null) {
@@ -127,10 +128,10 @@
 				},
 				{
 					sName: "uid",
-					sClass: "centered",
+					sClass: "centered uid",
 					sTitle: "<spring:message code="dataintegrity.edit.columns.uniqueidentifier"/>",
 					fnRender: function(data){
-						return '<input name="columns[' + data.aData[0] + '][uid]" type="checkbox"'
+						return '<input name="columns[' + data.aData[0] + '][uid]" class="uid" type="checkbox"'
 							+ (data.aData[3] ? ' checked' : '')
 							+ ' value="true"/>';
 					}
@@ -166,7 +167,11 @@
 				column.usedInUid, column.name, column.displayName, column.datatype, column.uuid]);
 		});
 
-		$j("#columns").fadeIn();
+		$j("#columns").fadeIn("slow", function(){
+			evaluateUids();
+			if (callback)
+				callback();
+		});
     }
 
 	function renderDatatypeSelection(index, value) {
@@ -206,6 +211,7 @@
 	}
 
     $j(document).ready(function(){
+		// set up help links
         $j("a.help").click(function(){ return false; });
         $j("a.help").addClass("ui-state-default ui-corner-all");
         $j("a.help").tooltip({
@@ -214,7 +220,6 @@
             position: "center right",
             layout: '<div class="tooltip-wrapper ui-corner-all"><div/></div>'
         });
-
         $j("a.help").hover(
             function() { $j(this).addClass('ui-state-hover'); },
             function() { $j(this).removeClass('ui-state-hover'); }
@@ -273,6 +278,11 @@
 			populateNewColumns();
 		});
         
+		// ensure at least one uid is checked
+		$j("input.uid").live("click", function(){
+			evaluateUids();
+		});
+		
         var requiredFields;
         if($j("#useDiscoveryForResults").is(":checked"))
         	requiredFields = ["nameTxt", "descriptionTxt", "checkCode"];
@@ -370,7 +380,7 @@
 			return false;
 		});
 		</c:if>
-				
+		
 		// build the initial set of columns if they already exist
 		<c:if test="${not empty check.resultsColumns}">
 			var columns = new Array();
@@ -382,10 +392,27 @@
 			</c:forEach>
 			generateColumns(columns);
 		</c:if>
+		
+		// check for #columns reference in url
+		if (location.hash == "#columns") {
+			populateNewColumns(function(){
+				$j("html, body").animate({ scrollTop: $j(document).height() }, "slow");
+			});
+		}
     });
 
+	function evaluateUids(){
+		if($j("input.uid:checked").length == 0) {
+			$j("th.uid").addClass("error");
+			$j("td.uid").addClass("error");
+		} else {
+			$j("th.uid").removeClass("error");
+			$j("td.uid").removeClass("error");
+		}
+	}
+
 	// TODO if the new columns have not changed, do not reload them ...
-	function populateNewColumns(){
+	function populateNewColumns(callback){
 		// do not regenerate columns if there is no code to use
 		var code = $j("#useDiscoveryForResults").is(":checked") ? $j("#checkCode").val() : $j("#resultsCode").val();
 		if (code.trim() == "") {
@@ -434,7 +461,7 @@
 
 					// render new columns
 					$j("#columnsMessage").fadeOut("fast", function(){
-						generateColumns(newColumns);
+						generateColumns(newColumns, callback);
 					});
 				});
 			});
