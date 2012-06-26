@@ -8,7 +8,6 @@
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/js/jquery.dataTables.min.js" />
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/js/jquery.corner.js" />
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/js/ColVis.js" />
-<openmrs:htmlInclude file="/moduleResources/dataintegrity/TableTools/js/TableTools.min.js" />
 
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/js/highcharts.js" />
 
@@ -16,7 +15,6 @@
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/css/smoothness/jquery-ui-1.8.16.custom.css" />
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/css/dataTables_jui.css" />
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/css/ColVis.css" />
-<openmrs:htmlInclude file="/moduleResources/dataintegrity/TableTools/css/TableTools.css" />
 
 <openmrs:htmlInclude file="/dwr/interface/DWRDataIntegrityService.js"/>
 
@@ -45,7 +43,10 @@
 
 	#resultsTableFilters { padding-top: 0.5em; }
 	#resultsTableFilters label { margin-right: 0.5em; }
-
+	
+	#tableTools { float: right; margin-bottom: 0.3em; }
+	#tableTools button { line-height: 1.75em; color: #444; padding: 0 0.75em; }
+	
 	#historyChartWrapper { text-align: center; padding-top: 1.5em; }
 	#historyChart { width: 80% !important; height: 20em !important; margin: 0 auto 1.5em; }
 
@@ -141,11 +142,29 @@
 			return false;
 		});
 
+		// set up table tools
+		$j("button#download").click(function() {
+			window.open("download.htm?checkId=${check.id}", 'Download');
+//			window.open('data:application/vnd.ms-excel,' + document.getElementById('resultsTable').outerHTML.replace(/ /g, '%20'));
+			return false;
+		});
+		$j("button#print").click(function() {
+			var p = window.open();
+			p.document.write($j('#resultsTable')[0].outerHTML);
+			p.document.close();
+			p.focus();
+			p.print();
+			p.close();
+			return false;
+		});
+
 		// format the results datatable
 		resultsTable = $j("#resultsTable").dataTable({
-			sDom: '<"H"Clfr>t<"F"ip>',
+			sDom: '<"H"Clf>rt<"F"ip>',
 			bJQueryUI: true,
 			bAutoWidth: true,
+			sPagination: "full_numbers",
+			sScrollXInner: "110%",
 			aoColumns: [
 				{ 
 					sName: "action", 
@@ -205,21 +224,6 @@
 				{ sName: "display" }
 			]
 		});
-
-		var resultsTableTools = new TableTools(resultsTable, {
-			buttons: [ 
-				"copy", 
-				"xls", 
-				{
-					sExtends: "pdf",
-					sPdfOrientation: "landscape",
-					sPdfMessage: "Your custom message would go here." 
-				},
-				"print" ],
-			sSwfPath: "http://datatables.net/release-datatables/extras/TableTools/media/swf/copy_cvs_xls_pdf.swf"
-		});
-
-		$j('#tableTools').html(resultsTableTools.dom.container);
 		
 		$j("#resultsTableFilters input").click(function(){ resultsTable.fnStandingRedraw(); });
 		
@@ -442,13 +446,18 @@
 	</ul>
 
 	<div id="resultsTab">
-		<div id="tableTools"></div>
+		<div id="tableTools">
+            <button id="download"><spring:message code="general.download"/></button>
+			<!--
+            <button id="print"><spring:message code="general.print"/></button>
+			-->
+		</div>
 		<div id="resultsTableFilters">
 			<input type="checkbox" id="viewVoided"></input>
 			<label for="viewVoided">View Voided Records</label>
 			<input type="checkbox" id="viewIgnored"></input>
 			<label for="viewIgnored">View Ignored Records</label>
-		</div>
+        </div>
 		<div id="resultsTableWrap">
 			<table id="resultsTable" class="display">
 				<thead>

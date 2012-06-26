@@ -1,8 +1,13 @@
 package org.openmrs.module.dataintegrity.web.controller;
 
+import au.com.bytecode.opencsv.CSVWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -11,12 +16,14 @@ import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.openmrs.module.dataintegrity.IntegrityCheckColumn;
+import org.openmrs.module.dataintegrity.IntegrityCheckResult;
 import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 
@@ -65,6 +72,62 @@ public class IntegrityCheckFormController {
         return EDIT_VIEW;
 	}
 
+	@RequestMapping(value="/module/dataintegrity/download.htm")
+	public void download(
+		@RequestParam(value="checkId", required=true) Integer checkId, 
+		HttpServletResponse response) {
+		
+		// get the check
+		IntegrityCheck check = getDataIntegrityService().getIntegrityCheck(checkId);
+		if (check == null)
+			return;
+
+		String filename = check.getName().toLowerCase().replaceAll(" ", "-").concat(".csv");
+		
+		response.setContentType("application/vnd.ms-excel");
+		response.setHeader("Content-Disposition","attachment; filename=\"" + filename + "\"");
+		
+		try {
+			// open a new CSVWriter connected to the response
+			OutputStreamWriter out = new OutputStreamWriter(response.getOutputStream());
+			CSVWriter writer = new CSVWriter(out, ',');
+			
+			// get column names and display names
+			List<String> columns = new ArrayList<String>();
+			List<String> titles = new ArrayList<String>();
+			for (IntegrityCheckColumn column : check.getResultsColumns()) {
+				columns.add(column.getName());
+				titles.add(column.getDisplayName());
+			}
+
+			// write out the columns
+			writer.writeNext(columns.toArray(new String[]{}));
+
+			// iterate through results
+			for (IntegrityCheckResult result : check.getIntegrityCheckResults()) {
+				if (OpenmrsUtil.nullSafeEquals(result.getStatus(), DataIntegrityConstants.RESULT_STATUS_NEW)) {
+					List<String> row = new ArrayList<String>();
+					for (String col : columns)
+						row.add(result.getData().get(col).toString());
+
+					// write out the row
+					writer.writeNext(row.toArray(new String[]{}));
+				}
+			}
+			
+			// close the writer
+			writer.close();
+
+			// flush it down
+			response.flushBuffer();
+			
+		} catch (IOException ex) {
+			log.info("Error writing integrity check #" + checkId + " to output stream", ex);
+			throw new RuntimeException("IOError writing file to output stream", ex);
+		}
+
+	}	
+	
 	@RequestMapping(value="/module/dataintegrity/delete.htm")
 	public String deleteIntegrityCheck(@RequestParam(value="checkId", required=true) Integer checkId, WebRequest request) {
 		DataIntegrityService service = Context.getService(DataIntegrityService.class);
