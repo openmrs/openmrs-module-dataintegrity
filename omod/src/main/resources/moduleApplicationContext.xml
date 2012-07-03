@@ -8,9 +8,6 @@
     <bean id="dataIntegrityUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
     	<property name="mappings">
             <props>
-                <prop key="module/dataintegrity/runSingleCheck.list">runSingleCheckList</prop>
-                <prop key="module/dataintegrity/runMultipleChecks.list">runMultipleChecksList</prop>
-                <prop key="module/dataintegrity/results.list">resultsList</prop>
                 <prop key="module/dataintegrity/integritySchedule.list">integrityScheduleList</prop>
                 <prop key="module/dataintegrity/integritySchedule.form">integrityScheduleForm</prop>
                 <prop key="module/dataintegrity/integrityScheduleEmail.form">integrityScheduleEmailForm</prop>
@@ -43,24 +40,6 @@
 			</list>
 		</property>
 	</bean>
-    
-    <bean id="runSingleCheckList" class="org.openmrs.module.dataintegrity.web.controller.RunSingleCheckListController">
-        <property name="commandName"><value>runSingleCheckList</value></property>
-        <property name="formView"><value>/module/dataintegrity/runSingleCheckList</value></property>
-        <property name="successView"><value>results.list</value></property>
-    </bean>
-    
-    <bean id="runMultipleChecksList" class="org.openmrs.module.dataintegrity.web.controller.RunMultipleChecksListController">
-        <property name="commandName"><value>runMultipleChecksList</value></property>
-        <property name="formView"><value>/module/dataintegrity/runMultipleChecksList</value></property>
-        <property name="successView"><value>results.list</value></property>
-    </bean>
-    
-    <bean id="resultsList" class="org.openmrs.module.dataintegrity.web.controller.ResultsListController">
-        <property name="commandName"><value>resultsList</value></property>
-        <property name="formView"><value>/module/dataintegrity/resultsList</value></property>
-        <property name="successView"><value>results.list</value></property>
-    </bean>
     
 	<bean id="integrityScheduleList" class="org.openmrs.module.dataintegrity.web.controller.IntegrityScheduleListController">
         <property name="formView"><value>/module/dataintegrity/integrityScheduleList</value></property>

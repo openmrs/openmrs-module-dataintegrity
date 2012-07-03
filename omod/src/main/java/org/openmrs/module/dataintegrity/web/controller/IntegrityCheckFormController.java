@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -23,13 +22,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 
 @Controller
 public class IntegrityCheckFormController {
 	private static final String EDIT_VIEW = "/module/dataintegrity/editCheck";
+	private static final String VIEW_VIEW = "/module/dataintegrity/viewCheck";
 	private static final String SUCCESS_VIEW = "redirect:list.htm";
 	
 	private final Log log = LogFactory.getLog(this.getClass());
@@ -51,6 +50,13 @@ public class IntegrityCheckFormController {
 		modelMap.put("check", getDataIntegrityService().getIntegrityCheck(checkId));
 		modelMap.put("columnDatatypes", DataIntegrityConstants.COLUMN_DATATYPES);
         return EDIT_VIEW;
+	}
+
+	@RequestMapping(value="/module/dataintegrity/view.htm")
+	public String viewCheck(@RequestParam(value="checkId", required=true) Integer checkId, ModelMap modelMap) {
+		DataIntegrityService service = Context.getService(DataIntegrityService.class);
+		modelMap.put("check", service.getIntegrityCheck(checkId));
+		return VIEW_VIEW;
 	}
 
 	@RequestMapping(value="/module/dataintegrity/new.htm")
