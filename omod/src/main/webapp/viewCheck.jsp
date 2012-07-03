@@ -391,18 +391,25 @@
 	}
 
 	function renderCell(data, colDatatype) {
+		<openmrs:globalProperty key="dataintegrity.actionServerUrl" var="actionServerUrl"/>
+		<c:if test="${empty actionServerUrl}">
+			<c:set var="actionServerUrl" value="${pageContext.request.contextPath}"/>
+		</c:if>
+		
+		var linkPrefix = '<a target="new" href="<c:out value="${actionServerUrl}"/>';
+		
 		if (colDatatype == "Person")
-			return '<a target="new" href="<openmrs:contextPath/>/personDashboard.form?personId=' + data + '">' + data + '</a>';
+			return linkPrefix + '/personDashboard.form?personId=' + data + '">' + data + '</a>';
 		if (colDatatype == "Patient")
-			return '<a target="new" href="<openmrs:contextPath/>/patientDashboard.form?patientId=' + data + '">' + data + '</a>';
+			return linkPrefix + '/patientDashboard.form?patientId=' + data + '">' + data + '</a>';
 		if (colDatatype == "Concept")
-			return '<a target="new" href="<openmrs:contextPath/>/dictionary/concept.htm?conceptId=' + data + '">' + data + '</a>';
+			return linkPrefix + '/dictionary/concept.htm?conceptId=' + data + '">' + data + '</a>';
 		if (colDatatype == "User")
-			return '<a target="new" href="<openmrs:contextPath/>/admin/users/user.form?userId=' + data + '">' + data + '</a>';
+			return linkPrefix + '/admin/users/user.form?userId=' + data + '">' + data + '</a>';
 		if (colDatatype == "Encounter")
-			return '<a target="new" href="<openmrs:contextPath/>/admin/encounters/encounter.form?encounterId=' + data + '">' + data + '</a>';
+			return linkPrefix + '/admin/encounters/encounter.form?encounterId=' + data + '">' + data + '</a>';
 		if (colDatatype == "Observation")
-			return '<a target="new" href="<openmrs:contextPath/>/admin/observations/obs.form?obsId=' + data + '">' + data + '</a>';
+			return linkPrefix + '/admin/observations/obs.form?obsId=' + data + '">' + data + '</a>';
 		if (colDatatype == "Date") {
 			// TODO find a good way of doing this from javascript
 			return data;
