@@ -29,6 +29,7 @@ import org.springframework.web.context.request.WebRequest;
 public class IntegrityCheckController {
 	private static final String EDIT_VIEW = "/module/dataintegrity/editCheck";
 	private static final String VIEW_VIEW = "/module/dataintegrity/viewCheck";
+	private static final String LIST_VIEW = "/module/dataintegrity/listChecks";
 	private static final String SUCCESS_VIEW = "redirect:list.htm";
 	
 	private final Log log = LogFactory.getLog(this.getClass());
@@ -67,7 +68,7 @@ public class IntegrityCheckController {
         }
 		modelMap.put("checks", checks);
 		
-        return "/module/dataintegrity/dataIntegrityChecksList";
+        return LIST_VIEW;
     }
 
 	@RequestMapping(value="/module/dataintegrity/new.htm")
