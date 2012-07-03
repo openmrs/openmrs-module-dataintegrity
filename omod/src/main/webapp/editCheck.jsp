@@ -559,7 +559,10 @@
         <button id="testCheckCode"><spring:message code="dataintegrity.edit.testCode"/></button>
         <button id="closeCheckCode"><spring:message code="dataintegrity.edit.hideResults"/></button>
         <div id="checkCodeTestResults">
-            <div class="loading"><spring:message code="dataintegrity.edit.loading"/></div>
+			<span class="hidden message loading">
+				<img src="${pageContext.request.contextPath}/images/loading.gif"/>
+				<spring:message code="general.loading"/>
+			</span>
             <table class="results"></table>
         </div>
     </div>
@@ -620,7 +623,10 @@
             <button id="testTotalCode"><spring:message code="dataintegrity.edit.testCode"/></button>
             <button id="closeTotalCode"><spring:message code="dataintegrity.edit.hideResults"/></button>
             <div id="totalCodeTestResults">
-                <div class="loading"><spring:message code="dataintegrity.edit.loading"/></div>
+				<span class="hidden message loading">
+					<img src="${pageContext.request.contextPath}/images/loading.gif"/>
+					<spring:message code="general.loading"/>
+				</span>
                 <table class="results"></table>
             </div>
         </div>
@@ -663,7 +669,10 @@
             <button id="testResultsCode"><spring:message code="dataintegrity.edit.testCode"/></button>
             <button id="closeResultsCode"><spring:message code="dataintegrity.edit.hideResults"/></button>
             <div id="resultsCodeTestResults">
-                <div class="loading"><spring:message code="dataintegrity.edit.loading"/></div>
+				<span class="hidden message loading">
+					<img src="${pageContext.request.contextPath}/images/loading.gif"/>
+					<spring:message code="general.loading"/>
+				</span>
                 <table class="results"></table>
             </div>
         </div>
