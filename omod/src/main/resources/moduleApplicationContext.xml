@@ -11,7 +11,6 @@
                 <prop key="module/dataintegrity/runSingleCheck.list">runSingleCheckList</prop>
                 <prop key="module/dataintegrity/runMultipleChecks.list">runMultipleChecksList</prop>
                 <prop key="module/dataintegrity/results.list">resultsList</prop>
-                <prop key="module/dataintegrity/failedRecords.list">failedRecordsList</prop>
                 <prop key="module/dataintegrity/integritySchedule.list">integrityScheduleList</prop>
                 <prop key="module/dataintegrity/integritySchedule.form">integrityScheduleForm</prop>
                 <prop key="module/dataintegrity/integrityScheduleEmail.form">integrityScheduleEmailForm</prop>
@@ -61,12 +60,6 @@
         <property name="commandName"><value>resultsList</value></property>
         <property name="formView"><value>/module/dataintegrity/resultsList</value></property>
         <property name="successView"><value>results.list</value></property>
-    </bean>
-    
-    <bean id="failedRecordsList" class="org.openmrs.module.dataintegrity.web.controller.FailedRecordsListController">
-        <property name="commandName"><value>failedRecordsList</value></property>
-        <property name="formView"><value>/module/dataintegrity/failedRecordsList</value></property>
-        <property name="successView"><value>failedRecords.list</value></property>
     </bean>
     
 	<bean id="integrityScheduleList" class="org.openmrs.module.dataintegrity.web.controller.IntegrityScheduleListController">
