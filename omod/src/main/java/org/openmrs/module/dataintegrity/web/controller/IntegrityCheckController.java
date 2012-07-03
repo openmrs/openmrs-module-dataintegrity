@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 
 @Controller
-public class IntegrityCheckFormController {
+public class IntegrityCheckController {
 	private static final String EDIT_VIEW = "/module/dataintegrity/editCheck";
 	private static final String VIEW_VIEW = "/module/dataintegrity/viewCheck";
 	private static final String SUCCESS_VIEW = "redirect:list.htm";
@@ -59,15 +59,26 @@ public class IntegrityCheckFormController {
 		return VIEW_VIEW;
 	}
 
+	@RequestMapping(value="/module/dataintegrity/list.htm")
+	public String listChecks(ModelMap modelMap) {
+        List<IntegrityCheck> checks = new ArrayList<IntegrityCheck>();
+        if (Context.isAuthenticated()) {
+        	checks = getDataIntegrityService().getAllIntegrityChecks(); 
+        }
+		modelMap.put("checks", checks);
+		
+        return "/module/dataintegrity/dataIntegrityChecksList";
+    }
+
 	@RequestMapping(value="/module/dataintegrity/new.htm")
-	public String newIntegrityCheck(ModelMap modelMap) {
+	public String newCheck(ModelMap modelMap) {
 		modelMap.put("check", new IntegrityCheck());
 		modelMap.put("columnDatatypes", DataIntegrityConstants.COLUMN_DATATYPES);
         return EDIT_VIEW;
 	}
 
 	@RequestMapping(value="/module/dataintegrity/duplicate.htm")
-	public String copy(@RequestParam(value="checkId", required=true) Integer checkId, ModelMap modelMap) {
+	public String copyCheck(@RequestParam(value="checkId", required=true) Integer checkId, ModelMap modelMap) {
 		// create a copy ...
 		IntegrityCheck clone = getDataIntegrityService().getIntegrityCheck(checkId).clone(false);
 		clone.setName(null);
@@ -79,7 +90,7 @@ public class IntegrityCheckFormController {
 	}
 
 	@RequestMapping(value="/module/dataintegrity/download.htm")
-	public void download(
+	public void downloadCSV(
 		@RequestParam(value="checkId", required=true) Integer checkId, 
 		HttpServletResponse response) {
 		
@@ -135,7 +146,7 @@ public class IntegrityCheckFormController {
 	}	
 	
 	@RequestMapping(value="/module/dataintegrity/delete.htm")
-	public String deleteIntegrityCheck(@RequestParam(value="checkId", required=true) Integer checkId, WebRequest request) {
+	public String deleteCheck(@RequestParam(value="checkId", required=true) Integer checkId, WebRequest request) {
 		DataIntegrityService service = Context.getService(DataIntegrityService.class);
 		MessageSourceService mss = Context.getMessageSourceService();
 
@@ -167,7 +178,7 @@ public class IntegrityCheckFormController {
 	}
 
 	@RequestMapping(value="/module/dataintegrity/retire.htm")
-	public String retireIntegrityCheck(
+	public String retireCheck(
 			@RequestParam(value="checkId", required=true) Integer checkId, 
 			@RequestParam(value="retireReason", required=true) String retireReason, 
 			WebRequest request) {
@@ -202,7 +213,7 @@ public class IntegrityCheckFormController {
 	}
 	
 	@RequestMapping(value="/module/dataintegrity/unretire.htm")
-	public String unretireIntegrityCheck(
+	public String unretireCheck(
 			@RequestParam(value="checkId", required=true) Integer checkId,
 			WebRequest request) {
 		DataIntegrityService service = Context.getService(DataIntegrityService.class);
@@ -236,7 +247,7 @@ public class IntegrityCheckFormController {
 	}
 	
 	@RequestMapping(value="/module/dataintegrity/save.htm")
-	public String saveIntegrityCheck(WebRequest request,
+	public String saveCheck(WebRequest request,
 			@RequestParam(value="checkId", required=false) Integer checkId,
 			@RequestParam(value="name", required=true) String name,
 			@RequestParam(value="description", required=true) String description,
