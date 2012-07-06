@@ -21,6 +21,7 @@ import org.openmrs.api.db.DAOException;
 import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.IntegrityCheckResult;
 import org.openmrs.module.dataintegrity.IntegrityCheckResults;
+import org.openmrs.module.dataintegrity.IntegrityCheckRun;
 import org.openmrs.module.dataintegrity.QueryResults;
 
 public interface DataIntegrityDAO {
@@ -127,4 +128,6 @@ public interface DataIntegrityDAO {
 	public QueryResults getQueryResults(String sql, Integer limit) throws DAOException;
 
 	public IntegrityCheckResult findResultForIntegrityCheckByUid(IntegrityCheck integrityCheck, String uid);
+
+	public IntegrityCheckRun getMostRecentRunForCheck(IntegrityCheck check);
 }

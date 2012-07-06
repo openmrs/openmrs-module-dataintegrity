@@ -3,7 +3,7 @@
 <body>
 	<h3><u>Data Integrity Checks Summary</u></h3>
 	<br />
-#if(${results.isEmpty()})
+#if(${runs.isEmpty()})
 	<i>No integrity check results exist at this time.</i>
 #else
 	<table style="border:1px solid #ccc" cellpadding='10'>
@@ -15,18 +15,18 @@
 			<th>Run Date</th>
 		</tr>
 #set ($count = 0)
-#foreach ($result in $results) 
-#set ($check = $result.getIntegrityCheck())
+#foreach ($run in $runs)
+#set ($check = $run.getIntegrityCheck())
 		<tr#if($count % 2 == 1) bgcolor='#eee'#end>
 			<td>$check.getId()</td>
 			<td><a href="${serverPath}/module/dataintegrity/results.list?checkId=${check.getId()}">$check.getName()</a></td>
-#if(${result.isCheckPassed()})
+#if(${run.getCheckPassed()})
 			<td bgcolor='lightgreen' align='center'>Passed</td>
 #else
 			<td bgcolor='lightpink' align='center'>Failed</td>
 #end
-			<td>$result.getFailedRecordCount()</td>
-			<td>$result.getDateOccurred()</td>
+			<td>$run.getTotalCount()</td>
+			<td>$run.getDateCreated()</td>
 		</tr>
 #set ($count = $count + 1)
 #end

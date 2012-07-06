@@ -19,11 +19,13 @@ import javax.sql.DataSource;
 
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.IntegrityCheckResult;
 import org.openmrs.module.dataintegrity.IntegrityCheckResults;
+import org.openmrs.module.dataintegrity.IntegrityCheckRun;
 import org.openmrs.module.dataintegrity.QueryResults;
 import org.openmrs.module.dataintegrity.db.DataIntegrityDAO;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -176,4 +178,12 @@ public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
 		return (IntegrityCheckResult) crit.uniqueResult();
 	}
 
+	public IntegrityCheckRun getMostRecentRunForCheck(IntegrityCheck check) {
+		Criteria crit = sessionFactory.getCurrentSession()
+				.createCriteria(IntegrityCheckRun.class)
+				.add(Restrictions.eq("integrityCheck", check))
+				.addOrder(Order.desc("dateCreated"))
+				.setMaxResults(1);
+		return (IntegrityCheckRun) crit.uniqueResult();
+	}
 }

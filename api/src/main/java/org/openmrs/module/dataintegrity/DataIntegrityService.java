@@ -143,4 +143,6 @@ public interface DataIntegrityService {
 
 	public void unretireIntegrityCheck(IntegrityCheck check);
 
+	public List<IntegrityCheckRun> getMostRecentRunsForAllChecks();
+
 }

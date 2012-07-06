@@ -55,59 +55,46 @@ public class SendIntegrityCheckSummaryEmailTask extends AbstractTask {
 	 */
 	public void execute() {
 
-		// TODO remove this chunk when we move to 1.8.x
-		Context.openSession();
-		if (!Context.isAuthenticated()) {
-			authenticate();
-		}
+		if (taskDefinition.getProperty("emailsVal") != null) {
 
-		if (Context.isAuthenticated()) {
-			if (taskDefinition.getProperty("emailsVal") != null) {
+			DataIntegrityService service = getDataIntegrityService();
 
-				DataIntegrityService service = getDataIntegrityService();
+			// get the most recent check runs
+			List<IntegrityCheckRun> runs = service.getMostRecentRunsForAllChecks();
 
-				// get the checks
-				List<IntegrityCheckResults> results = new ArrayList<IntegrityCheckResults>();
-				for (IntegrityCheck check : service.getAllIntegrityChecks()) {
-					IntegrityCheckResults result = service.getResultsForIntegrityCheck(check);
-					if (result != null)
-						results.add(result);
+			// build the message body
+
+			// TODO make this truly multipart (plain and html going out at the same time)
+			Multipart mp = new MimeMultipart();
+
+			try {
+				if (OpenmrsUtil.nullSafeEquals(
+						Context.getAdministrationService()
+								.getGlobalProperty("dataintegrity.mail.format"),
+						"plain")) {
+					BodyPart plain = new MimeBodyPart();
+					plain.setText(generateEmail(runs,
+							DataIntegrityConstants.TEMPLATE_EMAIL_PLAIN));
+					mp.addBodyPart(plain);
+				} else {
+					BodyPart html = new MimeBodyPart();
+					html.setContent(
+							generateEmail(
+									runs,
+									DataIntegrityConstants.TEMPLATE_EMAIL_HTML),
+							"text/html");
+					mp.addBodyPart(html);
 				}
 
-				// build the message body
-				// TODO make this truly multipart (plain and html going out at
-				// the same time)
-				Multipart mp = new MimeMultipart();
-
-				try {
-					if (OpenmrsUtil.nullSafeEquals(
-							Context.getAdministrationService()
-									.getGlobalProperty("dataintegrity.mail.format"),
-							"plain")) {
-						BodyPart plain = new MimeBodyPart();
-						plain.setText(generateEmail(results,
-								DataIntegrityConstants.TEMPLATE_EMAIL_PLAIN));
-						mp.addBodyPart(plain);
-					} else {
-						BodyPart html = new MimeBodyPart();
-						html.setContent(
-								generateEmail(
-										results,
-										DataIntegrityConstants.TEMPLATE_EMAIL_HTML),
-								"text/html");
-						mp.addBodyPart(html);
-					}
-
-					// send the email
-					sendEmail(mp, taskDefinition.getProperty("emailsVal")
-							.split(";"));
-					log.info("Data Integrity Checks summary email sent");
-				} catch (MessagingException e) {
-					log.error("An error occured while sending the Data Integrity summary email", e);
-				}
-			} else {
-				log.error("There are no email addresses to be sent to on the scheduler.");
+				// send the email
+				sendEmail(mp, taskDefinition.getProperty("emailsVal")
+						.split(";"));
+				log.info("Data Integrity Checks summary email sent");
+			} catch (MessagingException e) {
+				log.error("An error occured while sending the Data Integrity summary email", e);
 			}
+		} else {
+			log.error("There are no email addresses to be sent to on the scheduler.");
 		}
 	}
 
@@ -181,8 +168,7 @@ public class SendIntegrityCheckSummaryEmailTask extends AbstractTask {
 	 * @param templateName
 	 * @return
 	 */
-	protected String generateEmail(List<IntegrityCheckResults> results,
-			String templateName) {
+	protected String generateEmail(List<IntegrityCheckRun> runs, String templateName) {
 		AdministrationService as = Context.getAdministrationService();
 
 		// set up the engine
@@ -209,7 +195,7 @@ public class SendIntegrityCheckSummaryEmailTask extends AbstractTask {
 		velocityContext.attachEventCartridge(ec);
 
 		// Set up velocity context
-		velocityContext.put("results", results);
+		velocityContext.put("runs", runs);
 		velocityContext.put("serverPath", 
 				as.getGlobalProperty("dataintegrity.mail.serverpath"));
 

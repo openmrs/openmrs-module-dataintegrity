@@ -323,6 +323,19 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 		check.setRetired(false);
 		Context.getService(DataIntegrityService.class).saveIntegrityCheck(check);
 	}
+
+	public List<IntegrityCheckRun> getMostRecentRunsForAllChecks() {
+		List<IntegrityCheckRun> runs = new ArrayList<IntegrityCheckRun>();
+		
+		List<IntegrityCheck> checks = Context.getService(DataIntegrityService.class).getAllIntegrityChecks();
+		for (IntegrityCheck check : checks) {
+			IntegrityCheckRun run = dao.getMostRecentRunForCheck(check);
+			if (run != null)
+				runs.add(run);
+		}
+		
+		return runs;
+	}
 	
 	private class UniqueIdentifierFinder {
 		private List<Integer> indexes;
