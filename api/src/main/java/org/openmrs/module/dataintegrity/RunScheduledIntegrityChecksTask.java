@@ -42,10 +42,7 @@ public class RunScheduledIntegrityChecksTask extends AbstractTask {
 								if (service.getIntegrityCheck(id) != null) {
 									IntegrityCheck template = service
 											.getIntegrityCheck(id);
-									String parameterValues = "";
-									// TODO : Handle parameter values
-									service.runIntegrityCheck(template,
-											parameterValues);
+									service.runIntegrityCheck(template);
 									log.info("Ran integrity check id #" + id);
 								} else {
 									log.error("The integrity check id #"

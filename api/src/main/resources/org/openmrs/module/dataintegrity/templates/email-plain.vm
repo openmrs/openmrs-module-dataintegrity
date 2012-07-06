@@ -1,15 +1,15 @@
 Data Integrity Checks Summary
 
-#if(${results.isEmpty()})
+#if(${runs.isEmpty()})
 No integrity check results exist at this time.
 #else
-#foreach ($result in $results) 
-#set ($check = $result.getIntegrityCheck())
+#foreach ($run in $runs) 
+#set ($check = $run.getIntegrityCheck())
 
-${check.getName()} - #if(${result.isCheckPassed()})PASSED#{else}FAILED#end
+${check.getName()} - #if(${run.getCheckPassed()})PASSED#{else}FAILED#end
 
-Failed count: ${result.getFailedRecordCount()}
-Date: ${result.getDateOccurred()}
+Failed count: ${run.getTotalCount()}
+Date: ${run.getDateCreated()}
 #end
 #end
 

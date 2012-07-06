@@ -11,400 +11,290 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-
 package org.openmrs.module.dataintegrity;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.BaseOpenmrsMetadata;
+import org.openmrs.util.OpenmrsUtil;
+import org.springframework.util.StringUtils;
 
 /**
  * a data integrity check template
  * 
  * @TODO describe this better
  */
-public class IntegrityCheck {
-	private int id;
-	private String name;
-	private String checkType;
+public class IntegrityCheck extends BaseOpenmrsMetadata {
+
+	private Integer integrityCheckId;
+	private String checkLanguage;
 	private String checkCode;
-	private String checkParameters;
-	private String resultType;
-	private String failDirective;
-	private String failDirectiveOperator;
-	private String repairCodeType;
-	private String repairCode;
-	private String repairType;
-	private String repairDirective;
-	private String repairParameters;
-	private IntegrityCheckResults latestResults;
+	private String failureType;
+	private String failureThreshold;
+	private String failureOperator;
+	private String totalLanguage;
+	private String totalCode;
+	private String resultsLanguage;
+	private String resultsCode;
+	private String resultsUniqueIdentifier;
+	private Set<IntegrityCheckColumn> resultsColumns;
+	private Set<IntegrityCheckRun> integrityCheckRuns;
+	private Set<IntegrityCheckResult> integrityCheckResults;
 
-	/**
-	 * @return the id
-	 */
-	public int getId() {
-		return id;
+	private final Log log = LogFactory.getLog(this.getClass());
+
+	@Override
+	public Integer getId() {
+		return this.getIntegrityCheckId();
 	}
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(int id) {
-		this.id = id;
+	@Override
+	public void setId(Integer id) {
+		this.setIntegrityCheckId(id);
 	}
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
+	public Integer getIntegrityCheckId() {
+		return this.integrityCheckId;
 	}
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setIntegrityCheckId(Integer id) {
+		this.integrityCheckId = id;
 	}
 
-	/**
-	 * @return the checkType
-	 */
-	public String getCheckType() {
-		return checkType;
+	public String getCheckLanguage() {
+		return checkLanguage;
 	}
 
-	/**
-	 * @param checkType
-	 *            the checkType to set
-	 */
-	public void setCheckType(String checkType) {
-		this.checkType = checkType;
+	public void setCheckLanguage(String checkLanguage) {
+		this.checkLanguage = checkLanguage;
 	}
 
-	/**
-	 * @return the checkCode
-	 */
 	public String getCheckCode() {
 		return checkCode;
 	}
 
-	/**
-	 * @param checkCode
-	 *            the checkCode to set
-	 */
 	public void setCheckCode(String checkCode) {
 		this.checkCode = checkCode;
 	}
 
-	/**
-	 * @return the checkParameters
-	 */
-	public String getCheckParameters() {
-		return checkParameters;
+	public String getTotalCode() {
+		return totalCode;
+	}
+
+	public void setTotalCode(String totalCode) {
+		this.totalCode = totalCode;
+	}
+
+	public String getTotalLanguage() {
+		return totalLanguage;
+	}
+
+	public void setTotalLanguage(String totalLanguage) {
+		this.totalLanguage = totalLanguage;
+	}
+
+	public String getFailureType() {
+		return failureType;
+	}
+
+	public void setFailureType(String failureType) {
+		this.failureType = failureType;
+	}
+
+	public String getFailureThreshold() {
+		return failureThreshold;
+	}
+
+	public void setFailureThreshold(String failureThreshold) {
+		this.failureThreshold = failureThreshold;
+	}
+
+	public String getFailureOperator() {
+		return failureOperator;
+	}
+
+	public void setFailureOperator(String failureOperator) {
+		this.failureOperator = failureOperator;
+	}
+
+	public String getResultsCode() {
+		return resultsCode;
+	}
+
+	public void setResultsCode(String resultsCode) {
+		this.resultsCode = resultsCode;
+	}
+
+	public String getResultsLanguage() {
+		return resultsLanguage;
+	}
+
+	public void setResultsLanguage(String resultsLanguage) {
+		this.resultsLanguage = resultsLanguage;
+	}
+
+	public String getResultsUniqueIdentifier() {
+		return resultsUniqueIdentifier;
+	}
+
+	public void setResultsUniqueIdentifier(String resultsUniqueIdentifier) {
+		this.resultsUniqueIdentifier = resultsUniqueIdentifier;
+	}
+
+	public void addResultsColumn(IntegrityCheckColumn col) {
+		col.setIntegrityCheck(this);
+		this.getResultsColumns().add(col);
+	}
+
+	public Set<IntegrityCheckColumn> getResultsColumns() {
+		if (resultsColumns == null) {
+			resultsColumns = new LinkedHashSet<IntegrityCheckColumn>();
+		}
+		return resultsColumns;
+	}
+
+	public void setResultsColumns(Set<IntegrityCheckColumn> resultsColumns) {
+		this.resultsColumns = resultsColumns;
+	}
+
+	public IntegrityCheckRun getMostRecentRun(){
+		return getIntegrityCheckRuns().toArray(new IntegrityCheckRun[]{})[0];
+	}
+	
+	public Set<IntegrityCheckRun> getIntegrityCheckRuns() {
+		if (integrityCheckRuns == null) {
+			integrityCheckRuns = new LinkedHashSet<IntegrityCheckRun>();
+		}
+		return integrityCheckRuns;
+	}
+
+	public void setIntegrityCheckRuns(Set<IntegrityCheckRun> integrityCheckRuns) {
+		this.integrityCheckRuns = integrityCheckRuns;
+	}
+
+	public void addRun(IntegrityCheckRun run) {
+		run.setIntegrityCheck(this);
+		this.getIntegrityCheckRuns().add(run);
+	}
+
+	public Set<IntegrityCheckResult> getIntegrityCheckResults() {
+		if (integrityCheckResults == null) {
+			integrityCheckResults = new LinkedHashSet<IntegrityCheckResult>();
+		}
+		return integrityCheckResults;
+	}
+
+	public void setIntegrityCheckResults(Set<IntegrityCheckResult> integrityCheckResults) {
+		this.integrityCheckResults = integrityCheckResults;
 	}
 
 	/**
-	 * @param checkParameters the checkParameters to set
+	 * add or replace a result based on whether another with the same id exists
+	 * 
+	 * @param result the result to be added or replaced
 	 */
-	public void setCheckParameters(String checkParameters) {
-		this.checkParameters = checkParameters;
+	public void addOrReplaceResult(IntegrityCheckResult result) {
+		if (result == null) {
+			return;
+		}
+
+		boolean found = false;
+		IntegrityCheckResult toBeDeleted = null;
+
+		if (result.getIntegrityCheckResultId() != null) {
+			Iterator<IntegrityCheckResult> iter = this.getIntegrityCheckResults().iterator();
+			while (!found && iter.hasNext()) {
+				toBeDeleted = iter.next();
+				if (OpenmrsUtil.nullSafeEquals(toBeDeleted.getIntegrityCheckResultId(), result.getIntegrityCheckResultId())) {
+					found = true;
+				}
+			}
+			if (found) {
+				if (DataIntegrityConstants.RESULT_STATUS_IGNORED.equals(toBeDeleted.getStatus()))
+					result.setStatus(DataIntegrityConstants.RESULT_STATUS_IGNORED);
+				this.getIntegrityCheckResults().remove(toBeDeleted);
+			}
+		}
+
+		this.getIntegrityCheckResults().add(result);
+	}
+	
+	/**
+	 * update columns, add new ones and remove columns that are no longer 
+	 * referenced. assumes that "name" of a column must be unique.
+	 * 
+	 * @param columns new list of columns to be used
+	 */
+	public void updateColumns(List<IntegrityCheckColumn> columns) {
+		// build a map of existing columns
+		Map<String, IntegrityCheckColumn> colMap = new HashMap<String, IntegrityCheckColumn>();
+		for (IntegrityCheckColumn column : this.getResultsColumns())
+			colMap.put(column.getName(), column);
+
+		// loop through new columns
+		for (IntegrityCheckColumn newColumn : columns) {
+			// use the uuid as an indicator of newness
+			String newName = newColumn.getName();
+			if (StringUtils.hasText(newName)) {
+				// the column must be referencing something that already exists
+				IntegrityCheckColumn existing = colMap.get(newName);
+				if (existing != null) {
+					// update the existing column
+					existing.updateWith(newColumn);
+					// remove it from the map
+					colMap.remove(newName);
+				} else {
+					// this uuid was not found, so it must be new
+					this.addResultsColumn(newColumn);
+				}
+			} else {
+				// a blank uuid means the column is new
+				this.addResultsColumn(newColumn);
+			}
+		}
+		
+		// clean up stragglers
+		this.getResultsColumns().removeAll(colMap.values());
+	}
+	
+	/**
+	 * provides an exact copy of this integrity check, minus runs and results.
+	 * 
+	 * @param includeUuids
+	 * @return 
+	 */
+	public IntegrityCheck clone(Boolean includeUuids){
+		IntegrityCheck check = new IntegrityCheck();
+		check.setUuid(includeUuids ? this.getUuid() : null);
+		check.setName(this.getName());
+		check.setDescription(this.getDescription());
+		check.setCheckLanguage(this.getCheckLanguage());
+		check.setCheckCode(this.getCheckCode());
+		check.setFailureType(this.getFailureType());
+		check.setFailureOperator(this.getFailureOperator());
+		check.setFailureThreshold(this.getFailureThreshold());
+		check.setResultsLanguage(this.getResultsLanguage());
+		check.setResultsCode(this.getResultsCode());
+		check.setResultsUniqueIdentifier(this.getResultsUniqueIdentifier());
+		check.setTotalLanguage(this.getTotalLanguage());
+		check.setTotalCode(this.getTotalCode());
+
+		for (IntegrityCheckColumn column: this.getResultsColumns())
+			check.addResultsColumn(column.clone(includeUuids));
+		
+		return check;
 	}
 
 	/**
-	 * @return the resultType
+	 * helper method for Metadata Sharing Module.
 	 */
-	public String getResultType() {
-		return resultType;
+	public Object writeReplace(){
+		return this.clone(true);
 	}
-
-	/**
-	 * @param resultType
-	 *            the resultType to set
-	 */
-	public void setResultType(String resultType) {
-		this.resultType = resultType;
-	}
-
-	/**
-	 * @return the failDirective
-	 */
-	public String getFailDirective() {
-		return failDirective;
-	}
-
-	/**
-	 * @param failDirective
-	 *            the failDirective to set
-	 */
-	public void setFailDirective(String failDirective) {
-		this.failDirective = failDirective;
-	}
-
-	/**
-	 * @return the failDirectiveOperator
-	 */
-	public String getFailDirectiveOperator() {
-		return failDirectiveOperator;
-	}
-
-	/**
-	 * @param failDirectiveOperator
-	 *            the failDirectiveOperator to set
-	 */
-	public void setFailDirectiveOperator(String failDirectiveOperator) {
-		this.failDirectiveOperator = failDirectiveOperator;
-	}
-
-	/**
-	 * @return the repairType
-	 */
-	public String getRepairType() {
-		return repairType;
-	}
-
-	/**
-	 * @param repairType
-	 *            the repairType to set
-	 */
-	public void setRepairType(String repairType) {
-		this.repairType = repairType;
-	}
-
-	/**
-	 * @return the repairCodeType
-	 */
-	public String getRepairCodeType() {
-		return repairCodeType;
-	}
-
-	/**
-	 * @param repairCodeType the repairCodeType to set
-	 */
-	public void setRepairCodeType(String repairCodeType) {
-		this.repairCodeType = repairCodeType;
-	}
-
-	/**
-	 * @return the repairCode
-	 */
-	public String getRepairCode() {
-		return repairCode;
-	}
-
-	/**
-	 * @param repairCode the repairCode to set
-	 */
-	public void setRepairCode(String repairCode) {
-		this.repairCode = repairCode;
-	}
-
-	/**
-	 * @return the repairDirective
-	 */
-	public String getRepairDirective() {
-		return repairDirective;
-	}
-
-	/**
-	 * @param repairDirective
-	 *            the repairDirective to set
-	 */
-	public void setRepairDirective(String repairDirective) {
-		this.repairDirective = repairDirective;
-	}
-
-	/**
-	 * @return the repairParameters
-	 */
-	public String getRepairParameters() {
-		return repairParameters;
-	}
-
-	/**
-	 * @param repairParameters
-	 *            the repairParameters to set
-	 */
-	public void setRepairParameters(String repairParameters) {
-		this.repairParameters = repairParameters;
-	}
-
-	/**
-	 * @return the latestResults
-	 */
-	public IntegrityCheckResults getLatestResults() {
-		return latestResults;
-	}
-
-	/**
-	 * @param latestResults
-	 *            the latestResults to set
-	 */
-	public void setLatestResults(IntegrityCheckResults latestResults) {
-		if (latestResults != null)
-			latestResults.setIntegrityCheck(this);
-		this.latestResults = latestResults;
-	}
-
-	// DEPRECATED getters and setters
-
-	/**
-	 * @deprecated see {@link #getId()}
-	 */
-	@Deprecated
-	public int getIntegrityCheckId() {
-		return this.getId();
-	}
-
-	/**
-	 * @deprecated see {@link #setId(int)}
-	 */
-	@Deprecated
-	public void setIntegrityCheckId(int id) {
-		this.setId(id);
-	}
-
-	/**
-	 * @deprecated see {@link #getName()}
-	 */
-	@Deprecated
-	public String getIntegrityCheckName() {
-		return this.getName();
-	}
-
-	/**
-	 * @deprecated see {@link #setName(String)}
-	 */
-	@Deprecated
-	public void setIntegrityCheckName(String name) {
-		this.setName(name);
-	}
-
-	/**
-	 * @deprecated see {@link #getCheckType()}
-	 */
-	@Deprecated
-	public String getIntegrityCheckType() {
-		return this.getCheckType();
-	}
-
-	/**
-	 * @deprecated see {@link #setCheckType(String)}
-	 */
-	@Deprecated
-	public void setIntegrityCheckType(String checkType) {
-		this.setCheckType(checkType);
-	}
-
-	/**
-	 * @deprecated see {@link #getCheckCode()}
-	 */
-	@Deprecated
-	public String getIntegrityCheckCode() {
-		return this.getCheckCode();
-	}
-
-	/**
-	 * @deprecated see {@link #setCheckCode(String)}
-	 */
-	@Deprecated
-	public void setIntegrityCheckCode(String checkCode) {
-		this.setCheckCode(checkCode);
-	}
-
-	/**
-	 * @deprecated see {@link #getResultType()}
-	 */
-	@Deprecated
-	public String getIntegrityCheckResultType() {
-		return this.getResultType();
-	}
-
-	/**
-	 * @deprecated see {@link #setResultType(String)}
-	 */
-	@Deprecated
-	public void setIntegrityCheckResultType(String resultType) {
-		this.setResultType(resultType);
-	}
-
-	/**
-	 * @deprecated see {@link #getFailDirective()}
-	 */
-	@Deprecated
-	public String getIntegrityCheckFailDirective() {
-		return this.getFailDirective();
-	}
-
-	/**
-	 * @deprecated see {@link #setFailDirective(String)}
-	 */
-	@Deprecated
-	public void setIntegrityCheckFailDirective(String failDirective) {
-		this.setFailDirective(failDirective);
-	}
-
-	/**
-	 * @deprecated see {@link #getFailDirectiveOperator()}
-	 */
-	@Deprecated
-	public String getIntegrityCheckFailDirectiveOperator() {
-		return this.getFailDirectiveOperator();
-	}
-
-	/**
-	 * @deprecated see {@link #setFailDirectiveOperator(String)}
-	 */
-	@Deprecated
-	public void setIntegrityCheckFailDirectiveOperator(
-			String failDirectiveOperator) {
-		this.setFailDirectiveOperator(failDirectiveOperator);
-	}
-
-	/**
-	 * @deprecated see {@link #getRepairType()}
-	 */
-	@Deprecated
-	public String getIntegrityCheckRepairType() {
-		return this.getRepairType();
-	}
-
-	/**
-	 * @deprecated see {@link #setRepairType(String)}
-	 */
-	@Deprecated
-	public void setIntegrityCheckRepairType(String repairType) {
-		this.setRepairType(repairType);
-	}
-
-	/**
-	 * @deprecated see {@link #getRepairDirective()}
-	 */
-	@Deprecated
-	public String getIntegrityCheckRepairDirective() {
-		return this.getRepairDirective();
-	}
-
-	/**
-	 * @deprecated see {@link #setRepairDirective(String)}
-	 */
-	@Deprecated
-	public void setIntegrityCheckRepairDirective(String repairDirective) {
-		this.setRepairDirective(repairDirective);
-	}
-
-	/**
-	 * @deprecated see {@link #getRepairParameters()}
-	 */
-	@Deprecated
-	public String getIntegrityCheckParameters() {
-		return this.getRepairParameters();
-	}
-
-	/**
-	 * @deprecated see {@link #setRepairParameters(String)}
-	 */
-	@Deprecated
-	public void setIntegrityCheckParameters(String repairParameters) {
-		this.setRepairParameters(repairParameters);
-	}
-
 }

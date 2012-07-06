@@ -14,22 +14,22 @@
 
 package org.openmrs.module.dataintegrity.db.hibernate;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
+import javax.sql.DataSource;
 
 import org.hibernate.Criteria;
-import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.DAOException;
-import org.openmrs.module.dataintegrity.DataIntegrityConstants;
 import org.openmrs.module.dataintegrity.IntegrityCheck;
+import org.openmrs.module.dataintegrity.IntegrityCheckResult;
 import org.openmrs.module.dataintegrity.IntegrityCheckResults;
+import org.openmrs.module.dataintegrity.IntegrityCheckRun;
 import org.openmrs.module.dataintegrity.QueryResults;
 import org.openmrs.module.dataintegrity.db.DataIntegrityDAO;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
 
@@ -57,8 +57,8 @@ public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<IntegrityCheck> getAllIntegrityChecks() throws DAOException {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
-				IntegrityCheck.class, "template");
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(IntegrityCheck.class);
+		// criteria.add(Restrictions.eq("voided", false));
 		return (List<IntegrityCheck>) criteria.list();
 	}
 
@@ -87,18 +87,6 @@ public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
 			throws DAOException {
 		sessionFactory.getCurrentSession().delete(integrityCheck);
 
-	}
-
-	/**
-	 * @see DataIntegrityDAO#repairDataIntegrityCheckViaScript(IntegrityCheck)
-	 */
-	public void repairDataIntegrityCheckViaScript(IntegrityCheck integrityCheck)
-			throws DAOException {
-		if (integrityCheck == null)
-			return;
-		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(
-				integrityCheck.getRepairDirective());
-		query.executeUpdate();
 	}
 
 	/**
@@ -164,46 +152,38 @@ public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
 	 * @see DataIntegrityDAO#getQueryResults(String)
 	 */
 	public QueryResults getQueryResults(String sql) throws DAOException {
-		ResultSet rs = null;
-		List<String> columns = new ArrayList<String>();
-		QueryResults results = new QueryResults();
-
-		try {
-			rs = sessionFactory.getCurrentSession().connection()
-					.createStatement().executeQuery(sql);
-
-			// get the columns
-			ResultSetMetaData md = rs.getMetaData();
-			int columnCount = md.getColumnCount();
-			for (int i=1; i <= columnCount; i++)
-				columns.add(md.getColumnLabel(i));
-			
-			// get the failed records
-			while (rs.next() && results.size() <= DataIntegrityConstants.MAX_RECORDS) {
-				// TODO create batch execution to handle large amounts of data instead of capping at MAX_RECORDS
-				Object[] objectArray = new Object[columnCount];
-				for (int i=0; i < columnCount; i++)
-					objectArray[i] = rs.getObject(i+1);
-				results.add(objectArray);
-			}
-		} catch (SQLException e) {
-			throw new DAOException("SQL error while executing query '" + sql + "'", e);
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-			} catch (SQLException e) {
-				throw new DAOException("could not close RecordSet while executing query '" + sql + "'", e);
-			}
-		}
-
-		// return the results
-		if (results.isEmpty() && columns.isEmpty())
-			return null;
-		
-		// add the columns
-		results.setColumns(columns);
-		return results;
+        return getQueryResults(sql, null);
 	}
 
+    /**
+	 * @see DataIntegrityDAO#getQueryResults(String, Integer)
+	 */
+	public QueryResults getQueryResults(String sql, Integer maxRows) throws DAOException {
+        DataSource ds = new SingleConnectionDataSource(sessionFactory.openStatelessSession().connection(), true);
+        JdbcTemplate jdbc = new JdbcTemplate(ds);
+        if (maxRows != null)
+            jdbc.setMaxRows(maxRows);
+        QueryResults results = (QueryResults) jdbc.query(sql, new QueryResultsExtractor());
+
+        return results;
+	}
+
+	public IntegrityCheckResult findResultForIntegrityCheckByUid(IntegrityCheck integrityCheck, String uid) {
+		if (integrityCheck == null || uid == null)
+			return null;
+		Criteria crit = sessionFactory.getCurrentSession()
+				.createCriteria(IntegrityCheckResult.class)
+				.add(Restrictions.eq("integrityCheck", integrityCheck))
+				.add(Restrictions.eq("uniqueIdentifier", uid));
+		return (IntegrityCheckResult) crit.uniqueResult();
+	}
+
+	public IntegrityCheckRun getMostRecentRunForCheck(IntegrityCheck check) {
+		Criteria crit = sessionFactory.getCurrentSession()
+				.createCriteria(IntegrityCheckRun.class)
+				.add(Restrictions.eq("integrityCheck", check))
+				.addOrder(Order.desc("dateCreated"))
+				.setMaxResults(1);
+		return (IntegrityCheckRun) crit.uniqueResult();
+	}
 }

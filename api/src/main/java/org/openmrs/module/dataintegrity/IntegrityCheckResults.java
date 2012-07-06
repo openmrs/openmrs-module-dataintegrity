@@ -39,8 +39,8 @@ public class IntegrityCheckResults {
 	 * convenience constructor to connect results with the associated integrity
 	 * check template
 	 */
-	public IntegrityCheckResults(IntegrityCheck template) {
-		this.setIntegrityCheck(template);
+	public IntegrityCheckResults(IntegrityCheck check) {
+		integrityCheck = check;
 	}
 
 	/**
@@ -155,42 +155,11 @@ public class IntegrityCheckResults {
 	}
 
 	/**
-	 * @deprecated see {@link IntegrityCheck#getRepairParameters()}
-	 */
-	public String getParameters() {
-		if (this.getIntegrityCheck() != null)
-			return this.getIntegrityCheck().getRepairParameters();
-		return null;
-	}
-
-	/**
-	 * @deprecated see {@link IntegrityCheck#getFailDirective()}
-	 */
-	public String getFailDirective() {
-		if (this.getIntegrityCheck() != null)
-			return this.getIntegrityCheck().getFailDirective();
-		return null;
-	}
-
-	/**
 	 * @deprecated see {@link IntegrityCheck#getName()}
 	 */
 	public String getCheckName() {
 		if (this.getIntegrityCheck() != null)
 			return this.getIntegrityCheck().getName();
-		return null;
-	}
-
-	/**
-	 * @return the fail operator
-	 * @deprecated see
-	 *             {@link IntegrityCheck#getIntegrityCheckFailDirectiveOperator()}
-	 */
-	@Deprecated
-	public String getFailOperator() {
-		if (this.getIntegrityCheck() != null)
-			return this.getIntegrityCheck()
-					.getIntegrityCheckFailDirectiveOperator();
 		return null;
 	}
 
