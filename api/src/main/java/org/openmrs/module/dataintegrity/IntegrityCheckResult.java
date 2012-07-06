@@ -11,10 +11,10 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.dataintegrity;
 
 import java.util.Date;
-import java.util.Map;
 import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.User;
 
