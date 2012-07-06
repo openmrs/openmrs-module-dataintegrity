@@ -9,8 +9,8 @@
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>dataintegrity-omod</artifactId>
 	<packaging>omod</packaging>
-	<name>DataIntegrity Module OMOD</name>
-	<description>OpenMRS module project for DataIntegrity Module</description>
+	<name>Data Integrity Module OMOD</name>
+	<description>OpenMRS module project for Data Integrity Module</description>
 
 	<dependencies>
 		<dependency>

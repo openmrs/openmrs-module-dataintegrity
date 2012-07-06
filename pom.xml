@@ -6,8 +6,8 @@
 	<artifactId>dataintegrity</artifactId>
 	<version>2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>DataIntegrity Module</name>
-	<description>Parent project for DataIntegrity Module</description>
+	<name>Data Integrity Module</name>
+	<description>Parent project for Data Integrity Module</description>
 
 	<url>http://wiki.openmrs.org/display/docs/Data+Integrity+Module</url>
 

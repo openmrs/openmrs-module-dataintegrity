@@ -9,8 +9,8 @@
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>dataintegrity-api</artifactId>
 	<packaging>jar</packaging>
-	<name>DataIntegrity Module API</name>
-	<description>API project for DataIntegrity Module</description>
+	<name>Data Integrity Module API</name>
+	<description>API project for Data Integrity Module</description>
 
 	<dependencies>
 		<!-- 
