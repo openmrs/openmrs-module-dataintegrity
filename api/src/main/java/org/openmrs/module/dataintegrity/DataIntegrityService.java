@@ -43,7 +43,7 @@ public interface DataIntegrityService {
 	/**
 	 * saves a single data integrity check
 	 * 
-	 * @param integrityCheck
+	 * @param integrityCheck the integrity check to be saved
 	 * @throws APIException
 	 */
 	public IntegrityCheck saveIntegrityCheck(IntegrityCheck integrityCheck)
@@ -52,8 +52,8 @@ public interface DataIntegrityService {
 	/**
 	 * returns a single data integrity check
 	 * 
-	 * @param checkId
-	 * @return the data record
+	 * @param checkId the identifier of the integrity check to be retrieved
+	 * @return the requested integrity check
 	 * @throws APIException
 	 * @should not return a null object
 	 */
@@ -61,9 +61,9 @@ public interface DataIntegrityService {
 			throws APIException;
 
 	/**
-	 * returns all non-voided data integrity checks
+	 * returns all non-retired data integrity checks
 	 * 
-	 * @return
+	 * @return all non-retired data integrity checks
 	 * @throws APIException
 	 */
 	public List<IntegrityCheck> getAllIntegrityChecks() throws APIException;
@@ -71,43 +71,14 @@ public interface DataIntegrityService {
 	/**
 	 * deletes a data integrity check
 	 * 
-	 * @param integrityCheck
+	 * @param integrityCheck the integrity check to be deleted
 	 */
 	public void deleteIntegrityCheck(IntegrityCheck integrityCheck);
 
 	/**
-	 * saves the results of a single data integrity check
-	 * 
-	 * @param results
-	 * @throws APIException
-	 * @should not throw an error saving results
-	 */
-	public IntegrityCheckResults saveResults(IntegrityCheckResults results)
-			throws APIException;
-
-	/**
-	 * returns the results of a single data integrity check
-	 * 
-	 * @param resultsId
-	 * @return the data record
-	 * @throws APIException
-	 * @should retrieve results if a check exists
-	 * @should return null if results for a check do not exist
-	 */
-	public IntegrityCheckResults getResults(Integer resultsId)
-			throws APIException;
-
-	/**
-	 * deletes a set of results
-	 * 
-	 * @param template
-	 */
-	public void deleteResults(IntegrityCheckResults results);
-
-	/**
 	 * runs a data integrity check
 	 * 
-	 * @param integrityCheck
+	 * @param integrityCheck the integrity check to be run
 	 * @throws Exception
 	 */
 	public IntegrityCheckRun runIntegrityCheck(IntegrityCheck integrityCheck) throws Exception;
@@ -115,34 +86,50 @@ public interface DataIntegrityService {
     /**
      * runs a query and returns the results
      * 
-     * @param code
-     * @return 
+     * @param code the SQL version of this query
+     * @return a result set for the given query
      */
     public QueryResults getQueryResults(String code) throws APIException;
         
     /**
-     * runs a query and returns the results
+     * runs a query and returns the results, with a limit on the number of rows returned
      *
-     * @param code
-     * @return
+     * @param code the SQL version of this query
+	 * @param limit the maximum number of rows to return
+     * @return a result set for the given query
      */
     public QueryResults getQueryResults(String code, Integer limit) throws APIException;
 
 	/**
-	 * returns results for the given integrity check
+	 * find a result for a given integrity check by its UID
 	 * 
-	 * @param integrityCheck
-	 * @return
+	 * @param integrityCheck the integrity check related to the desired result
+	 * @param uid the unique identifier string for the desired result
+	 * @return the persisted result object
 	 */
-	public IntegrityCheckResults getResultsForIntegrityCheck(
-			IntegrityCheck integrityCheck);
-
 	public IntegrityCheckResult findResultForIntegrityCheckByUid(IntegrityCheck integrityCheck, String uid);
 
+	/**
+	 * retires the given integrity check
+	 * 
+	 * @param check the integrity check to retire
+	 * @param reason the reason provided for retiring
+	 */
 	public void retireIntegrityCheck(IntegrityCheck check, String reason);
 
+	/**
+	 * un-retires the given integrity check
+	 * 
+	 * @param check the integrity check to be un-retired
+	 */
 	public void unretireIntegrityCheck(IntegrityCheck check);
 
+	/**
+	 * get the most recent run for a given integrity check
+	 * 
+	 * @param check the check whose most recent run is desired
+	 * @return the most recent persisted integrity check run
+	 */
 	public List<IntegrityCheckRun> getMostRecentRunsForAllChecks();
 
 }

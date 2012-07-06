@@ -20,7 +20,6 @@ import org.hibernate.SessionFactory;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.IntegrityCheckResult;
-import org.openmrs.module.dataintegrity.IntegrityCheckResults;
 import org.openmrs.module.dataintegrity.IntegrityCheckRun;
 import org.openmrs.module.dataintegrity.QueryResults;
 
@@ -43,7 +42,7 @@ public interface DataIntegrityDAO {
 	/**
 	 * save an integrity check to the database and return the persisted instance
 	 * 
-	 * @param integrityCheck
+	 * @param integrityCheck the integrity check to be saved
 	 * @return persisted instance of the integrity check
 	 * @throws DAOException
 	 */
@@ -53,7 +52,7 @@ public interface DataIntegrityDAO {
 	/**
 	 * get an integrity check based on provided checkId
 	 * 
-	 * @param checkId
+	 * @param checkId the id of the desired integrity check
 	 * @return matching integrity check
 	 * @throws DAOException
 	 */
@@ -71,48 +70,16 @@ public interface DataIntegrityDAO {
 	/**
 	 * delete an integrity check
 	 * 
-	 * @param integrityCheck
+	 * @param integrityCheck the integrity check to be deleted
 	 * @throws DAOException
 	 */
 	public void deleteIntegrityCheck(IntegrityCheck integrityCheck)
 			throws DAOException;
 
 	/**
-	 * save the results of an integrity check to the database
-	 * 
-	 * @param results
-	 * @return persisted instance of the results
-	 */
-	public IntegrityCheckResults saveResults(IntegrityCheckResults results);
-
-	/**
-	 * get the results of an integrity check based on the resultsId
-	 * 
-	 * @param resultsId
-	 * @return matching integrity check results
-	 */
-	public IntegrityCheckResults getResults(Integer resultsId);
-
-	/**
-	 * delete integrity check results from the database
-	 * 
-	 * @param results
-	 */
-	public void deleteResults(IntegrityCheckResults results);
-
-	/**
-	 * get results based on an integrity check id
-	 * 
-	 * @param integrityCheck
-	 * @return matching integrity check results
-	 */
-	public IntegrityCheckResults getResultsForIntegrityCheck(
-			IntegrityCheck integrityCheck);
-
-	/**
 	 * get the results of a query (columns and data)
 	 * 
-	 * @param sql
+	 * @param sql the SQL form of this query
 	 * @return QueryResults object containing columns and data
 	 * @throws DAOException
 	 */
@@ -121,13 +88,27 @@ public interface DataIntegrityDAO {
 	/**
 	 * get the results of a query (columns and data)
 	 *
-	 * @param sql
+	 * @param sql the SQL form of this query
+	 * @param limit the maximum number of results to return
 	 * @return QueryResults object containing columns and data
 	 * @throws DAOException
 	 */
 	public QueryResults getQueryResults(String sql, Integer limit) throws DAOException;
 
+	/**
+	 * find a result for a given integrity check by its UID
+	 * 
+	 * @param integrityCheck the integrity check related to the desired result
+	 * @param uid the unique identifier string for the desired result
+	 * @return the persisted result object
+	 */
 	public IntegrityCheckResult findResultForIntegrityCheckByUid(IntegrityCheck integrityCheck, String uid);
 
+	/**
+	 * get the most recent run for a given integrity check
+	 * 
+	 * @param check the check whose most recent run is desired
+	 * @return the most recent persisted integrity check run
+	 */
 	public IntegrityCheckRun getMostRecentRunForCheck(IntegrityCheck check);
 }

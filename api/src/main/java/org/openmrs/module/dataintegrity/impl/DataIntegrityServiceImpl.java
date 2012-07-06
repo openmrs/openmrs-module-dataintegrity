@@ -31,7 +31,6 @@ import org.openmrs.module.dataintegrity.DataIntegrityService;
 import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.IntegrityCheckColumn;
 import org.openmrs.module.dataintegrity.IntegrityCheckResult;
-import org.openmrs.module.dataintegrity.IntegrityCheckResults;
 import org.openmrs.module.dataintegrity.IntegrityCheckRun;
 import org.openmrs.module.dataintegrity.QueryResult;
 import org.openmrs.module.dataintegrity.QueryResults;
@@ -174,18 +173,14 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 	}
 
 	/**
-	 * 
+	 * @see DataIntegrityService#getQueryResults(java.lang.String) 
 	 */
 	public QueryResults getQueryResults(String code) throws APIException {
 		return getQueryResults(code, null);
 	}
 
 	/**
-	 * 
-	 * @param code
-	 * @param limit
-	 * @return
-	 * @throws APIException 
+	 * @see DataIntegrityService#getQueryResults(java.lang.String, java.lang.Integer) 
 	 */
 	public QueryResults getQueryResults(String code, Integer limit) throws APIException {
 		if (code == null) {
@@ -197,38 +192,6 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 		}
 
 		return dao.getQueryResults(code, limit);
-	}
-
-	/**
-	 * @see DataIntegrityService#saveResults(IntegrityCheckResults)
-	 */
-	public IntegrityCheckResults saveResults(IntegrityCheckResults results)
-			throws APIException {
-		results.setDateOccurred(new Date());
-		return dao.saveResults(results);
-	}
-
-	/**
-	 * @see DataIntegrityService#getResults(Integer)
-	 */
-	public IntegrityCheckResults getResults(Integer resultsId)
-			throws APIException {
-		return dao.getResults(resultsId);
-	}
-
-	/**
-	 * @see DataIntegrityService#deleteResults(IntegrityCheckResults)
-	 */
-	public void deleteResults(IntegrityCheckResults results) {
-		dao.deleteResults(results);
-	}
-
-	/**
-	 * @see DataIntegrityService#getResultsForIntegrityCheck(IntegrityCheck)
-	 */
-	public IntegrityCheckResults getResultsForIntegrityCheck(
-			IntegrityCheck check) {
-		return dao.getResultsForIntegrityCheck(check);
 	}
 
 	/**
@@ -245,6 +208,13 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 		return executors;
 	}
 
+	/**
+	 * adds or updates results related to a given integrity check based on data from the given run
+	 * 
+	 * @param integrityCheck the related integrity check
+	 * @param failedRecords the raw records found by running the check
+	 * @param run the related integrity check run
+	 */
 	private void addOrUpdateResultsForRun(IntegrityCheck integrityCheck, QueryResults failedRecords, IntegrityCheckRun run) {
 		// get column names for uniqueIdentifier (in order)
 		UniqueIdentifierFinder finder = new UniqueIdentifierFinder(integrityCheck, failedRecords.getColumns());
@@ -300,10 +270,19 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 		}
 	}
 
+	/**
+	 * @see DataIntegrityService#findResultForIntegrityCheckByUid(org.openmrs.module.dataintegrity.IntegrityCheck, java.lang.String) 
+	 */
 	public IntegrityCheckResult findResultForIntegrityCheckByUid(IntegrityCheck integrityCheck, String uid) {
 		return dao.findResultForIntegrityCheckByUid(integrityCheck, uid);
 	}
 
+	/**
+	 * sets result status to VOIDED for all results not found in referenced run
+	 * 
+	 * @param integrityCheck the integrity check with results to be voided
+	 * @param run the referenced integrity check run
+	 */
 	private void voidResultsNotFoundInThisRun(IntegrityCheck integrityCheck, IntegrityCheckRun run) {
 		for (IntegrityCheckResult result: integrityCheck.getIntegrityCheckResults())
 			if (result != null && result.getLastSeen() != null && !result.getLastSeen().equals(run)
@@ -314,17 +293,26 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 			}
 	}
 
+	/**
+	 * @see DataIntegrityService#retireIntegrityCheck(org.openmrs.module.dataintegrity.IntegrityCheck, java.lang.String) 
+	 */
 	public void retireIntegrityCheck(IntegrityCheck check, String reason) {
 		check.setRetired(true);
 		check.setRetireReason(reason);
 		Context.getService(DataIntegrityService.class).saveIntegrityCheck(check);
 	}
 
+	/**
+	 * @see DataIntegrityService#unretireIntegrityCheck(org.openmrs.module.dataintegrity.IntegrityCheck) 
+	 */
 	public void unretireIntegrityCheck(IntegrityCheck check) {
 		check.setRetired(false);
 		Context.getService(DataIntegrityService.class).saveIntegrityCheck(check);
 	}
 
+	/**
+	 * @see DataIntegrityService#getMostRecentRunsForAllChecks() 
+	 */
 	public List<IntegrityCheckRun> getMostRecentRunsForAllChecks() {
 		List<IntegrityCheckRun> runs = new ArrayList<IntegrityCheckRun>();
 		
@@ -338,9 +326,18 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 		return runs;
 	}
 	
+	/**
+	 * class used by methods in this service implementation to determine the unique identifier.
+	 */
 	private class UniqueIdentifierFinder {
 		private List<Integer> indexes;
 		
+		/**
+		 * initializes the class with indexes to use.
+		 * 
+		 * @param check the integrity check to base the indexes on
+		 * @param columns a list of column names
+		 */
 		public UniqueIdentifierFinder(IntegrityCheck check, List<String> columns) {
 			indexes = new ArrayList<Integer>();
 			for (IntegrityCheckColumn column: check.getResultsColumns())
@@ -348,6 +345,12 @@ public class DataIntegrityServiceImpl implements DataIntegrityService {
 					indexes.add(columns.indexOf(column.getName()));
 		}
 		
+		/**
+		 * extracts the unique identifier based on selected UID columns
+		 * 
+		 * @param result the result to parse
+		 * @return the UID as determined by the columns
+		 */
 		public String findUniqueIdentifier(Object[] result) {
 			StringBuilder sb = new StringBuilder();
 			try {

@@ -375,4 +375,12 @@
 		</addColumn>
 	</changeSet>
 
+	<changeSet id="dataintegrity-2012-07-06-14:42" author="jkeiper">
+		<preConditions onFail="MARK_RAN">
+			<tableExists tableName="dataintegrity_results"/>
+		</preConditions>
+		<comment>Drop the dataintegrity_results table (NOT the dataintegrity_result table).</comment>
+		<dropTable tableName="dataintegrity_results"/>
+	</changeSet>
+
 </databaseChangeLog>

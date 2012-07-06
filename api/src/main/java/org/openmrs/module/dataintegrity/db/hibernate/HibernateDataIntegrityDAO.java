@@ -24,7 +24,6 @@ import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.dataintegrity.IntegrityCheck;
 import org.openmrs.module.dataintegrity.IntegrityCheckResult;
-import org.openmrs.module.dataintegrity.IntegrityCheckResults;
 import org.openmrs.module.dataintegrity.IntegrityCheckRun;
 import org.openmrs.module.dataintegrity.QueryResults;
 import org.openmrs.module.dataintegrity.db.DataIntegrityDAO;
@@ -90,65 +89,6 @@ public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
 	}
 
 	/**
-	 * @see DataIntegrityDAO#saveResults(IntegrityCheckResults)
-	 */
-	public IntegrityCheckResults saveResults(IntegrityCheckResults results) {
-		Criteria crit = sessionFactory
-				.getCurrentSession()
-				.createCriteria(IntegrityCheckResults.class)
-				.add(Restrictions.eq("integrityCheck",
-						results.getIntegrityCheck()));
-
-		// update the object that already exists (if it does)
-		Object found = crit.uniqueResult();
-		if (found != null) {
-			IntegrityCheckResults old = (IntegrityCheckResults) found;
-			old.setCheckPassed(results.getCheckPassed());
-			old.setDateOccurred(results.getDateOccurred());
-			old.setFailedRecordCount(results.getFailedRecordCount());
-			old.setFailedRecords(results.getFailedRecords());
-			old.setDuration(results.getDuration());
-			sessionFactory.getCurrentSession().saveOrUpdate(old);
-			return old;
-		}
-
-		// otherwise, this is a new one ...
-		sessionFactory.getCurrentSession().saveOrUpdate(results);
-		return results;
-	}
-
-	/**
-	 * @see DataIntegrityDAO#getResults(Integer)
-	 */
-	public IntegrityCheckResults getResults(Integer resultsId) {
-		return (IntegrityCheckResults) sessionFactory.getCurrentSession().get(
-				IntegrityCheckResults.class, resultsId);
-	}
-
-	/**
-	 * @see DataIntegrityDAO#deleteResults(IntegrityCheckResults)
-	 */
-	public void deleteResults(IntegrityCheckResults results) {
-		sessionFactory.getCurrentSession().delete(results);
-	}
-
-	/**
-	 * @see DataIntegrityDAO#getResultsForIntegrityCheck(IntegrityCheck)
-	 */
-	public IntegrityCheckResults getResultsForIntegrityCheck(
-			IntegrityCheck integrityCheck) {
-		if (integrityCheck == null)
-			return null;
-		Criteria crit = sessionFactory.getCurrentSession()
-				.createCriteria(IntegrityCheckResults.class)
-				.add(Restrictions.eq("integrityCheck", integrityCheck));
-		Object result = crit.uniqueResult();
-		if (result == null)
-			return null;
-		return (IntegrityCheckResults) result;
-	}
-
-	/**
 	 * @see DataIntegrityDAO#getQueryResults(String)
 	 */
 	public QueryResults getQueryResults(String sql) throws DAOException {
@@ -168,6 +108,9 @@ public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
         return results;
 	}
 
+	/**
+	 * @see DataIntegrityDAO#findResultForIntegrityCheckByUid(org.openmrs.module.dataintegrity.IntegrityCheck, java.lang.String) 
+	 */
 	public IntegrityCheckResult findResultForIntegrityCheckByUid(IntegrityCheck integrityCheck, String uid) {
 		if (integrityCheck == null || uid == null)
 			return null;
@@ -178,6 +121,9 @@ public class HibernateDataIntegrityDAO implements DataIntegrityDAO {
 		return (IntegrityCheckResult) crit.uniqueResult();
 	}
 
+	/**
+	 * @see DataIntegrityDAO#getMostRecentRunForCheck(org.openmrs.module.dataintegrity.IntegrityCheck) 
+	 */
 	public IntegrityCheckRun getMostRecentRunForCheck(IntegrityCheck check) {
 		Criteria crit = sessionFactory.getCurrentSession()
 				.createCriteria(IntegrityCheckRun.class)
