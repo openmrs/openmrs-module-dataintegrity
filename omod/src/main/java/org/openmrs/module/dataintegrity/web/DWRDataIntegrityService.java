@@ -63,6 +63,13 @@ public class DWRDataIntegrityService {
 		return new DWRQueryResults(qr);
 	}
 
+	/**
+	 * finds columns for a query by running code and extracting them.
+	 * 
+	 * @param code the SQL code to run
+	 * @return a list of columns based on the results
+	 * @throws DWRException 
+	 */
 	public DWRIntegrityCheckColumns getColumnsFromCode(String code) throws DWRException {
 		DWRQueryResults dqr = testCode(code, 0);
 		List<IntegrityCheckColumn> results = new ArrayList<IntegrityCheckColumn>();
@@ -77,6 +84,13 @@ public class DWRDataIntegrityService {
 		return new DWRIntegrityCheckColumns(results);
 	}
 	
+	/**
+	 * runs an integrity check and returns the results.
+	 * 
+	 * @param checkId the integrity check to be run
+	 * @return the resulting integrity check run
+	 * @throws Exception 
+	 */
 	public IntegrityCheckRun runIntegrityCheck(Integer checkId) throws Exception {
 		DataIntegrityService service = Context.getService(DataIntegrityService.class);
 
@@ -91,6 +105,14 @@ public class DWRDataIntegrityService {
 		return null;
 	}
 	
+	/**
+	 * ignores or un-ignores a result based on current status.
+	 * 
+	 * @param checkId the related integrity check
+	 * @param uid the uid of the record to be modified
+	 * @param status the current status of the result
+	 * @return success
+	 */
 	public Boolean ignoreResult(Integer checkId, String uid, Integer status) {
 		DataIntegrityService service = Context.getService(DataIntegrityService.class);
 		if (checkId == null || StringUtils.isEmpty(uid))
