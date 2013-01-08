@@ -11,9 +11,9 @@
 	<url>http://wiki.openmrs.org/display/docs/Data+Integrity+Module</url>
 
 	<scm>
-		<connection>scm:svn:http://svn.openmrs.org/openmrs-modules/dataintegrity/trunk/</connection>
-		<developerConnection>scm:svn:http://svn.openmrs.org/openmrs-modules/dataintegrity/trunk/</developerConnection>
-		<url>http://svn.openmrs.org/openmrs-modules/dataintegrity/trunk/</url>
+		<connection>scm:git:https://github.com/openmrs/openmrs-module-dataintegrity/</connection>
+		<developerConnection>scm:git:https://github.com/openmrs/openmrs-module-dataintegrity/</developerConnection>
+		<url>https://github.com/openmrs/openmrs-module-dataintegrity/</url>
 	</scm>
 
 	<modules>
