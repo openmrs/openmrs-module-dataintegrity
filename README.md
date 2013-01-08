@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/AMPATH/openmrs-module-dataintegrity.png)](https://travis-ci.org/AMPATH/openmrs-module-dataintegrity)
+[![Build Status](https://secure.travis-ci.org/openmrs/openmrs-module-dataintegrity.png)](https://travis-ci.org/openmrs/openmrs-module-dataintegrity)
 
 Data Integrity Module (OpenMRS)
 ==========================
