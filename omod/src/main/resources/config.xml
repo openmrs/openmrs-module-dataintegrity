@@ -11,7 +11,7 @@
 	<description>An OpenMRS Module to check data integrity</description>
 	<activator>@MODULE_PACKAGE@.DataIntegrityModuleActivator</activator>
     <updateURL/>
-    <require_version/>
+    <require_version>1.5.0</require_version>
 	<!-- /DataIntegrity Module Properties -->
 	
 	<!-- Extensions -->
