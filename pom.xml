@@ -11,9 +11,9 @@
 	<url>http://wiki.openmrs.org/display/docs/Data+Integrity+Module</url>
 
 	<scm>
-		<connection>scm:git:https://github.com/openmrs/openmrs-module-dataintegrity/</connection>
-		<developerConnection>scm:git:https://github.com/openmrs/openmrs-module-dataintegrity/</developerConnection>
-		<url>https://github.com/openmrs/openmrs-module-dataintegrity/</url>
+		<connection>scm:git:git@github.com/openmrs/openmrs-module-dataintegrity.git</connection>
+		<developerConnection>scm:git:https://github.com/openmrs/openmrs-module-dataintegrity.git</developerConnection>
+		<url>https://github.com/openmrs/openmrs-module-dataintegrity.git</url>
 	</scm>
 
 	<modules>

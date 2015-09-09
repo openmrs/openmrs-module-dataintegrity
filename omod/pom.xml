@@ -5,9 +5,8 @@
 		<artifactId>dataintegrity</artifactId>
 		<version>2.2-SNAPSHOT</version>
 	</parent>
-	<groupId>org.openmrs.module</groupId>
 	<artifactId>dataintegrity-omod</artifactId>
-	<packaging>omod</packaging>
+	<packaging>jar</packaging>
 	<name>Data Integrity Module OMOD</name>
 	<description>OpenMRS module project for Data Integrity Module</description>
 
