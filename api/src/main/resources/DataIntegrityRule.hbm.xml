@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="org.openmrs.module.dataintegrity.DataIntegrityRule" table="dataintegrity_rule">
+		<id name="ruleId" column="rule_id" unsaved-value="0" type="java.lang.Integer">
+			<generator class="native">
+				<param name="sequence">dataintegrity_rule_rule_id_seq</param>
+			</generator>
+		</id>
+        <property name="ruleName">
+            <column name="rule_name" sql-type="varchar(200)" length="200"/>
+        </property>
+        <property name="ruleCategory">
+            <column name="rule_category" sql-type="varchar(45)" length="45" />
+        </property>
+        <property name="handlerConfig">
+            <column name="handler_config" sql-type="varchar(45)" length="45"/>
+        </property>
+        <property name="handlerClassname">
+            <column name="handler_classname" sql-type="varchar(200)" length="200"/>
+        </property>
+        <property name="uuid" type="java.lang.String"
+                  column="uuid" length="38" unique="true"/>
+    
+        <set name="results" lazy="true" cascade="all-delete-orphan,evict" inverse="true" batch-size="100">
+            <key column="rule_id" not-null="true"/>
+            <one-to-many class="org.openmrs.module.dataintegrity.DataIntegrityResult" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,114 +1,46 @@
-/**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
- *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
- */
-
 package org.openmrs.module.dataintegrity.db;
 
 import java.util.List;
 
-import org.hibernate.SessionFactory;
-import org.openmrs.api.db.DAOException;
-import org.openmrs.module.dataintegrity.IntegrityCheck;
-import org.openmrs.module.dataintegrity.IntegrityCheckResult;
-import org.openmrs.module.dataintegrity.IntegrityCheckRun;
-import org.openmrs.module.dataintegrity.QueryResults;
+import org.openmrs.module.dataintegrity.DataIntegrityResult;
+import org.openmrs.module.dataintegrity.DataIntegrityRule;
 
 public interface DataIntegrityDAO {
-
+	
 	/**
-	 * set the session factory
-	 * 
-	 * @param sessionFactory
+	 * Retrieves all rules in the system
+	 
+	 * @return a list of all rule definitions in the system
+	 * @should return all rule definitions
 	 */
-	public void setSessionFactory(SessionFactory sessionFactory);
-
+	public List<DataIntegrityRule> getRules();
 	/**
-	 * get the session factory
-	 * 
-	 * @return the session factory
+	 * Retrieves all the results in the system
+	 * @return return all the results
 	 */
-	public SessionFactory getSessionFactory();
-
+	public List<DataIntegrityResult> getResults();
 	/**
-	 * save an integrity check to the database and return the persisted instance
-	 * 
-	 * @param integrityCheck the integrity check to be saved
-	 * @return persisted instance of the integrity check
-	 * @throws DAOException
-	 */
-	public IntegrityCheck saveIntegrityCheck(IntegrityCheck integrityCheck)
-			throws DAOException;
-
-	/**
-	 * get an integrity check based on provided checkId
-	 * 
-	 * @param checkId the id of the desired integrity check
-	 * @return matching integrity check
-	 * @throws DAOException
-	 */
-	public IntegrityCheck getIntegrityCheck(Integer checkId)
-			throws DAOException;
-
-	/**
-	 * get all integrity checks from the database
-	 * 
-	 * @return a list of all integrity checks
-	 * @throws DAOException
-	 */
-	public List<IntegrityCheck> getAllIntegrityChecks() throws DAOException;
-
-	/**
-	 * delete an integrity check
-	 * 
-	 * @param integrityCheck the integrity check to be deleted
-	 * @throws DAOException
-	 */
-	public void deleteIntegrityCheck(IntegrityCheck integrityCheck)
-			throws DAOException;
-
-	/**
-	 * get the results of a query (columns and data)
-	 * 
-	 * @param sql the SQL form of this query
-	 * @return QueryResults object containing columns and data
-	 * @throws DAOException
-	 */
-	public QueryResults getQueryResults(String sql) throws DAOException;
-
-	/**
-	 * get the results of a query (columns and data)
+	 * Retrieves all the results for the specified rule
 	 *
-	 * @param sql the SQL form of this query
-	 * @param limit the maximum number of results to return
-	 * @return QueryResults object containing columns and data
-	 * @throws DAOException
+	 * @param dataIntegrityRule
+	 * @return the results for the specified rule definitions
 	 */
-	public QueryResults getQueryResults(String sql, Integer limit) throws DAOException;
-
+	public List<DataIntegrityResult> getResultsForRule(DataIntegrityRule dataIntegrityRule);
+	
+	public DataIntegrityRule getRule(Integer id);
+	public DataIntegrityRule getRuleByUuid(String uuid);
+	
+	public void saveResults(List<DataIntegrityResult> results);
+	public DataIntegrityRule saveRule(DataIntegrityRule rule);
+	
 	/**
-	 * find a result for a given integrity check by its UID
-	 * 
-	 * @param integrityCheck the integrity check related to the desired result
-	 * @param uid the unique identifier string for the desired result
-	 * @return the persisted result object
+	 * Clear all the results
 	 */
-	public IntegrityCheckResult findResultForIntegrityCheckByUid(IntegrityCheck integrityCheck, String uid);
-
+	public void clearAllResults();
+	
 	/**
-	 * get the most recent run for a given integrity check
-	 * 
-	 * @param check the check whose most recent run is desired
-	 * @return the most recent persisted integrity check run
+	 * Clear results for the specified fule
+	 * @param rule The rule whose results are to be cleared
 	 */
-	public IntegrityCheckRun getMostRecentRunForCheck(IntegrityCheck check);
+	public void clearResultsForRule(DataIntegrityRule rule);
 }

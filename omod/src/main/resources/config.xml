@@ -1,207 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE module PUBLIC "-//OpenMRS//DTD OpenMRS Config 1.0//EN" "http://resources.openmrs.org/doctype/config-1.0.dtd">
-<module configVersion="1.0">
+
+<module configVersion="1.2">
 	
-	<!-- DataIntegrity Module Properties -->
-	<id>@MODULE_ID@</id>
-	<name>@MODULE_NAME@</name>
-	<version>@MODULE_VERSION@</version>
-	<package>@MODULE_PACKAGE@</package>
-	<author>Nimantha Baranasuriya</author>
-	<description>An OpenMRS Module to check data integrity</description>
-	<activator>@MODULE_PACKAGE@.DataIntegrityModuleActivator</activator>
-    <updateURL/>
-    <require_version>1.5.0</require_version>
-	<!-- /DataIntegrity Module Properties -->
+	<!-- Base Module Properties -->
+	<id>${project.parent.artifactId}</id>
+	<name>${project.parent.name}</name>
+	<version>${project.parent.version}</version>
+	<package>${project.parent.groupId}.${project.parent.artifactId}</package>
+	<author>OpenMRS</author>
+	<description>
+		Module for performing data integrity checks on the system.
+	</description>
+
+	<activator>${project.parent.groupId}.${project.parent.artifactId}.DataIntegrityActivator</activator>
+
+	<mappingFiles>
+		DataIntegrityResult.hbm.xml
+		DataIntegrityRule.hbm.xml
+	</mappingFiles>
 	
-	<!-- Extensions -->
-	<extension>
-		<point>org.openmrs.admin.list</point>
-		<class>@MODULE_PACKAGE@.extension.html.AdminList</class>
-	</extension>
-	<!-- /Extensions -->
-	
-	<!-- Privileges -->
-	<privilege>
-		<name>Run Integrity Checks</name>
-		<description>Ability to run data integrity checks</description>
-	</privilege>
-	<privilege>
-		<name>Manage Integrity Checks</name>
-		<description>Ability to manage data integrity checks</description>
-	</privilege>
-	<privilege>
-		<name>View Integrity Checks</name>
-		<description>Ability to view integrity checks</description>
-	</privilege>
-	<privilege>
-		<name>View Integrity Check Results</name>
-		<description>Ability to view integrity check results</description>
-	</privilege>
-	<privilege>
-		<name>Run Integrity Check Repairs</name>
-		<description>Ability to run integrity check repairs</description>
-	</privilege>
-	<!-- /Privileges -->
-	
-	<!-- Required Global Properties -->
-
-	<globalProperty>
-		<property>dataintegrity.actionServerUrl</property> <!-- Must start with `moduleId.` -->
-		<defaultValue></defaultValue>
-		<description>
-			URL for the production server to be used for correction. The Data
-			Integrity Repair Server URL should have the format
-			"http[s]://localhost:8080/openmrs". Remember, if left empty it uses
-			this server's URL.
-		</description>
-	</globalProperty>
-	
-	<globalProperty>
-		<property>dataintegrity.mail.scheduleTaskName</property>
-		<defaultValue>Data Integrity Summary Email</defaultValue>
-		<description>
-			This name is used in setting the Data Integrity Email Schedule name
-			that will be available in the scheduler.
-		</description>
-	</globalProperty>
-	
-	<globalProperty>
-		<property>dataintegrity.mail.host</property>
-		<defaultValue>localhost</defaultValue>
-		<description>
-			Email server hostname for Data Integrity summary reports
-		</description>
-	</globalProperty>
-
-	<globalProperty>
-		<property>dataintegrity.mail.port</property>
-		<defaultValue>25</defaultValue>
-		<description>
-			Email server port for Data Integrity summary reports
-		</description>
-	</globalProperty>
-
-	<globalProperty>
-		<property>dataintegrity.mail.protocol</property>
-		<defaultValue>smtp</defaultValue>
-		<description>
-			Email server protocol for Data Integrity summary reports (smtp or smtps for SSL)
-		</description>
-	</globalProperty>
-
-	<globalProperty>
-		<property>dataintegrity.mail.auth</property>
-		<defaultValue>false</defaultValue>
-		<description>
-			Email server authentication requirement for Data Integrity summary reports (true or false)
-		</description>
-	</globalProperty>
-
-	<globalProperty>
-		<property>dataintegrity.mail.user</property>
-		<defaultValue></defaultValue>
-		<description>
-			Email server username for Data Integrity summary reports
-		</description>
-	</globalProperty>
-
-	<globalProperty>
-		<property>dataintegrity.mail.password</property>
-		<defaultValue></defaultValue>
-		<description>
-			Email server password for Data Integrity summary reports (is not encrypted)
-		</description>
-	</globalProperty>
-
-	<globalProperty>
-		<property>dataintegrity.mail.tls</property>
-		<defaultValue>false</defaultValue>
-		<description>
-			Email server TLS requirement for Data Integrity summary reports (true or false)
-		</description>
-	</globalProperty>
-
-	<globalProperty>
-		<property>dataintegrity.mail.format</property>
-		<defaultValue>html</defaultValue>
-		<description>
-			Email format for Data Integrity summary reports (plain or html)
-		</description>
-	</globalProperty>
-
-	<globalProperty>
-		<property>dataintegrity.mail.from</property>
-		<defaultValue></defaultValue>
-		<description>
-			Sending email address for Data Integrity summary reports
-		</description>
-	</globalProperty>
-
-	<globalProperty>
-		<property>dataintegrity.mail.subject</property>
-		<defaultValue>Summary for Data Integrity Checks</defaultValue>
-		<description>
-			Summary e-mails sent by the Data Integrity module will use this subject.
-		</description>
-	</globalProperty>
-
-	<globalProperty>
-		<property>dataintegrity.mail.serverpath</property>
-		<defaultValue>http://localhost:8080/openmrs</defaultValue>
-		<description>
-			URL of this instance for Data Integrity summary reports (for links to Data Integrity Checks)
-		</description>
-	</globalProperty>
-	
-	<!-- /Required Global Properties -->
+	<require_modules>
+		<require_module>org.openmrs.module.uiframework</require_module>
+	</require_modules>
 	
 	<!-- Internationalization -->
+	<!-- All message codes should start with ${project.parent.artifactId}. -->
 	<messages>
 		<lang>en</lang>
 		<file>messages.properties</file>
 	</messages>
+	<messages>
+		<lang>fr</lang>
+		<file>messages_fr.properties</file>
+	</messages>
+	<messages>
+		<lang>es</lang>
+		<file>messages_es.properties</file>
+	</messages>
 	<!-- /Internationalization -->
-	
-	<!-- Hibernate Mapping -->
-	<mappingFiles>
-        ${omodHbmConfig}
-    </mappingFiles>
-    <!-- /Hibernate Mapping -->
-    
-    <!-- DWR -->
 
-        <dwr>
-                <allow>
-                        <create creator="new" javascript="DWRDataIntegrityService">
-                                <param name="class" value="@MODULE_PACKAGE@.web.DWRDataIntegrityService"/>
-                                <include method="testCode"/>
-                                <include method="getColumnsFromCode"/>
-                                <include method="runIntegrityCheck"/>
-								<include method="ignoreResult"/>
-                        </create>
-                        <convert converter="bean" match="@MODULE_PACKAGE@.web.DWRQueryResults"/>
-                        <convert converter="bean" match="@MODULE_PACKAGE@.web.DWRIntegrityCheckColumns"/>
-                        <convert converter="bean" match="@MODULE_PACKAGE@.IntegrityCheckColumn"/>
-                        <convert converter="bean" match="@MODULE_PACKAGE@.IntegrityCheckRun"/>
-                        <convert converter="bean" match="@MODULE_PACKAGE@.IntegrityCheckResult"/>
-                        <convert converter="bean" match="@MODULE_PACKAGE@.IntegrityCheck"/>
-                </allow>
-                
-                <signatures>
-                        <![CDATA[
-                        import @MODULE_PACKAGE@.web.DWRDataIntegrityService;
-                        DWRDataIntegrityService.testCode(String code, Integer limit);
-                        DWRDataIntegrityService.getColumnsFromCode(String code);
-                        DWRDataIntegrityService.runIntegrityCheck(Integer checkId);
-						DWRDataIntegrityService.ignoreResult(Integer checkId, String uid, Integer status);
-                        ]]>
-                </signatures>	
-        </dwr>
-    
-    <!-- /DWR -->
-    
-    <!-- Servlets -->
-	<!-- Accessed through the url /pageContext()/moduleServlet/<moduleId>/<servlet-name> -->
-	<!-- Servlets -->
 </module>
+
