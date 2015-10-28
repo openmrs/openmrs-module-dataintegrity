@@ -5,6 +5,9 @@
 
 <hibernate-configuration>
 	<session-factory>
-		${hbmConfig}
+		<mapping resource="DataIntegrityCheck.hbm.xml" />
+		<mapping resource="DataIntegrityColumn.hbm.xml" />
+		<mapping resource="DataIntegrityResult.hbm.xml" />
+		<mapping resource="DataIntegrityRun.hbm.xml" />
 	</session-factory>
 </hibernate-configuration>
