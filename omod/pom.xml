@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>dataintegrity</artifactId>
-		<version>2.3</version>
+		<version>2.4-SNAPSHOT</version>
 	</parent>
 	<artifactId>dataintegrity-omod</artifactId>
 	<packaging>jar</packaging>
