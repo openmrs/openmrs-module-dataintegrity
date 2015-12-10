@@ -3,7 +3,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>dataintegrity</artifactId>
-	<version>2.3-SNAPSHOT</version>
+	<version>2.3</version>
 	<packaging>pom</packaging>
 	<name>Data Integrity Module</name>
 	<description>Parent project for Data Integrity Module</description>
@@ -14,7 +14,7 @@
 		<connection>scm:git:git@github.com/openmrs/openmrs-module-dataintegrity.git</connection>
 		<developerConnection>scm:git:https://github.com/openmrs/openmrs-module-dataintegrity.git</developerConnection>
 		<url>https://github.com/openmrs/openmrs-module-dataintegrity.git</url>
-	  <tag>HEAD</tag>
+	  <tag>2.3</tag>
   </scm>
 
 	<modules>
