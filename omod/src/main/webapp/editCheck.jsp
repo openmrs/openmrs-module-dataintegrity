@@ -15,11 +15,11 @@
 
 <openmrs:htmlInclude file="/dwr/interface/DWRDataIntegrityService.js"/>
 
-<c:set var="new" value="${empty check.id}"/>
+<c:set var="newCheck" value="${empty check.id}"/>
 
 <h2>
-	<c:if test="${new}"><spring:message code="dataintegrity.addCheck"/></c:if>
-	<c:if test="${not new}"><spring:message code="dataintegrity.editCheck"/></c:if>
+	<c:if test="${newCheck}"><spring:message code="dataintegrity.addCheck"/></c:if>
+	<c:if test="${not newCheck}"><spring:message code="dataintegrity.editCheck"/></c:if>
 </h2>
 
 <script type="text/javascript">
@@ -347,7 +347,7 @@
 			return false;
 		});
 
-		<c:if test="${not new}">
+		<c:if test="${not newCheck}">
 		// initialize retire dialog
 		$j("#retireDialog").dialog({
 			autoOpen: false,
@@ -696,7 +696,7 @@
 
     <input type="hidden" name="checkId" value="${check.id}" />
     <input type="submit" id="submitButton" value="<spring:message code="general.save"/>"/>
-	<c:if test="${not new}">
+	<c:if test="${not newCheck}">
 		<c:if test="${not check.retired}">
 			<button id="retireButton"><spring:message code="general.retire"/></button>
 		</c:if>
@@ -717,7 +717,7 @@
     </ul>
 </div>
 
-<c:if test="${not new}">
+<c:if test="${not newCheck}">
 	<div id="retireDialog" class="hidden">
 		<div id="retireWrapper">
 			<div id="retireForm">
