@@ -165,10 +165,10 @@
 	
 	<!-- Hibernate Mapping -->
 	<mappingFiles>
-		<mapping resource="DataIntegrityCheck.hbm.xml" />
-		<mapping resource="DataIntegrityColumn.hbm.xml" />
-		<mapping resource="DataIntegrityResult.hbm.xml" />
-		<mapping resource="DataIntegrityRun.hbm.xml" />
+		DataIntegrityCheck.hbm.xml
+		DataIntegrityColumn.hbm.xml
+		DataIntegrityResult.hbm.xml
+		DataIntegrityRun.hbm.xml
 	</mappingFiles>
     <!-- /Hibernate Mapping -->
     
