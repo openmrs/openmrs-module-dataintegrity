@@ -9,9 +9,6 @@
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/js/jquery.corner.js" />
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/js/ColVis.js" />
 
-<openmrs:htmlInclude file="/moduleResources/dataintegrity/js/highcharts.js" />
-<openmrs:htmlInclude file="/moduleResources/dataintegrity/js/highcharts-exporting.js" />
-
 <openmrs:htmlInclude file="/scripts/jquery/dataTables/css/dataTables.css" />
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/css/smoothness/jquery-ui-1.8.16.custom.css" />
 <openmrs:htmlInclude file="/moduleResources/dataintegrity/css/dataTables_jui.css" />
@@ -239,54 +236,6 @@
 		
 		<c:set var="aboveColor" value="${check.failureOperator == 'greater than' ? 'rgb(255,0,0)' : 'rgb(0,255,0)'}"/>
 		<c:set var="belowColor" value="${check.failureOperator == 'less than' ? 'rgb(255,0,0)' : 'rgb(0,255,0)'}"/>
-		
-		var historyChart = new Highcharts.Chart({
-			chart: {
-				renderTo: 'historyChart',
-				zoomType: 'x',
-				height: 600,
-				defaultSeriesType: 'areaspline'
-			},
-            exporting: {
-                buttons: {
-                    exportButton: {
-                        x: -20
-                    },
-                    printButton: {
-                        x: -75
-                    }
-                }
-			},
-			title: {
-				text: 'Data Integrity Over Time'
-			},
-			subtitle: {
-				text: 'Errors detected at various points'
-			},
-			xAxis: {
-				type: 'datetime',
-				dateTimeLabelFormats: { // don't display the dummy year
-					month: '%e. %b',
-					year: '%b'
-				}
-			},
-			yAxis: {
-				title: { text: 'Count' }
-			},
-			tooltip: {
-				formatter: function() {
-					return '<b>'+ this.series.name +'</b><br/>'+
-						Highcharts.dateFormat('%e. %b', this.x) +': '+ this.y;
-				}
-			},
-			series: [
-				{ id: 0, name: 'Unresolved', data: totalData }, 
-				{ id: 1, name: 'New', data: newData }, 
-				{ id: 2, name: 'Ignored', data: ignoredData }, 
-				{ id: 3, name: 'Resolved', data: voidedData }
-			]
-		});
-		historyChart.get(2).hide();
 
 		var tabs = $j("#tabs").tabs();
 
