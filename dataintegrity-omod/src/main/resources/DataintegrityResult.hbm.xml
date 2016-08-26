@@ -20,6 +20,11 @@
         <many-to-one name="patientProgram" class="org.openmrs.PatientProgram">
             <column name="patient_program_id" />
         </many-to-one>
+
+        <many-to-one name="patient" class="org.openmrs.Patient">
+            <column name="patient_id" />
+        </many-to-one>
+
         <many-to-one name="rule" class="org.openmrs.module.dataintegrity.db.DataintegrityRule">
             <column name="rule_id" />
         </many-to-one>
