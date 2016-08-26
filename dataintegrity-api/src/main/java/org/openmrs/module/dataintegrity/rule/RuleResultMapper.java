@@ -1,5 +1,6 @@
 package org.openmrs.module.dataintegrity.rule;
 
+import org.openmrs.Patient;
 import org.openmrs.module.dataintegrity.DataIntegrityException;
 import org.openmrs.module.dataintegrity.db.DataintegrityResult;
 import org.openmrs.module.dataintegrity.db.DataintegrityRule;
@@ -18,19 +19,24 @@ public class RuleResultMapper {
         List<DataintegrityResult> results = new ArrayList<>();
         for (RuleResult result : ruleResults) {
             DataintegrityResult diResult = new DataintegrityResult();
-
-            if(result.getEntity() instanceof PatientProgram){
-                diResult.setPatientProgram((PatientProgram) result.getEntity());
-            } else {
-                throw new DataIntegrityException("The entity ["+result.getEntity().toString()+"] is not supported yet!!");
-            }
-
             diResult.setRule(ruleWithDefn.getKey());
             diResult.setNotes(result.getNotes());
             diResult.setActionUrl(result.getActionUrl());
+            setEntity(result, diResult);
 
             results.add(diResult);
         }
         return results;
+    }
+
+    private void setEntity(RuleResult result, DataintegrityResult diResult) {
+        if(result.getEntity() instanceof PatientProgram){
+            diResult.setPatientProgram((PatientProgram) result.getEntity());
+        } else if(result.getEntity() instanceof Patient){
+            diResult.setPatient((Patient) result.getEntity());
+        }
+        else {
+            throw new DataIntegrityException("The entity ["+result.getEntity().toString()+"] is not supported yet!!");
+        }
     }
 }
