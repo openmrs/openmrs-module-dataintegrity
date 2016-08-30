@@ -5,7 +5,7 @@ This module provides job which is based on OpenMRS scheduler Task. The task is s
 
 # Writing a rule
 
-* Rules can be written in java.  We plan to support groovy in future.  Every rule should extend [RuleDefn](https://github.com/openmrs/openmrs-module-dataintegrity/blob/master/dataintegrity-api/src/main/java/org/openmrs/module/dataintegrity/rule/RuleDefn.java#L5)
+* Rules can be written in java and groovy. Every rule should extend [RuleDefn](https://github.com/openmrs/openmrs-module-dataintegrity/blob/master/dataintegrity-api/src/main/java/org/openmrs/module/dataintegrity/rule/RuleDefn.java#L5)
 * The RuleDefn can return data violations in org.openmrs.Patient and org.openmrs.PatientProgram entities.
 * The RuleDefn returns [RuleResult](https://github.com/openmrs/openmrs-module-dataintegrity/blob/master/dataintegrity-api/src/main/java/org/openmrs/module/dataintegrity/rule/RuleResult.java).  It contains the entity details (like Patient or PatientProgram) with some extra information like notes and actionUrl (for some UI action in case of integrity issues).
 * Rule can be made available in any openmrs omod.  Once the rule is written, it has to updated in the dataintegrity_rule table.  The following is a sample insert command.
@@ -66,4 +66,4 @@ public class InvalidDateOfDeath implements RuleDefn<Patient> {
 }
 
 ```
-
+* Groovy rules needs to be available in <openmrs_app_data_directory>/dataQualityRules/<ruleName>.groovy.  The dataintegrity_rule should contain the handler_config='groovy' and handler_classname='<rulename>.groovy'
