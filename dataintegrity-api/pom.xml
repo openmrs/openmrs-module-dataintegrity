@@ -5,12 +5,12 @@
     <parent>
         <groupId>org.openmrs.module</groupId>
         <artifactId>dataintegrity</artifactId>
-        <version>4.1-SNAPSHOT</version>
+        <version>4.1.0</version>
     </parent>
     <groupId>org.openmrs.module</groupId>
     <artifactId>dataintegrity-api</artifactId>
     <packaging>jar</packaging>
-    <version>4.1-SNAPSHOT</version>
+    <version>4.1.0</version>
     <name>Data Integrity API</name>
 
     <dependencies>
