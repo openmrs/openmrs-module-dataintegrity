@@ -4,7 +4,7 @@
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="org.openmrs.module.dataintegrity.db.DataintegrityRule" table="dataintegrity_rule" schema="openmrs">
+    <class name="org.openmrs.module.dataintegrity.db.DataintegrityRule" table="dataintegrity_rule">
         <id name="ruleId">
             <column name="rule_id" sql-type="int(11)"/>
         </id>

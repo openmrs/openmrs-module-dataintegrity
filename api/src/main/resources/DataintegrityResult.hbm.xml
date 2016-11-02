@@ -4,7 +4,7 @@
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.openmrs.module.dataintegrity.db">
 
-    <class name="org.openmrs.module.dataintegrity.db.DataintegrityResult" table="dataintegrity_result" schema="openmrs">
+    <class name="org.openmrs.module.dataintegrity.db.DataintegrityResult" table="dataintegrity_result">
         <id name="resultId" column="result_id" unsaved-value="0" type="java.lang.Integer">
             <generator class="native">
                 <param name="sequence">dataintegrity_result_result_id_seq</param>

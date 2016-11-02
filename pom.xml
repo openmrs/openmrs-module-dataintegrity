@@ -18,8 +18,8 @@
   </scm>
 
     <modules>
-        <module>dataintegrity-api</module>
-        <module>dataintegrity-omod</module>
+        <module>api</module>
+        <module>omod</module>
     </modules>
 
     <dependencyManagement>
@@ -54,7 +54,7 @@
     </dependencyManagement>
 
 	<properties>
-		<openMRSVersion>1.8.2</openMRSVersion>
+		<openMRSVersion>1.9.9</openMRSVersion>
 	</properties>
 
     <build>

@@ -1,6 +1,5 @@
 language: java
 jdk:
- - openjdk6
  - oraclejdk7
 script: mvn clean install --batch-mode
 matrix:
@@ -13,7 +12,7 @@ notifications:
   email: false
   irc:
     channels:
-      - "irc.freenode.org#ampath"
+      - "irc.freenode.org#openmrs"
     template:
       - "[%{repository}] [%{commit}] [%{author}] %{message} - %{build_url}"
 
