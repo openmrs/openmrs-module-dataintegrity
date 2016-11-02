@@ -24,7 +24,7 @@
         <finalName>${project.artifactId}-${project.version}</finalName>
         <resources>
             <resource>
-                <directory>src/main/resources</directory>
+                <directory>../api/src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>

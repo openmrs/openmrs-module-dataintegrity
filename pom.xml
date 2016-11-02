@@ -18,8 +18,8 @@
   </scm>
 
     <modules>
-        <module>dataintegrity-api</module>
-        <module>dataintegrity-omod</module>
+        <module>api</module>
+        <module>omod</module>
     </modules>
 
     <dependencyManagement>
