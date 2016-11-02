@@ -1,63 +1,119 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-    <groupId>org.openmrs.module</groupId>
-    <artifactId>dataintegrity</artifactId>
-    <version>4.2.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>org.openmrs.module</groupId>
+	<artifactId>dataintegrity</artifactId>
+	<version>4.2.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
 	<name>Data Integrity Module</name>
 	<description>Parent project for Data Integrity Module</description>
-
+	
 	<url>http://wiki.openmrs.org/display/docs/Data+Integrity+Module</url>
-
+	
 	<scm>
 		<connection>scm:git:git@github.com/openmrs/openmrs-module-dataintegrity.git</connection>
 		<developerConnection>scm:git:https://github.com/openmrs/openmrs-module-dataintegrity.git</developerConnection>
 		<url>https://github.com/openmrs/openmrs-module-dataintegrity.git</url>
-	  <tag>HEAD</tag>
-  </scm>
-
-    <modules>
-        <module>dataintegrity-api</module>
-        <module>dataintegrity-omod</module>
-    </modules>
-
-    <dependencyManagement>
-        <dependencies>
-        <dependency>
-            <groupId>org.openmrs.api</groupId>
-            <artifactId>openmrs-api</artifactId>
-            <version>${openMRSVersion}</version>
-            <scope>provided</scope>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.openmrs.test</groupId>
-            <artifactId>openmrs-test</artifactId>
-            <version>${openMRSVersion}</version>
-            <type>pom</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>2.0.1-beta</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-core</artifactId>
-            <version>1.6.5</version>
-            <scope>test</scope>
-        </dependency>
-        </dependencies>
-    </dependencyManagement>
-
+		<tag>HEAD</tag>
+	</scm>
+	
+	<modules>
+		<module>api</module>
+		<module>omod</module>
+	</modules>
+	
 	<properties>
-		<openMRSVersion>1.8.2</openMRSVersion>
+		<openMRSVersion>1.9.9</openMRSVersion>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<uiframeworkVersion>3.6</uiframeworkVersion>
 	</properties>
-
-    <build>
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.openmrs.api</groupId>
+				<artifactId>openmrs-api</artifactId>
+				<version>${openMRSVersion}</version>
+				<scope>provided</scope>
+				<type>jar</type>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.openmrs.api</groupId>
+				<artifactId>openmrs-api</artifactId>
+				<version>${openMRSVersion}</version>
+				<type>test-jar</type>
+				<scope>test</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.openmrs.test</groupId>
+				<artifactId>openmrs-test</artifactId>
+				<version>${openMRSVersion}</version>
+				<type>pom</type>
+				<scope>test</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.openmrs.web</groupId>
+				<artifactId>openmrs-web</artifactId>
+				<version>${openMRSVersion}</version>
+				<scope>provided</scope>
+				<type>jar</type>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.openmrs.web</groupId>
+				<artifactId>openmrs-web</artifactId>
+				<version>${openMRSVersion}</version>
+				<type>test-jar</type>
+				<scope>test</scope>
+			</dependency>
+			
+			<!-- Other dependencies -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+			</dependency>
+			
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.11</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>2.0.1-beta</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.powermock</groupId>
+				<artifactId>powermock-api-mockito</artifactId>
+				<version>1.6.5</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.powermock</groupId>
+				<artifactId>powermock-core</artifactId>
+				<version>1.6.5</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.openmrs.module</groupId>
+				<artifactId>uiframework-api</artifactId>
+				<version>${uiframeworkVersion}</version>
+				<scope>provided</scope>
+			</dependency>
+		
+		</dependencies>
+	</dependencyManagement>
+	
+	
+	<build>
 		<finalName>${project.parent.artifactId}-${project.parent.version}</finalName>
 		<resources>
 			<resource>
@@ -81,20 +137,20 @@
 				<targetPath>web/module</targetPath>
 			</resource>
 		</resources>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
 					<version>2.5.1</version>
-                    <configuration>
-                        <target>1.7</target>
-                        <source>1.7</source>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.openmrs.maven.plugins</groupId>
-                    <artifactId>maven-openmrs-plugin</artifactId>
+					<configuration>
+						<target>1.7</target>
+						<source>1.7</source>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.openmrs.maven.plugins</groupId>
+					<artifactId>maven-openmrs-plugin</artifactId>
 					<version>1.0.1</version>
 					<extensions>true</extensions>
 					<executions>
@@ -113,10 +169,10 @@
 							</goals>
 						</execution>
 					</executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
 					<executions>
 						<execution>
 							<id>Expand moduleApplicationContext and messages</id>
@@ -142,28 +198,28 @@
 						<autoVersionSubmodules>true</autoVersionSubmodules>
 						<tagNameFormat>@{project.version}</tagNameFormat>
 					</configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
-    <repositories>
-        <repository>
-            <id>openmrs-repo</id>
-            <name>OpenMRS Nexus Repository</name>
-            <url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>openmrs-repo</id>
-            <name>OpenMRS Nexus Repository</name>
-            <url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
-
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+	<repositories>
+		<repository>
+			<id>openmrs-repo</id>
+			<name>OpenMRS Nexus Repository</name>
+			<url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>openmrs-repo</id>
+			<name>OpenMRS Nexus Repository</name>
+			<url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+	
 	<distributionManagement>
 		<repository>
 			<id>openmrs-repo-modules</id>

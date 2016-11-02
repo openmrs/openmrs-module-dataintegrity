@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	
+	<changeSet id="data-integrity-201610211035" author="ssmusoke" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<tableExists tableName="dataintegrity_rule"/>
+		</preConditions>
+		<comment>Adding a unique index to the dataintegrity_rule table</comment>
+		<createIndex indexName="dataintegrity_rule_uuid_index" tableName="dataintegrity_rule" unique="true">
+			<column name="uuid"/>
+		</createIndex>
+	</changeSet>
+	<changeSet id="data-integrity-201608041110" author="jaya, deepak" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<sqlCheck expectedResult="0">
+				SELECT COUNT(*) FROM scheduler_task_config
+				WHERE schedulable_class = 'org.openmrs.module.dataintegrity.scheduler.DataIntegrityTask'
+				And name = 'Data Integrity Task'
+			</sqlCheck>
+		</preConditions>
+		<comment>Inserting Data Integrity Task into 'schedule_task_config' table</comment>
+		<insert tableName="scheduler_task_config">
+			<column name="name" value="Data Integrity Task" />
+			<column name="description" value="runs all integrity rules" />
+			<column name="schedulable_class" value="org.openmrs.module.dataintegrity.scheduler.DataIntegrityTask" />
+			<column name="start_time_pattern" value="MM/dd/yyyy HH:mm:ss" />
+			<column name="start_time" valueDate="now()" />
+			<column name="repeat_interval" value="86400" />
+			<column name="date_created" valueDate="CURRENT_TIMESTAMP" />
+			<column name="created_by" value="1" />
+			<column name="start_on_startup" value="1"/>
+			<column name="started" value="1"/>
+			<column name="uuid" valueComputed="uuid()" />
+		</insert>
+	</changeSet>
+
+	<changeSet id="data-integrity-201607221102" author="jaya, deepak">
+		<createTable tableName="dataintegrity_rule" >
+			<column name="rule_id" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" primaryKeyName="dataintegrity_rule_pk" nullable="false" />
+			</column>
+
+			<column name="rule_name" type="varchar(200)"></column>
+			<column name="rule_category" type="varchar(45)"></column>
+			<column name="handler_config" type="varchar(45)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="handler_classname" type="varchar(200)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="creator" type="int(11)"></column>
+			<column name="date_created" type="datetime"></column>
+			<column name="retired" type="tinyint(1)"></column>
+			<column name="changed_by" type="int(11)"></column>
+			<column name="date_changed" type="datetime"></column>
+			<column name="retired_by" type="int(11)"></column>
+			<column name="date_retired" type="datetime"></column>
+			<column name="retire_reason" type="varchar(255)"></column>
+			<column name="uuid" type="char(38)"></column>
+		</createTable>
+	</changeSet>
+	<changeSet id="data-integrity-201607221103" author="jaya, deepak">
+		<createTable tableName="dataintegrity_result" >
+			<column name="result_id" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" primaryKeyName="dataintegrity_result_pk" nullable="false" />
+			</column>
+			<column name="rule_id" type="int(11)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="patient_id" type="int(11)">
+			</column>
+			<column name="patient_program_id" type="int(11)">
+			</column>
+			<column name="action_url" type="varchar(500)"></column>
+			<column name="notes" type="varchar(500)"></column>
+			<column name="creator" type="int(11)"></column>
+			<column name="date_created" type="datetime"></column>
+			<column name="retired" type="tinyint(1)"></column>
+			<column name="changed_by" type="int(11)"></column>
+			<column name="date_changed" type="datetime"></column>
+			<column name="retired_by" type="int(11)"></column>
+			<column name="date_retired" type="datetime"></column>
+			<column name="retire_reason" type="varchar(255)"></column>
+			<column name="uuid" type="char(38)"></column>
+		</createTable>
+		<addForeignKeyConstraint baseTableName="dataintegrity_result" baseColumnNames="patient_id"
+								 constraintName="patient_id for dataintegrity_result"
+								 referencedTableName="patient"
+								 referencedColumnNames="patient_id"></addForeignKeyConstraint>
+
+
+		<addForeignKeyConstraint baseTableName="dataintegrity_result" baseColumnNames="patient_program_id"
+								 constraintName="patient_program_id for dataintegrity_result"
+								 referencedTableName="patient_program"
+								 referencedColumnNames="patient_program_id"></addForeignKeyConstraint>
+
+		<addForeignKeyConstraint baseTableName="dataintegrity_result" baseColumnNames="rule_id"
+								 constraintName="rule_id for dataintegrity_result"
+								 referencedTableName="dataintegrity_rule"
+								 referencedColumnNames="rule_id"></addForeignKeyConstraint>
+
+	</changeSet>
+</databaseChangeLog>
