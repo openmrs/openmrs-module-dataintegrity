@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public License,
+  ~ v. 2.0. If a copy of the MPL was not distributed with this file, You can
+  ~ obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+  ~ the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+  ~
+  ~ Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+  ~ graphic logo is a trademark of OpenMRS Inc.
+  ~
+  -->
+<dataset>
+    <dataintegrity_rule rule_id="1" rule_name="Test Patient Rule" rule_category="patient" handler_config="java"
+                        handler_classname="org.openmrs.module.api.TestPatientHandlerClassName"
+                        uuid="097fe53a-36b4-475c-95ea-a429c9512014"/>
+    <dataintegrity_rule rule_id="2" rule_name="Test Program Rule" rule_category="program" handler_config="java"
+                        handler_classname="org.openmrs.module.api.TestProgramHandlerClassName"
+                        uuid="bc4dda5e-c793-4507-85dc-c2c9e867ae1a"/>
+    <dataintegrity_rule rule_id="3" rule_name="Test Patient Rule With Results" rule_category="patient" handler_config="java"
+                        handler_classname="org.openmrs.module.api.TestPatientHandlerClassNameWithResults"
+                        uuid="72330639-0a68-47bb-b5c8-ac8350658866"/>
+    <patient patient_id="2" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>
+    <patient patient_id="3" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>
+    <dataintegrity_result result_id="1" rule_id="3" patient_id="2" action_url="" notes="Test Result"
+                          date_created="2016-10-10 00:00:00.0" uuid="33585310-e1a6-41da-8d60-d35acd386bf0"/>
+    <dataintegrity_result result_id="2" rule_id="3" patient_id="3" action_url="" notes="Test Result2"
+                          date_created="2016-10-10 00:00:00.0" uuid="33585310-e1a6-41da-8d60-d35acd386bf1"/>
+</dataset>

@@ -1,10 +1,21 @@
 <?xml version='1.0' encoding='utf-8'?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public License,
+  ~ v. 2.0. If a copy of the MPL was not distributed with this file, You can
+  ~ obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+  ~ the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+  ~
+  ~ Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+  ~ graphic logo is a trademark of OpenMRS Inc.
+  ~
+  -->
+
 <!DOCTYPE hibernate-mapping PUBLIC
     "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.openmrs.module.dataintegrity.db">
 
-    <class name="org.openmrs.module.dataintegrity.db.DataintegrityResult" table="dataintegrity_result">
+    <class name="org.openmrs.module.dataintegrity.DataIntegrityResult" table="dataintegrity_result">
         <id name="resultId" column="result_id" unsaved-value="0" type="java.lang.Integer">
             <generator class="native">
                 <param name="sequence">dataintegrity_result_result_id_seq</param>
@@ -25,7 +36,7 @@
             <column name="patient_id" />
         </many-to-one>
 
-        <many-to-one name="rule" class="org.openmrs.module.dataintegrity.db.DataintegrityRule">
+        <many-to-one name="rule" class="org.openmrs.module.dataintegrity.DataIntegrityRule">
             <column name="rule_id" />
         </many-to-one>
 

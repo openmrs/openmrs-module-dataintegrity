@@ -1,47 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public License,
+  ~ v. 2.0. If a copy of the MPL was not distributed with this file, You can
+  ~ obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+  ~ the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+  ~
+  ~ Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+  ~ graphic logo is a trademark of OpenMRS Inc.
+  ~
+  -->
+
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns="http://www.springframework.org/schema/beans"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-
-    <context:component-scan base-package="org.openmrs.module.dataintegrity"/>
-
-    <bean name="DataintegrityEvaluationService" class="org.openmrs.module.dataintegrity.rule.impl.DataintegrityEvaluationServiceImpl">
-        <constructor-arg name="dataintegrityDao" ref="dataintegrityDAO"></constructor-arg>
-        <constructor-arg name="ruleDefnLoader" ref="ruleDefnLoader"></constructor-arg>
-        <constructor-arg name="ruleResultMapper" ref="ruleResultMapper"></constructor-arg>
-    </bean>
-
-    <bean id="dataintegrityDAO" class="org.openmrs.module.dataintegrity.db.impl.DataintegrityDAOImpl">
-        <property name="sessionFactory">
-            <ref bean="sessionFactory" />
-        </property>
-    </bean>
-
-    <!-- Services accessible via Context.getService() -->
-    <bean parent="serviceContext">
-        <property name="moduleService">
-            <list merge="true">
-                <value>org.openmrs.module.dataintegrity.rule.DataintegrityEvaluationService</value>
-                <ref local="dataintegrityEvaluationService"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="dataintegrityEvaluationService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-        <property name="transactionManager">
-            <ref bean="transactionManager"/>
-        </property>
-        <property name="target" ref="DataintegrityEvaluationService"></property>
-        <property name="preInterceptors">
-            <ref bean="serviceInterceptors"/>
-        </property>
-        <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource"/>
-        </property>
-    </bean>
+	
+	<context:component-scan base-package="${project.parent.groupId}.${project.parent.artifactId}" />
+	
+	<bean name="DataIntegrityEvaluationService"
+		  class="${project.parent.groupId}.${project.parent.artifactId}.rule.impl.DataIntegrityEvaluationServiceImpl">
+		<constructor-arg name="dataIntegrityDao" ref="dataintegrityDAO"></constructor-arg>
+		<constructor-arg name="ruleDefinitionLoader" ref="ruleDefinitionLoader"></constructor-arg>
+		<constructor-arg name="ruleResultMapper" ref="ruleResultMapper"></constructor-arg>
+	</bean>
+	
+	<bean id="dataintegrityDAO" class="${project.parent.groupId}.${project.parent.artifactId}.db.impl.DataIntegrityDAOImpl">
+		<property name="sessionFactory">
+			<ref bean="dbSessionFactory" />
+		</property>
+	</bean>
+	
+	<!-- Services accessible via Context.getService() -->
+	<bean parent="serviceContext">
+		<property name="moduleService">
+			<list merge="true">
+				<value>org.openmrs.module.dataintegrity.rule.DataIntegrityEvaluationService</value>
+				<ref local="dataintegrityEvaluationService" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="dataintegrityEvaluationService"
+		  class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target" ref="DataIntegrityEvaluationService"></property>
+		<property name="preInterceptors">
+			<ref bean="serviceInterceptors" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="transactionAttributeSource" />
+		</property>
+	</bean>
+	
+	<bean parent="serviceContext">
+		<property name="moduleService">
+			<list merge="true">
+				<value>${project.parent.groupId}.${project.parent.artifactId}.api.DataIntegrityService</value>
+				<ref local="dataintegrityService" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="dataintegrityService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">
+			<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.DataIntegrityServiceImpl">
+				<property name="dataIntegrityDAO">
+					<ref bean="dataintegrityDAO" />
+				</property>
+			</bean>
+		</property>
+		<property name="preInterceptors">
+			<ref bean="serviceInterceptors" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="transactionAttributeSource" />
+		</property>
+	</bean>
 
 </beans>

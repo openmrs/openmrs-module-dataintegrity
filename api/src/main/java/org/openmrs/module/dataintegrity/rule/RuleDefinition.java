@@ -11,35 +11,24 @@
 
 package org.openmrs.module.dataintegrity.rule;
 
-public class RuleResult<T> {
+import java.util.List;
+
+import org.openmrs.module.dataintegrity.DataIntegrityRule;
+
+public interface RuleDefinition<T> {
 	
-	private T entity;
+	/**
+	 * Evaluate the defined rule returning any entities that violate it
+	 *
+	 * @return
+	 */
+	public List<RuleResult<T>> evaluate();
 	
-	private String notes;
-	
-	private String actionUrl;
-	
-	public T getEntity() {
-		return entity;
-	}
-	
-	public void setEntity(T entity) {
-		this.entity = entity;
-	}
-	
-	public String getNotes() {
-		return notes;
-	}
-	
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
-	
-	public String getActionUrl() {
-		return actionUrl;
-	}
-	
-	public void setActionUrl(String actionUrl) {
-		this.actionUrl = actionUrl;
-	}
+	/**
+	 * Return the DataIntegrityRule instance that is used to execute this rule. A null value for this method will not save
+	 * any metadata for the rule
+	 *
+	 * @return
+	 */
+	public DataIntegrityRule getRule();
 }
