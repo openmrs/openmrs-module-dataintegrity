@@ -9,11 +9,11 @@
  *
  */
 
-package org.openmrs.module.dataintegrity;
+package org.openmrs.module.dataintegrity.rule;
 
-public class DataIntegrityException extends RuntimeException {
+public interface DataIntegrityEvaluationService<T> {
 	
-	public DataIntegrityException(String message) {
-		super(message);
-	}
+	void fireRules();
+	
+	void fireRule(String uuid);
 }

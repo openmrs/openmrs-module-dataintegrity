@@ -1,24 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public License,
+  ~ v. 2.0. If a copy of the MPL was not distributed with this file, You can
+  ~ obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+  ~ the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+  ~
+  ~ Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+  ~ graphic logo is a trademark of OpenMRS Inc.
+  ~
+  -->
 
 <module configVersion="1.2">
 	
 	<!-- Base Module Properties -->
-	<id>@MODULE_ID@</id>
+	<id>${project.parent.artifactId}</id>
 	<name>${project.parent.name}</name>
-	<version>@MODULE_VERSION@</version>
-	<package>@MODULE_PACKAGE@</package>
-	<author>Bahmni</author>
+	<version>${project.parent.version}</version>
+	<package>${project.parent.groupId}.${project.parent.artifactId}</package>
+	<author>OpenMRS</author>
 	<description>
 		Module for performing data integrity checks on the system.
 	</description>
-
-	<activator>@MODULE_PACKAGE@.Activator</activator>
-
-	<require_version>${openMRSRuntimeVersion}</require_version>
-
+	
+	<activator>${project.parent.groupId}.${project.parent.artifactId}.DataIntegrityActivator</activator>
+	
 	<mappingFiles>
-		DataintegrityResult.hbm.xml
-		DataintegrityRule.hbm.xml
+		DataIntegrityResult.hbm.xml
+		DataIntegrityRule.hbm.xml
 	</mappingFiles>
+	
+	<!-- Internationalization -->
+	<!-- All message codes should start with ${project.parent.artifactId}. -->
+	<messages>
+		<lang>en</lang>
+		<file>messages.properties</file>
+	</messages>
+	<messages>
+		<lang>fr</lang>
+		<file>messages_fr.properties</file>
+	</messages>
+	<messages>
+		<lang>es</lang>
+		<file>messages_es.properties</file>
+	</messages>
+	<!-- /Internationalization -->
+
 </module>
 
