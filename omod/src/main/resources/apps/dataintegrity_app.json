@@ -1,0 +1,16 @@
+[
+  {
+    "id": "${project.parent.groupId}.${project.parent.artifactId}.app.link",
+    "extensions": [
+      {
+        "id": "${project.parent.groupId}.${project.parent.artifactId}.homepageLink",
+        "extensionPointId": "org.openmrs.referenceapplication.homepageLink",
+        "type": "link",
+        "label": "dataintegrity.app.label",
+        "url": "dataintegrity/results.page",
+        "icon": "icon-th-list",
+        "order": 300
+      }
+    ]
+  }
+]

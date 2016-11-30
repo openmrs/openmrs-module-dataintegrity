@@ -17,7 +17,7 @@
 	<name>${project.parent.name}</name>
 	<version>${project.parent.version}</version>
 	<package>${project.parent.groupId}.${project.parent.artifactId}</package>
-	<author>OpenMRS</author>
+	<author>Bhamni and Stephen S. Musoke</author>
 	<description>
 		Module for performing data integrity checks on the system.
 	</description>
@@ -28,6 +28,10 @@
 		DataIntegrityResult.hbm.xml
 		DataIntegrityRule.hbm.xml
 	</mappingFiles>
+	
+	<require_modules>
+		<require_module>org.openmrs.module.uiframework</require_module>
+	</require_modules>
 	
 	<!-- Internationalization -->
 	<!-- All message codes should start with ${project.parent.artifactId}. -->
