@@ -10,18 +10,19 @@
   ~
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>dataintegrity</artifactId>
-		<version>4.2.0</version>
+		<version>4.2.0-SNAPSHOT</version>
 	</parent>
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>dataintegrity-api</artifactId>
 	<packaging>jar</packaging>
-	<version>4.2.0</version>
+	<version>4.2.0-SNAPSHOT</version>
 	<name>Data Integrity API</name>
 	
 	<dependencies>
