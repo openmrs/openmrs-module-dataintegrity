@@ -14,7 +14,7 @@
 	
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>dataintegrity</artifactId>
-	<version>4.2.3-SNAPSHOT</version>
+	<version>4.2.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Data Integrity Module</name>
 	<description>Parent project for Data Integrity Module</description>
