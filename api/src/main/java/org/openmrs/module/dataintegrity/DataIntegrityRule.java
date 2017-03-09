@@ -14,6 +14,7 @@ package org.openmrs.module.dataintegrity;
 import java.io.Serializable;
 import java.util.Set;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.annotation.Independent;
 
@@ -30,6 +31,7 @@ public class DataIntegrityRule extends BaseOpenmrsObject implements Serializable
 	private String handlerClassname;
 	
 	@Independent
+	@JsonIgnore
 	private Set<DataIntegrityResult> results;
 	
 	public int getRuleId() {
@@ -71,7 +73,7 @@ public class DataIntegrityRule extends BaseOpenmrsObject implements Serializable
 	public void setHandlerClassname(String handlerClassname) {
 		this.handlerClassname = handlerClassname;
 	}
-	
+
 	/**
 	 * Returns the results for running this rule
 	 *
@@ -80,7 +82,7 @@ public class DataIntegrityRule extends BaseOpenmrsObject implements Serializable
 	public Set<DataIntegrityResult> getResults() {
 		return results;
 	}
-	
+
 	public void setResults(Set<DataIntegrityResult> results) {
 		this.results = results;
 	}
@@ -100,7 +102,7 @@ public class DataIntegrityRule extends BaseOpenmrsObject implements Serializable
 		return getRuleName() + " for " + getRuleCategory() + " with handler " + getHandlerConfig() + " using "
 				+ getHandlerClassname() + " with rule_id " + getRuleId() + " and uuid " + getUuid();
 	}
-	
+
 	public void addResult(DataIntegrityResult result) {
 		result.setRule(this);
 		getResults().add(result);

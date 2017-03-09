@@ -75,6 +75,9 @@
 				<property name="dataIntegrityDAO">
 					<ref bean="dataintegrityDAO" />
 				</property>
+				<property name="patientDAO">
+					<ref bean="patientDAO" />
+				</property>
 			</bean>
 		</property>
 		<property name="preInterceptors">

@@ -13,6 +13,7 @@ package org.openmrs.module.dataintegrity.db;
 
 import java.util.List;
 
+import org.openmrs.Patient;
 import org.openmrs.module.dataintegrity.DataIntegrityResult;
 import org.openmrs.module.dataintegrity.DataIntegrityRule;
 
@@ -40,6 +41,14 @@ public interface DataIntegrityDAO {
 	 * @return the results for the specified rule definitions
 	 */
 	public List<DataIntegrityResult> getResultsForRule(DataIntegrityRule dataIntegrityRule);
+
+	/**
+	 * Retrieves all the results for specified patient
+	 *
+	 * @param patient
+	 * @return the results for specified patient
+	 */
+	public List<DataIntegrityResult> getResultsByPatient(Patient patient);
 	
 	public DataIntegrityRule getRule(Integer id);
 	

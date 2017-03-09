@@ -77,4 +77,13 @@ public interface DataIntegrityService extends OpenmrsService {
 	 * @return the results for the specified rule definitions
 	 */
 	public List<DataIntegrityResult> getResultsForRuleByUuid(String uuid);
+
+	/**
+	 * Retrieves all the results for specified patient
+	 *
+	 * @param patientUuid
+	 * @return the results for specified patient
+	 */
+	public List<DataIntegrityResult> getResultsByPatientUuid(String patientUuid);
+
 }
