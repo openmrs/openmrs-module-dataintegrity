@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
+import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.hibernate.DbSession;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
@@ -48,7 +49,15 @@ public class DataIntegrityDAOImpl implements DataIntegrityDAO {
 		criteria.add(Restrictions.eq("rule", dataIntegrityRule));
 		return criteria.list();
 	}
-	
+
+	@Override
+	public List<DataIntegrityResult> getResultsByPatient(Patient patient) {
+		Criteria criteria = getSession().createCriteria(DataIntegrityResult.class);
+		// filter by patient
+		criteria.add(Restrictions.eq("patient", patient));
+		return criteria.list();
+	}
+
 	@Override
 	public DataIntegrityRule getRule(Integer id) {
 		return (DataIntegrityRule) getSession().get(DataIntegrityRule.class, id);

@@ -15,6 +15,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.db.PatientDAO;
+import org.openmrs.api.db.hibernate.HibernatePatientDAO;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.dataintegrity.DataIntegrityResult;
 import org.openmrs.module.dataintegrity.DataIntegrityRule;
@@ -29,18 +31,29 @@ import org.springframework.transaction.annotation.Transactional;
 public class DataIntegrityServiceImpl extends BaseOpenmrsService implements DataIntegrityService {
 	
 	protected final Log log = LogFactory.getLog(getClass());
-	
+
 	private DataIntegrityDAO dataIntegrityDAO;
+	private PatientDAO patientDAO;
 	
 	/**
-	 * Sets the DAO
+	 * Sets the data integrity DAO
 	 *
 	 * @param dataIntegrityDAO
 	 */
 	public void setDataIntegrityDAO(DataIntegrityDAO dataIntegrityDAO) {
 		this.dataIntegrityDAO = dataIntegrityDAO;
 	}
-	
+
+	/**
+	 * Sets the patient DAO
+	 *
+	 * @param patientDAO
+	 */
+	public void setPatientDAO(PatientDAO patientDAO) {
+		this.patientDAO = patientDAO;
+	}
+
+
 	@Override
 	@Transactional(readOnly = false)
 	public DataIntegrityRule saveRule(DataIntegrityRule rule) {
@@ -81,5 +94,11 @@ public class DataIntegrityServiceImpl extends BaseOpenmrsService implements Data
 	@Transactional(readOnly = true)
 	public List<DataIntegrityResult> getResultsForRuleByUuid(String uuid) {
 		return dataIntegrityDAO.getResultsForRule(dataIntegrityDAO.getRuleByUuid(uuid));
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<DataIntegrityResult> getResultsByPatientUuid(String patientUuid) {
+		return dataIntegrityDAO.getResultsByPatient(patientDAO.getPatientByUuid(patientUuid));
 	}
 }
