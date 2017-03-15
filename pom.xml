@@ -23,7 +23,7 @@
 	
 	<scm>
 		<connection>scm:git:git@github.com/openmrs/openmrs-module-dataintegrity.git</connection>
-		<developerConnection>scm:git:https://github.com/openmrs/openmrs-module-dataintegrity.git</developerConnection>
+		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-dataintegrity.git</developerConnection>
 		<url>https://github.com/openmrs/openmrs-module-dataintegrity.git</url>
 		<tag>HEAD</tag>
 	</scm>
