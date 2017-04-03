@@ -16,17 +16,18 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 	
-	<changeSet id="data-integrity-rule-201704011320" author="ssmusoke">
-		<preConditions onFail="MARK_RAN">
-			<tableExists tableName="dataintegrity_rule" />
-		</preConditions>
-		<dropTable tableName="dataintegrity_rule"/>
-	</changeSet>
 	<changeSet id="data-integrity-result-201704011320" author="ssmusoke">
 		<preConditions onFail="MARK_RAN">
 			<tableExists tableName="dataintegrity_result" />
 		</preConditions>
 		<dropTable tableName="dataintegrity_result"/>
+	</changeSet>
+	
+	<changeSet id="data-integrity-rule-201704011320" author="ssmusoke">
+		<preConditions onFail="MARK_RAN">
+			<tableExists tableName="dataintegrity_rule" />
+		</preConditions>
+		<dropTable tableName="dataintegrity_rule"/>
 	</changeSet>
 	
 	<changeSet id="data-integrity-201608041110" author="jaya, deepak" dbms="mysql">
