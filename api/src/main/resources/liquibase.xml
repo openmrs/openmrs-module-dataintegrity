@@ -16,15 +16,19 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 	
-	<changeSet id="data-integrity-201610211035" author="ssmusoke" dbms="mysql">
+	<changeSet id="data-integrity-rule-201704011320" author="ssmusoke">
 		<preConditions onFail="MARK_RAN">
-			<tableExists tableName="dataintegrity_rule"/>
+			<tableExists tableName="dataintegrity_rule" />
 		</preConditions>
-		<comment>Adding a unique index to the dataintegrity_rule table</comment>
-		<createIndex indexName="dataintegrity_rule_uuid_index" tableName="dataintegrity_rule" unique="true">
-			<column name="uuid"/>
-		</createIndex>
+		<dropTable tableName="dataintegrity_rule"/>
 	</changeSet>
+	<changeSet id="data-integrity-result-201704011320" author="ssmusoke">
+		<preConditions onFail="MARK_RAN">
+			<tableExists tableName="dataintegrity_result" />
+		</preConditions>
+		<dropTable tableName="dataintegrity_result"/>
+	</changeSet>
+	
 	<changeSet id="data-integrity-201608041110" author="jaya, deepak" dbms="mysql">
 		<preConditions onFail="MARK_RAN">
 			<sqlCheck expectedResult="0">
@@ -48,8 +52,13 @@
 			<column name="uuid" valueComputed="uuid()" />
 		</insert>
 	</changeSet>
-
+	
 	<changeSet id="data-integrity-201607221102" author="jaya, deepak">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="dataintegrity_rule" />
+			</not>
+		</preConditions>
 		<createTable tableName="dataintegrity_rule" >
 			<column name="rule_id" type="int(11)" autoIncrement="true">
 				<constraints primaryKey="true" primaryKeyName="dataintegrity_rule_pk" nullable="false" />
@@ -74,7 +83,13 @@
 			<column name="uuid" type="char(38)"></column>
 		</createTable>
 	</changeSet>
+	
 	<changeSet id="data-integrity-201607221103" author="jaya, deepak">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="dataintegrity_result" />
+			</not>
+		</preConditions>
 		<createTable tableName="dataintegrity_result" >
 			<column name="result_id" type="int(11)" autoIncrement="true">
 				<constraints primaryKey="true" primaryKeyName="dataintegrity_result_pk" nullable="false" />
@@ -114,5 +129,17 @@
 								 referencedTableName="dataintegrity_rule"
 								 referencedColumnNames="rule_id"></addForeignKeyConstraint>
 
+	</changeSet>
+	
+	<changeSet id="data-integrity-201610211035" author="ssmusoke" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<indexExists tableName="dataintegrity_rule" indexName="dataintegrity_rule_uuid_index" />
+			</not>
+		</preConditions>
+		<comment>Adding a unique index to the rule uuid to ensure that rules are unique</comment>
+		<createIndex indexName="dataintegrity_rule_uuid_index" tableName="dataintegrity_rule" unique="true">
+			<column name="uuid"/>
+		</createIndex>
 	</changeSet>
 </databaseChangeLog>
