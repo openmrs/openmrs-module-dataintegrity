@@ -32,7 +32,7 @@ public class ResultsPageController {
 		}
 		if (ruleId == null || ruleId.equals("")) {
 			model.addAttribute("results", dataintegrityService.getAllResults());
-			model.addAttribute("rule", null);
+			model.addAttribute("rules", dataintegrityService.getAllRules());
 		} else {
 			log.info("Generating results for rule with uuid " + ruleId);
 			// rerun a specific rule and load its results
