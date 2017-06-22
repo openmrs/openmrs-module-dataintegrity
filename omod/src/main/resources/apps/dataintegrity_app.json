@@ -12,5 +12,28 @@
         "order": 300
       }
     ]
+  },
+  {
+    "id": "ugandaemr.dataIntegrityViolations",
+    "instanceOf": "coreapps.template.dashboardWidget",
+    "description": "dataintegrity.desc.label",
+    "order": 10,
+    "config": {
+      "widget": "dataintegrityviolations",
+      "icon": "icon-question-sign",
+      "label": "Data Quality Violations",
+      "maxResults": "8"
+    },
+    "extensions": [
+      {
+        "id": "org.openmrs.module.coreapps.mostRecentVitals.clinicianDashboardFirstColumn",
+        "appId": "ugandaemr.dataIntegrityViolations",
+        "extensionPointId": "patientDashboard.firstColumnFragments",
+        "extensionParams": {
+          "provider": "coreapps",
+          "fragment": "dashboardwidgets/dashboardWidget"
+        }
+      }
+    ]
   }
 ]
