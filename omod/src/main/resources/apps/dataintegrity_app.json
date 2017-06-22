@@ -27,7 +27,7 @@
     "extensions": [
       {
         "id": "org.openmrs.module.coreapps.mostRecentVitals.clinicianDashboardFirstColumn",
-        "appId": "ugandaemr.dataIntegrityViolations",
+        "appId": "coreapps.dataIntegrityViolations",
         "extensionPointId": "patientDashboard.firstColumnFragments",
         "extensionParams": {
           "provider": "coreapps",
