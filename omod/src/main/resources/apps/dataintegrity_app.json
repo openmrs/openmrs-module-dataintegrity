@@ -14,7 +14,7 @@
     ]
   },
   {
-    "id": "ugandaemr.dataIntegrityViolations",
+    "id": "coreapps.dataIntegrityViolations",
     "instanceOf": "coreapps.template.dashboardWidget",
     "description": "dataintegrity.desc.label",
     "order": 10,
