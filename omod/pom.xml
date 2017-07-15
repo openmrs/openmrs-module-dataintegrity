@@ -16,12 +16,12 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>dataintegrity</artifactId>
-		<version>4.4.1-SNAPSHOT</version>
+		<version>4.4.1</version>
 	</parent>
 	
 	<artifactId>dataintegrity-omod</artifactId>
 	<packaging>jar</packaging>
-	<version>4.4.1-SNAPSHOT</version>
+	<version>4.4.1</version>
 	<name>Data Integrity OMOD</name>
 	
 	<build>
