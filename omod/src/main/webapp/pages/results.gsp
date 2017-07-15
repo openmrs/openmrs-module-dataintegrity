@@ -60,14 +60,14 @@
             link: '${ui.pageLink("dataintegrity", "results")}'
         },
         {
-            label: "Results for ${rules.ruleName}"
+            label: "${ui.message('dataintegrity.result.resultFor')} ${rules.ruleName}"
         }
         <% } else { %>
         {
             label: "${ ui.message("dataintegrity.result.all.label")}"
         },
         {
-            label: "Results for ${rule.ruleName}"
+            label: "${ui.message('dataintegrity.result.resultFor')} ${rule.ruleName}"
         }
         <% } %>
     ];
@@ -75,7 +75,6 @@
     <% if (results.size() > 0) { %>
     const PATIENT_COLUMN = 3; // index of patient/program name column, used to filter result by patient name
     const EXPORT_COLUMNS = [ 3,1,2,4 ]; // index of columns which will get exported
-    const DOCUMENT_TITLE = 'Data Quality Violations'; // Title of document gets exported
 
     jq(document).ready(function () {
         var resultTable = jq("#list-results").DataTable({
@@ -89,32 +88,32 @@
             buttons: [
                 {
                     extend: 'excelHtml5',
-                    text: '<i class="icon-file-excel" title="Export as Excel"></i>',
+                    text: '<i class="icon-file-excel" title="${ui.message('dataintegrity.result.exportAsExcel')}"></i>',
                     className: 'export-btn',
                     exportOptions: {
                         columns: EXPORT_COLUMNS
                     },
-                    title: DOCUMENT_TITLE,
+                    title: "${ui.message('dataintegrity.result.documentTitle')}",
                     filename: getFileName()
                 },
                 {
                     extend: 'csvHtml5',
-                    text: '<i class="icon-doc-text" title="Export as CSV"></i>',
+                    text: '<i class="icon-doc-text" title="${ui.message('dataintegrity.result.exportAsCsv')}"></i>',
                     className: 'export-btn',
                     exportOptions: {
                         columns: EXPORT_COLUMNS
                     },
-                    title: DOCUMENT_TITLE,
+                    title: "${ui.message('dataintegrity.result.documentTitle')}",
                     filename: getFileName()
                 },
                 {
                     extend: 'pdfHtml5',
-                    text: '<i class="icon-file-pdf" title="Export as PDF"></i>',
+                    text: '<i class="icon-file-pdf" title="${ui.message('dataintegrity.result.exportAsPdf')}"></i>',
                     className: 'export-btn',
                     exportOptions: {
                         columns: EXPORT_COLUMNS
                     },
-                    title: DOCUMENT_TITLE,
+                    title: "${ui.message('dataintegrity.result.documentTitle')}",
                     filename: getFileName()
                 }
             ]
@@ -184,7 +183,7 @@
 <% if (binding.variables.containsKey('rules')) { %>
     <h2>${ui.message("dataintegrity.result.all.label")}</h2>
 <% } else { %>
-    <h2>Results for ${rule.ruleName}</h2>
+    <h2>${ui.message('dataintegrity.result.resultFor')} ${rule.ruleName}</h2>
 <% } %>
 
 <% if (results.size() > 0) { %>
@@ -216,13 +215,17 @@
 def prettify = { "$it".replaceAll("null", "").replaceAll("\\s*,\\s", " ") }
 %>
 <% if (results.size() == 0) { %>
-    There are no results to show. <a href="results.page?action=fireRules"><i class="icon-play"></i>&nbsp;Click here</a> to run all the validation rules, please note that it will take some time and slow down the server.
+    ${ui.message('dataintegrity.result.noResult')}
+    <a href="results.page?action=fireRules">
+        ${ ui.message('dataintegrity.rule.runAllRules') }
+    </a>
+    <p>${ui.message('dataintegrity.rule.runAllRulesNotes')}</p>
 <% } else { %>
 <table id="list-results" class="dataTable">
     <thead>
     <tr>
         <th class="hidden"></th>
-        <th class="col-identifier">Identifier</th>
+        <th class="col-identifier">${ui.message('dataintegrity.result.identifier')}</th>
         <th class="col-rulename">${ui.message("dataintegrity.rule.name")}</th>
         <th>${ui.message("dataintegrity.result.name")}</th>
         <th>${ui.message("dataintegrity.result.notes")}</th>

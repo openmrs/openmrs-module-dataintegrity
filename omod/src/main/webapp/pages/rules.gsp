@@ -16,7 +16,7 @@
 <h1>Test</h1>
 <h2>${ ui.message("dataintegrity.rule.label")}</h2>
 <% if (rules.size() == 0) { %>
-There are no rules defined
+    ${ ui.message('dataintegrity.rule.noRule')}
 <% } else { %>
 <table id="list-rules" cellspacing="2" cellpadding="2">
     <thead>
@@ -40,5 +40,8 @@ There are no rules defined
 </table>
 
 <br>
-<a href="results.page?action=fireRules"><i class="icon-play"></i>&nbsp;Click here</a> to run all the validation rules, please note that it will take some time and slow down the server.
+    <a href="results.page?action=fireRules">
+        ${ ui.message('dataintegrity.rule.runAllRules') }
+    </a>
+    <p>${ui.message('dataintegrity.rule.runAllRulesNotes')}</p>
 <% } %>
