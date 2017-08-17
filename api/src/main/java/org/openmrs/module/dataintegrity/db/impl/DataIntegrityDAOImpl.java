@@ -19,6 +19,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Patient;
+import org.openmrs.PatientProgram;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.hibernate.DbSession;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
@@ -59,6 +60,14 @@ public class DataIntegrityDAOImpl implements DataIntegrityDAO {
 	}
 
 	@Override
+	public List<DataIntegrityResult> getResultsByPatientProgram(PatientProgram patientProgram) {
+		Criteria criteria = getSession().createCriteria(DataIntegrityResult.class);
+		// filter by patient
+		criteria.add(Restrictions.eq("patientProgram", patientProgram));
+		return criteria.list();
+	}
+
+	@Override
 	public DataIntegrityRule getRule(Integer id) {
 		return (DataIntegrityRule) getSession().get(DataIntegrityRule.class, id);
 	}
@@ -68,7 +77,19 @@ public class DataIntegrityDAOImpl implements DataIntegrityDAO {
 		Query q = getSession().createQuery("from DataIntegrityRule f where f.uuid = :uuid");
 		return (DataIntegrityRule) q.setString("uuid", uuid).uniqueResult();
 	}
-	
+
+	@Override
+	public List<DataIntegrityRule> getRuleByCategory(String category) {
+		Query q = getSession().createQuery("from DataIntegrityRule f where f.ruleCategory = :category");
+		return (List<DataIntegrityRule>) q.setParameter("category", category).list();
+	}
+
+	@Override
+	public DataIntegrityResult getResultByUuid(String uuid) {
+		Query q = getSession().createQuery("from DataIntegrityResult f where f.uuid = :uuid");
+		return (DataIntegrityResult) q.setString("uuid", uuid).uniqueResult();
+	}
+
 	@Override
 	public void saveResults(List<DataIntegrityResult> results) {
 		DbSession session = getSession();
@@ -81,14 +102,21 @@ public class DataIntegrityDAOImpl implements DataIntegrityDAO {
 	public DataIntegrityRule saveRule(DataIntegrityRule rule) {
 		DataIntegrityRule existing = getRuleByUuid(rule.getUuid());
 		if (existing != null) {
-			log.debug("DataIntergrityRule with uuid " + rule.getUuid() + " exists with ruleId " + existing.getId());
+			log.debug("DataIntegrityRule with uuid " + rule.getUuid() + " exists with ruleId " + existing.getId());
 			rule.setId(existing.getId());
 			Context.evictFromSession(existing);
 		}
 		getSession().saveOrUpdate(rule);
 		return rule;
 	}
-	
+
+	@Override
+	public void deleteRule(DataIntegrityRule rule) {
+		log.debug("Clearing rule '" + rule.getRuleName() + "' with uuid " + rule.getUuid());
+		Query q = getSession().createSQLQuery("delete from dataintegrity_rule where uuid = :uuid");
+		q.setParameter("uuid", rule.getUuid()).executeUpdate();
+	}
+
 	@Override
 	public void clearAllResults() {
 		log.debug("Clearing the results for all the rules");

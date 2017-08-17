@@ -12,9 +12,11 @@
 package org.openmrs.module.dataintegrity.api.impl;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.PatientProgram;
 import org.openmrs.api.db.PatientDAO;
 import org.openmrs.api.db.hibernate.HibernatePatientDAO;
 import org.openmrs.api.impl.BaseOpenmrsService;
@@ -59,7 +61,12 @@ public class DataIntegrityServiceImpl extends BaseOpenmrsService implements Data
 	public DataIntegrityRule saveRule(DataIntegrityRule rule) {
 		return dataIntegrityDAO.saveRule(rule);
 	}
-	
+
+	@Override
+	public void deleteRule(DataIntegrityRule dataIntegrityRule) {
+		dataIntegrityDAO.deleteRule(dataIntegrityRule);
+	}
+
 	@Override
 	@Transactional(readOnly = true)
 	public DataIntegrityRule getRule(Integer id) {
@@ -71,13 +78,24 @@ public class DataIntegrityServiceImpl extends BaseOpenmrsService implements Data
 	public DataIntegrityRule getRuleByUuid(String uuid) {
 		return dataIntegrityDAO.getRuleByUuid(uuid);
 	}
-	
+
+	@Override
+	public List<DataIntegrityRule> getRuleByCategory(String category) {
+		return dataIntegrityDAO.getRuleByCategory(category);
+	}
+
 	@Override
 	@Transactional(readOnly = true)
 	public List<DataIntegrityRule> getAllRules() {
 		return dataIntegrityDAO.getRules();
 	}
-	
+
+	@Override
+	@Transactional(readOnly = true)
+	public DataIntegrityResult getResultByUuid(String uuid) {
+		return dataIntegrityDAO.getResultByUuid(uuid);
+	}
+
 	@Override
 	@Transactional(readOnly = true)
 	public List<DataIntegrityResult> getAllResults() {
@@ -100,5 +118,12 @@ public class DataIntegrityServiceImpl extends BaseOpenmrsService implements Data
 	@Transactional(readOnly = true)
 	public List<DataIntegrityResult> getResultsByPatientUuid(String patientUuid) {
 		return dataIntegrityDAO.getResultsByPatient(patientDAO.getPatientByUuid(patientUuid));
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<DataIntegrityResult> getResultsByPatientProgram(int patientProgramId) {
+		PatientProgram patientProgram = new PatientProgram(patientProgramId);
+		return dataIntegrityDAO.getResultsByPatientProgram(patientProgram);
 	}
 }

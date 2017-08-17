@@ -83,12 +83,50 @@
 			<artifactId>${project.parent.artifactId}-api</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>${project.parent.artifactId}-api</artifactId>
+			<version>${project.parent.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>webservices.rest-omod-common</artifactId>
+			<version>${webservicesRestVersion}</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>webservices.rest-omod-common</artifactId>
+			<version>${webservicesRestVersion}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>webservices.rest-omod-1.8</artifactId>
+			<version>${webservicesRestVersion}</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>org.openmrs.api</groupId>
 			<artifactId>openmrs-api</artifactId>
 			<scope>provided</scope>
 			<type>jar</type>
 		</dependency>
+		<dependency>
+			<groupId>org.openmrs.api</groupId>
+			<artifactId>openmrs-api</artifactId>
+			<type>test-jar</type>
+		</dependency>
+
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>webservices.rest-omod</artifactId>
@@ -100,12 +138,29 @@
 			<type>jar</type>
 		</dependency>
 		<dependency>
+			<groupId>org.openmrs.web</groupId>
+			<artifactId>openmrs-web</artifactId>
+			<type>test-jar</type>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>uiframework-omod</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.test</groupId>
+			<artifactId>openmrs-test</artifactId>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-all</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
