@@ -1,4 +1,4 @@
-package org.openmrs.module.dataintegrity.web.rest.resources;
+package org.openmrs.module.dataintegrity.web.rest.resource;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.dataintegrity.DataIntegrityResult;
@@ -14,21 +14,22 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-@Resource(name = RestConstants.VERSION_1  + DataIntegrityRestController.DATA_INTEGRITY_REST_NAMESPACE + "/integrityresults", supportedClass = DataIntegrityResult.class, supportedOpenmrsVersions = { "1.8.*",
+@Resource(name = RestConstants.VERSION_1  + DataIntegrityRestController.DATA_INTEGRITY_REST_NAMESPACE + "/resultbypatient", supportedClass = DataIntegrityResult.class, supportedOpenmrsVersions = { "1.8.*",
         "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
-public class IntegrityResultsResource extends DelegatingCrudResource<DataIntegrityResult> {
+public class IntegrityResultPatientResource extends DelegatingCrudResource<DataIntegrityResult> {
 
     @Override
     public DataIntegrityResult newDelegate() {
-        return new DataIntegrityResult();
+        throw new ResourceDoesNotSupportOperationException();
     }
 
     @Override
-    public DataIntegrityResult getByUniqueId(String s) {
+    public DataIntegrityResult getByUniqueId(String uuid) {
         throw new ResourceDoesNotSupportOperationException();
     }
 
@@ -89,13 +90,13 @@ public class IntegrityResultsResource extends DelegatingCrudResource<DataIntegri
         return null;
     }
 
-    @Override
-    protected PageableResult doGetAll(RequestContext context) throws ResponseException {
-        return new NeedsPaging<>(getDataIntegrityService().getAllResults(), context);
-    }
-
     private DataIntegrityService getDataIntegrityService() {
         return Context.getService(DataIntegrityService.class);
     }
 
+    @Override
+    public PageableResult doGetAll(RequestContext requestContext) throws ResponseException {
+        String patientUuid = requestContext.getParameter("patientUuid");
+        return new NeedsPaging<>(getDataIntegrityService().getResultsByPatientUuid(patientUuid), requestContext);
+    }
 }

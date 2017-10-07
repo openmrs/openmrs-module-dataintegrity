@@ -14,6 +14,8 @@ package org.openmrs.module.dataintegrity.db;
 import java.util.List;
 
 import org.openmrs.Patient;
+import org.openmrs.PatientProgram;
+import org.openmrs.Program;
 import org.openmrs.module.dataintegrity.DataIntegrityResult;
 import org.openmrs.module.dataintegrity.DataIntegrityRule;
 
@@ -49,14 +51,39 @@ public interface DataIntegrityDAO {
 	 * @return the results for specified patient
 	 */
 	public List<DataIntegrityResult> getResultsByPatient(Patient patient);
+
+	/**
+	 * Retrieves all the results for specified patientProgram
+	 *
+	 * @param patientProgram
+	 * @return the results for specified patientProgram
+	 */
+	public List<DataIntegrityResult> getResultsByPatientProgram(PatientProgram patientProgram);
 	
 	public DataIntegrityRule getRule(Integer id);
 	
 	public DataIntegrityRule getRuleByUuid(String uuid);
+
+	/**
+	 * Retrieves all the data integrity rules belong to specified category
+	 *
+	 * @param category specified rule category
+	 * @return List of data integrity rules
+	 */
+	public List<DataIntegrityRule> getRuleByCategory(String category);
+
+	public DataIntegrityResult getResultByUuid(String uuid);
 	
 	public void saveResults(List<DataIntegrityResult> results);
 	
 	public DataIntegrityRule saveRule(DataIntegrityRule rule);
+
+	/**
+	 * Deletes a particular rule
+	 *
+	 * @param rule
+	 */
+	void deleteRule(DataIntegrityRule rule);
 	
 	/**
 	 * Clear all the results

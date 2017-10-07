@@ -19,8 +19,10 @@
     <dataintegrity_rule rule_id="3" rule_name="Test Patient Rule With Results" rule_category="patient" handler_config="java"
                         handler_classname="org.openmrs.module.api.TestPatientHandlerClassNameWithResults"
                         uuid="72330639-0a68-47bb-b5c8-ac8350658866"/>
-    <patient patient_id="2" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>
-    <patient patient_id="3" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>
+
+    <patient patient_id="2" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" />
+    <patient patient_id="3" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" />
+
     <dataintegrity_result result_id="1" rule_id="3" patient_id="2" action_url="" notes="Test Result"
                           date_created="2016-10-10 00:00:00.0" uuid="33585310-e1a6-41da-8d60-d35acd386bf0"/>
     <dataintegrity_result result_id="2" rule_id="3" patient_id="3" action_url="" notes="Test Result2"
