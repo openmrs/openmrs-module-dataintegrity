@@ -54,7 +54,7 @@
             label: "${ ui.message('dataintegrity.rule.label')}",
             link: '${ui.pageLink("dataintegrity", "rules")}'
         },
-        <% if (binding.variables.containsKey('rules') && rules) { %>
+        <% if (binding.variables.containsKey('rules')) { %>
         {
             label: "${ ui.message('dataintegrity.result.all.label')}",
             link: '${ui.pageLink("dataintegrity", "results")}'
