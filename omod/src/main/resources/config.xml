@@ -21,14 +21,15 @@
 	<description>
 		Module for performing data integrity checks on the system.
 	</description>
+	<require_version>${openMRSVersion}</require_version>
 	
 	<activator>${project.parent.groupId}.${project.parent.artifactId}.DataIntegrityActivator</activator>
-	
+
 	<mappingFiles>
 		DataIntegrityResult.hbm.xml
 		DataIntegrityRule.hbm.xml
 	</mappingFiles>
-	
+
 	<require_modules>
 		<require_module>org.openmrs.module.uiframework</require_module>
 		<require_module>org.openmrs.module.webservices.rest</require_module>
