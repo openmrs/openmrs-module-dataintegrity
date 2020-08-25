@@ -38,7 +38,7 @@
 		<property name="moduleService">
 			<list merge="true">
 				<value>org.openmrs.module.dataintegrity.rule.DataIntegrityEvaluationService</value>
-				<ref local="dataintegrityEvaluationService" />
+				<ref bean="dataintegrityEvaluationService" />
 			</list>
 		</property>
 	</bean>
@@ -61,7 +61,7 @@
 		<property name="moduleService">
 			<list merge="true">
 				<value>${project.parent.groupId}.${project.parent.artifactId}.api.DataIntegrityService</value>
-				<ref local="dataintegrityService" />
+				<ref bean="dataintegrityService" />
 			</list>
 		</property>
 	</bean>
