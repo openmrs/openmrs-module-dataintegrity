@@ -25,7 +25,7 @@ public class ResultsByPatientSearchHandler implements SearchHandler {
     private static final String PATIENT = "patient";
 
     private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + DataIntegrityRestController.DATA_INTEGRITY_REST_NAMESPACE + "/integrityresults",
-            Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"),
+            Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.3.*", "2.4.*"),
             Arrays.asList(new SearchQuery.Builder("Allows you to get data integrity results by patient")
                     .withRequiredParameters(PATIENT)
                     .build()));
